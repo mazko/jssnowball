@@ -1,0 +1,134 @@
+
+<HTML>
+<HEAD>
+
+<TITLE>Stemming early English</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Stemming early English</H1>
+
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="../algorithms/english/stemmer.html">    The English (Porter2) stemmer in Snowball</A>
+<TR><TD><A HREF="../algorithms/porter/stemmer.html">     The Porter stemmer in Snowball</A>
+
+<TR><TD><A HREF="http://www.tartarus.org/~martin/PorterStemmer/index.html">
+The &#8216;official&#8217; home page of the Porter stemming algorithm</A>
+
+<TR><TD><A HREF="http://www.tartarus.org/~martin/bible/index.html">
+demo of stemmed <B><I>est</I></B>, <B><I>eth</I></B> endings</A>
+
+</TABLE></DL>
+<BR>
+</TR>
+
+<BR><BR>
+
+<TR><TD>
+
+The question occasionally arises of how far the English (or earlier Porter)
+stemming algorithm can be adapted to handle older forms of the English
+language.
+
+<BR><BR>
+
+Historically, English is usually divided into three periods of development,
+<DL><DD>
+    1) Old English (or Anglo-Saxon), the language of Beowulf,<BR>
+    2) Middle English, the language of Chaucer,<BR>
+    3) Modern English, the language of Shakespeare, Dickens, and people today.
+</DL>
+Old English is so different from Modern English that it may be regarded as a
+distinct language.
+
+<BR><BR>
+
+Middle English is problematical for a number of reasons. There is no standard
+spelling in the original texts, and the grammatical differences between Middle
+and Modern English prevent the spelling from being simply &#8216;modernised&#8217;. It is
+however possible to normalise the spelling according to some modern scheme, but
+again there is no standard modern scheme. Middle
+English itself had great regional variations, so that for example the
+English of Chaucer and his contemporary the Gawain poet (both late 14th century)
+are strikingly different. Finally, grammar was fluid even for one writer, so
+Chaucer might use <I>they love</I> or <I>they loven</I>, <I>he
+sitteth</I> or <I>he sit</I>.
+
+<BR><BR>
+
+We may take Modern English to mean English which can be cast into a modern
+spelling form without too much damage being done to the original. From this
+point of view Shakespeare and the Authorised Version of the Bible are in Modern
+English. The ending structure of words in early Modern English differ from
+contemporary English in the <B><I>est</I></B> and <B><I>eth</I></B> endings of verbs in the present
+indicative,
+<DL><DD>
+    <I>I bring<BR>
+      thou bring<B><I>est</I></B><BR>
+      he bring<B><I>eth</I></B><BR>
+      we bring<BR>
+      you bring<BR>
+      they bring</I>
+</DL>
+Both of these endings underwent rapid decline. The <B><I>eth</I></B> form occurs in
+Shakespeare, but is much rarer than the modern <B><I>s</I></B> form. The language of the
+Authorised Version,
+in which both forms abound,
+seemed archaic even on its first publication. Consequently
+the <B><I>eth</I></B> form survives now only in the language of the traditional Bible and
+Book of Common Prayer. The <B><I>est</I></B> form disappeared more slowly, as the use of
+<I>thou</I> became displaced by <I>you</I> in conversation.
+
+<BR><BR>
+
+To put the endings into the
+<A HREF="../algorithms/porter/stemmer.html">Porter stemmer</A>,
+the rules
+<DL><DD>
+Step 1b
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> (m>0) EED <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> EE
+<TR><TD> (*v*) ED  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>
+<TR><TD> (*v*) ING <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>
+</TABLE></DL>
+</DL>
+should be extended to
+<DL><DD>
+Step 1b
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> (m>0) EED <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> EE
+<TR><TD> (*v*) ED  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>
+<TR><TD> (*v*) ING <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>
+<TR><TD> (*v*) EST <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>
+<TR><TD> (*v*) ETH <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>
+</TABLE></DL>
+</DL>
+And to put the endings into the
+<A HREF="../algorithms/english/stemmer.html">English stemmer</A>,
+the list
+<DL><DD>
+<B><I>ed  &nbsp;  edly  &nbsp;  ing  &nbsp;  ingly</I></B>
+</DL>
+of Step 1<I>b</I> should be extended to
+<DL><DD>
+<B><I>ed  &nbsp;  edly  &nbsp;  ing  &nbsp;  ingly  &nbsp;  est  &nbsp;  eth</I></B>
+</DL>
+As far as the Snowball scripts are concerned, the endings &nbsp;<TT>'est' 'eth'</TT>&nbsp; must
+be added against ending &nbsp;<TT>'ing'</TT>.
+<BR><BR>
+The inclusion of these endings does produce certain &#8216;side effects&#8217;. <B><I>est</I></B> is
+the ending of adjectival superlatives (<I>greatest</I>, <I>unkindest</I>), where it
+will also be removed. Words like <I>brandreth</I>, <I>deforest</I> will be mis-stemmed.
+Nevertheless, for the vocabulary of the Bible, the inclusion of these extra
+endings is not harmful (see
+<A HREF="http://www.tartarus.org/~martin/bible/index.html">this demonstration</A> &#x2014;
+for example, search for the text <I>love</I> in 1000 verses).
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

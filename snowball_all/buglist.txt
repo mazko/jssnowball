@@ -1,0 +1,16 @@
+
+A numbering scheme for bugs in Snowball was started in Feb 2003, when the
+released code had become stable enough for bug fixing to be a rare event.
+
+The bugs so far found are as follows. (The dates - British format - refer
+to when the bugs were fixed.)
+
+#1   23/2/2003
+     Noticed by: Martin
+     Symptom: '$ s ( C )' causing a compiler crash when s undeclared.
+     Modules affected: analyser.c
+     Notes: 's undeclared' was reported before the crash, so it looked
+         like a valid termination, albeit with truncated error messages.
+
+
+

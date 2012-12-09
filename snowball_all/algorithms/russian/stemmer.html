@@ -1,0 +1,744 @@
+
+<HTML>
+<HEAD><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+<TITLE>Russian stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Russian stemming algorithm</H1>
+
+<TR><TD>
+<BR> <H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_KOI8_R.sbl">    The stemmer in Snowball (KOI8-R encoding)</A>
+<TR><TD><A HREF="stem_Unicode.sbl">    The stemmer in Snowball (Unicode encoding) </A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      — and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Russian vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent</A>
+<TR><TD><A HREF="diffs-t.txt">   Vocabulary + stemmed equivalent (transliterated)</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">     Russian stop word list</A>
+</TABLE></DL>
+
+<BR><BR>
+The Snowball stemmer represents the Cyrillic alphabet with ASCII characters,
+following the standard Library of Congress transliteration scheme. The vocabulary + stemmed
+equivalent is also viewable in this transliterated form.
+
+</TR>
+
+
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of Russian vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>        </TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+в<BR>
+вавиловка<BR>
+вагнера<BR>
+вагон<BR>
+вагона<BR>
+вагоне<BR>
+вагонов<BR>
+вагоном<BR>
+вагоны<BR>
+важная<BR>
+важнее<BR>
+важнейшие<BR>
+важнейшими<BR>
+важничал<BR>
+важно<BR>
+важного<BR>
+важное<BR>
+важной<BR>
+важном<BR>
+важному<BR>
+важности<BR>
+важностию<BR>
+важность<BR>
+важностью<BR>
+важную<BR>
+важны<BR>
+важные<BR>
+важный<BR>
+важным<BR>
+важных<BR>
+вазах<BR>
+вазы<BR>
+вакса<BR>
+вакханка<BR>
+вал<BR>
+валандался<BR>
+валентина<BR>
+валериановых<BR>
+валерию<BR>
+валетами<BR>
+вали<BR>
+валил<BR>
+валился<BR>
+валится<BR>
+валов<BR>
+вальдшнепа<BR>
+вальс<BR>
+вальса<BR>
+вальсе<BR>
+вальсишку<BR>
+вальтера<BR>
+валяется<BR>
+валялась<BR>
+валялись<BR>
+валялось<BR>
+валялся<BR>
+валять<BR>
+валяются<BR>
+вам<BR>
+вами<BR>
+</TD>
+<TD></TD><TD>  <TT><B> => </B></TT>  </TD>
+<TD></TD><TD>
+в<BR>
+вавиловк<BR>
+вагнер<BR>
+вагон<BR>
+вагон<BR>
+вагон<BR>
+вагон<BR>
+вагон<BR>
+вагон<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важнича<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важност<BR>
+важност<BR>
+важност<BR>
+важност<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+важн<BR>
+ваз<BR>
+ваз<BR>
+вакс<BR>
+вакханк<BR>
+вал<BR>
+валанда<BR>
+валентин<BR>
+валерианов<BR>
+валер<BR>
+валет<BR>
+вал<BR>
+вал<BR>
+вал<BR>
+вал<BR>
+вал<BR>
+вальдшнеп<BR>
+вальс<BR>
+вальс<BR>
+вальс<BR>
+вальсишк<BR>
+вальтер<BR>
+валя<BR>
+валя<BR>
+валя<BR>
+валя<BR>
+валя<BR>
+валя<BR>
+валя<BR>
+вам<BR>
+вам<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+п<BR>
+па<BR>
+пава<BR>
+павел<BR>
+павильон<BR>
+павильонам<BR>
+павла<BR>
+павлиний<BR>
+павлиньи<BR>
+павлиньим<BR>
+павлович<BR>
+павловна<BR>
+павловне<BR>
+павловной<BR>
+павловну<BR>
+павловны<BR>
+павловцы<BR>
+павлыч<BR>
+павлыча<BR>
+пагубная<BR>
+падает<BR>
+падай<BR>
+падал<BR>
+падала<BR>
+падаль<BR>
+падать<BR>
+падаю<BR>
+падают<BR>
+падающего<BR>
+падающие<BR>
+падеж<BR>
+падение<BR>
+падением<BR>
+падении<BR>
+падений<BR>
+падения<BR>
+паденье<BR>
+паденья<BR>
+падет<BR>
+падут<BR>
+падучая<BR>
+падчерицей<BR>
+падчерицы<BR>
+падшая<BR>
+падшей<BR>
+падшему<BR>
+падший<BR>
+падшим<BR>
+падших<BR>
+падшую<BR>
+паек<BR>
+пазухи<BR>
+пазуху<BR>
+пай<BR>
+пакет<BR>
+пакетом<BR>
+пакеты<BR>
+пакостей<BR>
+пакостно<BR>
+пал<BR>
+</TD>
+<TD></TD><TD>  <TT><B> => </B></TT>  </TD>
+<TD></TD><TD>
+п<BR>
+па<BR>
+пав<BR>
+павел<BR>
+павильон<BR>
+павильон<BR>
+павл<BR>
+павлин<BR>
+павлин<BR>
+павлин<BR>
+павлович<BR>
+павловн<BR>
+павловн<BR>
+павловн<BR>
+павловн<BR>
+павловн<BR>
+павловц<BR>
+павлыч<BR>
+павлыч<BR>
+пагубн<BR>
+пада<BR>
+пада<BR>
+пада<BR>
+пада<BR>
+падал<BR>
+пада<BR>
+пада<BR>
+пада<BR>
+пада<BR>
+пада<BR>
+падеж<BR>
+паден<BR>
+паден<BR>
+паден<BR>
+паден<BR>
+паден<BR>
+паден<BR>
+паден<BR>
+падет<BR>
+падут<BR>
+падуч<BR>
+падчериц<BR>
+падчериц<BR>
+падш<BR>
+падш<BR>
+падш<BR>
+падш<BR>
+падш<BR>
+падш<BR>
+падш<BR>
+паек<BR>
+пазух<BR>
+пазух<BR>
+па<BR>
+пакет<BR>
+пакет<BR>
+пакет<BR>
+пакост<BR>
+пакостн<BR>
+пал<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR> <H2>The stemming algorithm</H2>
+
+<I>i</I>-suffixes <A HREF="../../texts/glossary.html">(*)</A> of Russian tend to be quite regular, with irregularities of
+declension involving a change to the stem. Irregular forms therefore
+usually just generate two or more possible stems. Stems in Russian can
+be very short, and many of the suffixes are also particle words that make
+‘natural stopwords’, so a tempting way of running the stemmer is to set a
+minimum stem length of zero, and thereby reduce to null all words which
+are made up entirely of suffix parts. We have been a little more cautious,
+and have insisted that a minimum stem contains one vowel.
+<BR><BR>
+The 32 letters of the Russian alphabet are as follows, with the
+transliterated forms that we will use here shown in brackets:
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> а (<B><I>a</I></B>)
+<TD></TD><TD> б (<B><I>b</I></B>)
+<TD></TD><TD> в (<B><I>v</I></B>)
+<TD></TD><TD> г (<B><I>g</I></B>)
+<TD></TD><TD> д (<B><I>d</I></B>)
+<TD></TD><TD> е (<B><I>e</I></B>)
+<TD></TD><TD> ж (<B><I>zh</I></B>)
+<TD></TD><TD> з (<B><I>z</I></B>)
+
+<TR><TD> и (<B><I>i</I></B>)
+<TD></TD><TD> й (<B><I>ì</I></B>)
+<TD></TD><TD> к (<B><I>k</I></B>)
+<TD></TD><TD> л (<B><I>l</I></B>)
+<TD></TD><TD> м (<B><I>m</I></B>)
+<TD></TD><TD> н (<B><I>n</I></B>)
+<TD></TD><TD> о (<B><I>o</I></B>)
+<TD></TD><TD> п (<B><I>p</I></B>)
+
+<TR><TD> р (<B><I>r</I></B>)
+<TD></TD><TD> с (<B><I>s</I></B>)
+<TD></TD><TD> т (<B><I>t</I></B>)
+<TD></TD><TD> у (<B><I>u</I></B>)
+<TD></TD><TD> ф (<B><I>f</I></B>)
+<TD></TD><TD> х (<B><I>kh</I></B>)
+<TD></TD><TD> ц (<B><I><U>ts</U></I></B>)
+<TD></TD><TD> ч (<B><I>ch</I></B>)
+
+<TR><TD> ш (<B><I>sh</I></B>)
+<TD></TD><TD> щ (<B><I>shch</I></B>)
+<TD></TD><TD> ъ (<B><I>"</I></B>)
+<TD></TD><TD> ы (<B><I>y</I></B>)
+<TD></TD><TD> ь (<B><I>'</I></B>)
+<TD></TD><TD> э (<B><I>è</I></B>)
+<TD></TD><TD> ю (<B><I><U>iu</U></I></B>)
+<TD></TD><TD> я (<B><I><U>ia</U></I></B>)
+
+</TABLE></DL>
+There is a 33rd letter, ё (<B><I>ë</I></B>), but it is rarely used, and we assume it is mapped into е (<B><I>e</I></B>).
+<BR><BR>
+The following are vowels:
+<DL><DD>
+    а (<B><I>a</I></B>)      е (<B><I>e</I></B>)      и (<B><I>i</I></B>)      о (<B><I>o</I></B>)      у (<B><I>u</I></B>)      ы (<B><I>y</I></B>)   
+    э (<B><I>è</I></B>)      ю (<B><I><U>iu</U></I></B>)      я (<B><I><U>ia</U></I></B>)
+</DL>
+In any word, <I>RV</I> is the region after the first vowel, or the end of the word
+if it contains no vowel.
+<BR><BR>
+<I>R</I>1 is the region after the first non-vowel following a vowel, or the end of
+the word if there is no such non-vowel.
+<BR><BR>
+<I>R</I>2 is the region after the first non-vowel following a vowel in <I>R</I>1, or the
+end of the word if there is no such non-vowel.
+<BR><BR>
+For example:
+<BR><PRE>
+    p r o t i v o e s t e s t v e n n o m
+         |<------       RV        ------>|
+           |<-----       R1       ------>|
+               |<-----     R2     ------>|
+</PRE>
+(See <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2.)
+<BR><BR>
+We now define the following classes of ending:
+<BR><BR>
+<FONT SIZE=-1>PERFECTIVE GERUND</FONT>:
+<DL><DD>
+    group 1:     в (<B><I>v</I></B>)     вши (<B><I>vshi</I></B>)     вшись (<B><I>vshis'</I></B>)
+<BR><BR>
+    group 2:     ив (<B><I>iv</I></B>)     ивши (<B><I>ivshi</I></B>)     ившись (<B><I>ivshis'</I></B>)   
+                ыв (<B><I>yv</I></B>)     ывши (<B><I>yvshi</I></B>)     ывшись (<B><I>yvshis'</I></B>)
+</DL>
+group 1 endings must follow а (<B><I>a</I></B>) or я (<B><I><U>ia</U></I></B>)
+<BR><BR>
+<FONT SIZE=-1>ADJECTIVE</FONT>:
+<DL><DD>
+    ее (<B><I>ee</I></B>)      ие (<B><I>ie</I></B>)      ые (<B><I>ye</I></B>)      ое (<B><I>oe</I></B>)      ими (<B><I>imi</I></B>)      ыми
+    (<B><I>ymi</I></B>)      ей (<B><I>eì</I></B>)      ий (<B><I>iì</I></B>)      ый (<B><I>yì</I></B>)      ой (<B><I>oì</I></B>)      ем
+    (<B><I>em</I></B>)      им (<B><I>im</I></B>)      ым (<B><I>ym</I></B>)      ом (<B><I>om</I></B>)      его (<B><I>ego</I></B>)     ого (<B><I>ogo</I></B>)
+        ему (<B><I>emu</I></B>)      ому (<B><I>omu</I></B>)      их (<B><I>ikh</I></B>)      ых (<B><I>ykh</I></B>)      ую (<B><I>u<U>iu</U></I></B>)
+        юю (<B><I><U>iu</U><U>iu</U></I></B>)      ая (<B><I>a<U>ia</U></I></B>)      яя (<B><I><U>ia</U><U>ia</U></I></B>)
+         ою (<B><I>o<U>iu</U></I></B>)
+         ею (<B><I>e<U>iu</U></I></B>)
+</DL>
+<FONT SIZE=-1>PARTICIPLE</FONT>:
+<DL><DD>
+    group 1:     ем (<B><I>em</I></B>)     нн (<B><I>nn</I></B>)     вш (<B><I>vsh</I></B>)     ющ (<B><I><U>iu</U>shch</I></B>)     щ (<B><I>shch</I></B>)
+<BR><BR>
+    group 2:     ивш (<B><I>ivsh</I></B>)     ывш (<B><I>yvsh</I></B>)     ующ (<B><I>u<U>iu</U>shch</I></B>)
+</DL>
+group 1 endings must follow а (<B><I>a</I></B>) or я (<B><I><U>ia</U></I></B>)
+<BR><BR>
+<FONT SIZE=-1>REFLEXIVE</FONT>:
+<DL><DD>
+    ся (<B><I>s<U>ia</U></I></B>)     сь (<B><I>s'</I></B>)
+</DL>
+<FONT SIZE=-1>VERB</FONT>:
+<DL><DD>
+    group 1: ла (<B><I>la</I></B>)     на (<B><I>na</I></B>)     ете (<B><I>ete</I></B>)     йте (<B><I>ìte</I></B>)     ли (<B><I>li</I></B>)
+        й (<B><I>ì</I></B>)     л (<B><I>l</I></B>)     ем (<B><I>em</I></B>)     н (<B><I>n</I></B>)     ло (<B><I>lo</I></B>)     но (<B><I>no</I></B>)     ет
+    (<B><I>et</I></B>)     ют (<B><I><U>iu</U>t</I></B>)     ны (<B><I>ny</I></B>)     ть (<B><I>t'</I></B>)     ешь (<B><I>esh'</I></B>)     нно (<B><I>nno</I></B>)
+<BR><BR>
+    group 2: ила (<B><I>ila</I></B>)     ыла (<B><I>yla</I></B>)     ена (<B><I>ena</I></B>)     ейте (<B><I>eìte</I></B>)   
+    уйте (<B><I>uìte</I></B>)     ите (<B><I>ite</I></B>)     или (<B><I>ili</I></B>)     ыли
+    (<B><I>yli</I></B>)     ей (<B><I>eì</I></B>)     уй (<B><I>uì</I></B>)     ил (<B><I>il</I></B>)     ыл (<B><I>yl</I></B>)     им (<B><I>im</I></B>)   
+    ым (<B><I>ym</I></B>)     ен (<B><I>en</I></B>)     ило (<B><I>ilo</I></B>)     ыло (<B><I>ylo</I></B>)     ено (<B><I>eno</I></B>)     ят
+    (<B><I><U>ia</U>t</I></B>)     ует (<B><I>uet</I></B>)     уют (<B><I>u<U>iu</U>t</I></B>)     ит (<B><I>it</I></B>)     ыт (<B><I>yt</I></B>)     ены
+    (<B><I>eny</I></B>)     ить (<B><I>it'</I></B>)     ыть (<B><I>yt'</I></B>)     ишь (<B><I>ish'</I></B>)   
+    ую (<B><I>u<U>iu</U></I></B>)     ю (<B><I><U>iu</U></I></B>)
+</DL>
+group 1 endings must follow а (<B><I>a</I></B>) or я (<B><I><U>ia</U></I></B>)
+<BR><BR>
+<FONT SIZE=-1>NOUN</FONT>:
+<DL><DD>
+а (<B><I>a</I></B>)     ев (<B><I>ev</I></B>)     ов (<B><I>ov</I></B>)     ие (<B><I>ie</I></B>)     ье (<B><I>'e</I></B>)     е (<B><I>e</I></B>)     иями
+(<B><I>i<U>ia</U>mi</I></B>)     ями (<B><I><U>ia</U>mi</I></B>)     ами (<B><I>ami</I></B>)     еи (<B><I>ei</I></B>)     ии (<B><I>ii</I></B>)     и (<B><I>i</I></B>)   
+ией (<B><I>ieì</I></B>)     ей (<B><I>eì</I></B>)     ой (<B><I>oì</I></B>)     ий (<B><I>iì</I></B>)     й (<B><I>ì</I></B>)   
+иям (<B><I>i<U>ia</U>m</I></B>)     ям (<B><I><U>ia</U>m</I></B>)     ием (<B><I>iem</I></B>)     ем (<B><I>em</I></B>)     ам (<B><I>am</I></B>)     ом
+(<B><I>om</I></B>)     о (<B><I>o</I></B>)     у (<B><I>u</I></B>)     ах (<B><I>akh</I></B>)     иях (<B><I>i<U>ia</U>kh</I></B>)     ях (<B><I><U>ia</U>kh</I></B>)     ы
+(<B><I>y</I></B>)     ь (<B><I>'</I></B>)     ию (<B><I>i<U>iu</U></I></B>)     ью (<B><I>'<U>iu</U></I></B>)     ю (<B><I><U>iu</U></I></B>)     ия (<B><I>i<U>ia</U></I></B>)     ья
+(<B><I>'<U>ia</U></I></B>)     я (<B><I><U>ia</U></I></B>)
+</DL>
+<FONT SIZE=-1>SUPERLATIVE</FONT>:
+<DL><DD>
+    ейш (<B><I>eìsh</I></B>)      ейше (<B><I>eìshe</I></B>)
+</DL>
+These are all <I>i</I>-suffixes. The list of <I>d</I>-suffixes is very short,
+<BR><BR>
+<FONT SIZE=-1>DERIVATIONAL</FONT>:
+<DL><DD>
+    ост (<B><I>ost</I></B>)      ость (<B><I>ost'</I></B>)
+</DL>
+Define an <FONT SIZE=-1>ADJECTIVAL</FONT> ending as an <FONT SIZE=-1>ADJECTIVE</FONT> ending optionally preceded
+by a <FONT SIZE=-1>PARTICIPLE</FONT> ending.
+<DL><DD>
+    For example, in
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>        бегавшая  <TD></TD><TD> = <TD></TD><TD> бега <TD></TD><TD> + <TD></TD><TD> вш <TD></TD><TD> + <TD></TD><TD> ая
+<TR><TD>        (<I>begavsha<U>ia</U></I>         <TD></TD><TD> = <TD></TD><TD> <I>bega</I>     <TD></TD><TD> + <TD></TD><TD> <B><I>vsh</I></B>   <TD></TD><TD> + <TD></TD><TD> <B><I>a<U>ia</U></I></B>)
+</TABLE></DL>
+    ая (<B><I>a<U>ia</U></I></B>) is an adjective ending, and вш (<B><I>vsh</I></B>) a participle ending of group 1
+    (preceded by the final а (<B><I>a</I></B>) of бега (<B><I>bega</I></B>)), so вшая (<B><I>vsha<U>ia</U></I></B>) is an
+    adjectival ending.
+</DL>
+
+In searching for an ending in a class, always choose the longest one
+from the class.
+<DL><DD>
+    So in seaching for a <FONT SIZE=-1>NOUN</FONT> ending for величие (<I>velichie</I>), choose ие (<B><I>ie</I></B>) rather than
+    е (<B><I>e</I></B>).
+</DL>
+Undouble н (<B><I>n</I></B>) means, if the word ends нн (<B><I>nn</I></B>), remove the last letter.
+<BR><BR>
+Here now are the stemming rules.
+<BR><BR>
+All tests take place in the the <I>RV</I> part of the word.
+<DL><DD>
+    So in the test for perfective gerund, the а (<B><I>a</I></B>) or я (<B><I><U>ia</U></I></B>) which the group 1
+    endings must follow must itself be in <I>RV</I>. In other words the letters
+    before the <I>RV</I> region are never examined in the stemming process.
+</DL>
+
+Do each of steps 1, 2, 3 and 4.
+<BR><BR>
+Step 1:
+
+Search for a <FONT SIZE=-1>PERFECTIVE GERUND</FONT> ending. If one is found remove it, and that
+is then the end of step 1. Otherwise try and remove a <FONT SIZE=-1>REFLEXIVE</FONT> ending,
+and then search in turn for (1) an <FONT SIZE=-1>ADJECTIVAL</FONT>, (2) a <FONT SIZE=-1>VERB</FONT> or (3) a
+<FONT SIZE=-1>NOUN</FONT> ending. As soon as one of the endings (1) to (3) is found remove it,
+and terminate step 1.
+<BR><BR>
+Step 2: If the word ends with и (<B><I>i</I></B>), remove it.
+<BR><BR>
+Step 3: Search for a <FONT SIZE=-1>DERIVATIONAL</FONT> ending in <I>R</I>2 (i.e. the entire ending
+must lie in <I>R</I>2), and if one is found, remove it.
+<BR><BR>
+Step 4: (1) Undouble н (<B><I>n</I></B>), or, (2) if the word ends with a <FONT SIZE=-1>SUPERLATIVE</FONT> ending,
+remove it and undouble н (<B><I>n</I></B>), or (3) if the word ends ь (<B><I>'</I></B>) (soft sign) remove it.
+<BR><BR>
+
+
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR> <H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+stringescapes {}
+
+/* the 32 Cyrillic letters in the KOI8-R coding scheme, and represented
+   in Latin characters following the conventions of the standard Library
+   of Congress transliteration: */
+
+stringdef a    hex 'C1'
+stringdef b    hex 'C2'
+stringdef v    hex 'D7'
+stringdef g    hex 'C7'
+stringdef d    hex 'C4'
+stringdef e    hex 'C5'
+stringdef zh   hex 'D6'
+stringdef z    hex 'DA'
+stringdef i    hex 'C9'
+stringdef i`   hex 'CA'
+stringdef k    hex 'CB'
+stringdef l    hex 'CC'
+stringdef m    hex 'CD'
+stringdef n    hex 'CE'
+stringdef o    hex 'CF'
+stringdef p    hex 'D0'
+stringdef r    hex 'D2'
+stringdef s    hex 'D3'
+stringdef t    hex 'D4'
+stringdef u    hex 'D5'
+stringdef f    hex 'C6'
+stringdef kh   hex 'C8'
+stringdef ts   hex 'C3'
+stringdef ch   hex 'DE'
+stringdef sh   hex 'DB'
+stringdef shch hex 'DD'
+stringdef "    hex 'DF'
+stringdef y    hex 'D9'
+stringdef '    hex 'D8'
+stringdef e`   hex 'DC'
+stringdef iu   hex 'C0'
+stringdef ia   hex 'D1'
+
+routines ( mark_regions R2
+           perfective_gerund
+           adjective
+           adjectival
+           reflexive
+           verb
+           noun
+           derivational
+           tidy_up
+)
+
+externals ( stem )
+
+integers ( pV p2 )
+
+groupings ( v )
+
+define v '{a}{e}{i}{o}{u}{y}{e`}{iu}{ia}'
+
+define mark_regions as (
+
+    $pV = limit
+    $p2 = limit
+    do (
+        gopast v  setmark pV  gopast non-v
+        gopast v  gopast non-v  setmark p2
+       )
+)
+
+backwardmode (
+
+    define R2 as $p2 <= cursor
+
+    define perfective_gerund as (
+        [substring] among (
+            '{v}'
+            '{v}{sh}{i}'
+            '{v}{sh}{i}{s}{'}'
+                ('{a}' or '{ia}' delete)
+            '{i}{v}'
+            '{i}{v}{sh}{i}'
+            '{i}{v}{sh}{i}{s}{'}'
+            '{y}{v}'
+            '{y}{v}{sh}{i}'
+            '{y}{v}{sh}{i}{s}{'}'
+                (delete)
+        )
+    )
+
+    define adjective as (
+        [substring] among (
+            '{e}{e}' '{i}{e}' '{y}{e}' '{o}{e}' '{i}{m}{i}' '{y}{m}{i}'
+            '{e}{i`}' '{i}{i`}' '{y}{i`}' '{o}{i`}' '{e}{m}' '{i}{m}'
+            '{y}{m}' '{o}{m}' '{e}{g}{o}' '{o}{g}{o}' '{e}{m}{u}'
+            '{o}{m}{u}' '{i}{kh}' '{y}{kh}' '{u}{iu}' '{iu}{iu}' '{a}{ia}'
+            '{ia}{ia}'
+                        // and -
+            '{o}{iu}'   // - which is somewhat archaic
+            '{e}{iu}'   // - soft form of {o}{iu}
+                (delete)
+        )
+    )
+
+    define adjectival as (
+        adjective
+
+        /* of the participle forms, em, vsh, ivsh, yvsh are readily removable.
+           nn, {iu}shch, shch, u{iu}shch can be removed, with a small proportion of
+           errors. Removing im, uem, enn creates too many errors.
+        */
+
+        try (
+            [substring] among (
+                '{e}{m}'                  // present passive participle
+                '{n}{n}'                  // adjective from past passive participle
+                '{v}{sh}'                 // past active participle
+                '{iu}{shch}' '{shch}'     // present active participle
+                    ('{a}' or '{ia}' delete)
+
+     //but not  '{i}{m}' '{u}{e}{m}'      // present passive participle
+     //or       '{e}{n}{n}'               // adjective from past passive participle
+
+                '{i}{v}{sh}' '{y}{v}{sh}'// past active participle
+                '{u}{iu}{shch}'          // present active participle
+                    (delete)
+            )
+        )
+
+    )
+
+    define reflexive as (
+        [substring] among (
+            '{s}{ia}'
+            '{s}{'}'
+                (delete)
+        )
+    )
+
+    define verb as (
+        [substring] among (
+            '{l}{a}' '{n}{a}' '{e}{t}{e}' '{i`}{t}{e}' '{l}{i}' '{i`}'
+            '{l}' '{e}{m}' '{n}' '{l}{o}' '{n}{o}' '{e}{t}' '{iu}{t}'
+            '{n}{y}' '{t}{'}' '{e}{sh}{'}'
+
+            '{n}{n}{o}'
+                ('{a}' or '{ia}' delete)
+
+            '{i}{l}{a}' '{y}{l}{a}' '{e}{n}{a}' '{e}{i`}{t}{e}'
+            '{u}{i`}{t}{e}' '{i}{t}{e}' '{i}{l}{i}' '{y}{l}{i}' '{e}{i`}'
+            '{u}{i`}' '{i}{l}' '{y}{l}' '{i}{m}' '{y}{m}' '{e}{n}'
+            '{i}{l}{o}' '{y}{l}{o}' '{e}{n}{o}' '{ia}{t}' '{u}{e}{t}'
+            '{u}{iu}{t}' '{i}{t}' '{y}{t}' '{e}{n}{y}' '{i}{t}{'}'
+            '{y}{t}{'}' '{i}{sh}{'}' '{u}{iu}' '{iu}'
+                (delete)
+            /* note the short passive participle tests:
+               '{n}{a}' '{n}' '{n}{o}' '{n}{y}'
+               '{e}{n}{a}' '{e}{n}' '{e}{n}{o}' '{e}{n}{y}'
+            */
+        )
+    )
+
+    define noun as (
+        [substring] among (
+            '{a}' '{e}{v}' '{o}{v}' '{i}{e}' '{'}{e}' '{e}'
+            '{i}{ia}{m}{i}' '{ia}{m}{i}' '{a}{m}{i}' '{e}{i}' '{i}{i}'
+            '{i}' '{i}{e}{i`}' '{e}{i`}' '{o}{i`}' '{i}{i`}' '{i`}'
+            '{i}{ia}{m}' '{ia}{m}' '{i}{e}{m}' '{e}{m}' '{a}{m}' '{o}{m}'
+            '{o}' '{u}' '{a}{kh}' '{i}{ia}{kh}' '{ia}{kh}' '{y}' '{'}'
+            '{i}{iu}' '{'}{iu}' '{iu}' '{i}{ia}' '{'}{ia}' '{ia}'
+                (delete)
+            /* the small class of neuter forms '{e}{n}{i}' '{e}{n}{e}{m}'
+               '{e}{n}{a}' '{e}{n}' '{e}{n}{a}{m}' '{e}{n}{a}{m}{i}' '{e}{n}{a}{x}'
+               omitted - they only occur on 12 words.
+            */
+        )
+    )
+
+    define derivational as (
+        [substring] R2 among (
+            '{o}{s}{t}'
+            '{o}{s}{t}{'}'
+                (delete)
+        )
+    )
+
+    define tidy_up as (
+        [substring] among (
+
+            '{e}{i`}{sh}'
+            '{e}{i`}{sh}{e}'  // superlative forms
+               (delete
+                ['{n}'] '{n}' delete
+               )
+            '{n}'
+               ('{n}' delete) // e.g. -nno endings
+            '{'}'
+               (delete)  // with some slight false conflations
+        )
+    )
+)
+
+define stem as (
+
+    do mark_regions
+    backwards setlimit tomark pV for (
+        do (
+             perfective_gerund or
+             ( try reflexive
+               adjectival or verb or noun
+             )
+        )
+        try([ '{i}' ] delete)
+        // because noun ending -i{iu} is being treated as verb ending -{iu}
+
+        do derivational
+        do tidy_up
+    )
+)
+</DL>
+</PRE>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

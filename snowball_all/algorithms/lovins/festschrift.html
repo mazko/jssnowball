@@ -1,0 +1,2190 @@
+
+<HTML>
+<HEAD>
+<TITLE>Lovins revisited</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+
+<TR><TD>
+<BR><BR>
+
+
+This is a revised version of Martin Porter&#8217;s paper which was published as part
+of the Karen Sparck Jones Festschrift of 2005.
+
+<BR><BR>
+
+
+<I>Charting a New Course: Progress in Natural Language Processing and
+Information Retrieval: A Festschrift for Professor Karen Sparck Jones</I>, edited
+by John Tait, Amsterdam: Kluwer, 2005.
+
+<BR><BR>
+
+<BR>&nbsp;<H2>Lovins Revisited</H2>
+
+<BR><BR>
+Martin Porter, December 2001 (revised November 2008).
+
+&nbsp;<H4>Abstract</H4>
+<DL><DD>
+    The Lovins stemming algorithm for English is analysed, and compared
+    with the Porter stemming algorithm, using Snowball, a language designed
+    specifically for the development of stemming algorithms. It is shown
+    how the algorithms manage to function in a similar way, while appearing
+    to be quite different. The Porter algorithm is recoded in the style of
+    the Lovins algorithm, which leads to the discovery of a few possible
+    improvements.
+
+</DL>
+
+<BR>&nbsp;<H2>Preamble</H2>
+
+This is a festschrift paper, so I am allowed to begin on a personal note.
+In 1979 I was working with Keith van Rijsbergen and Stephen Robertson on a
+British Library funded IR project to investigate the selection of good
+index terms, and one of the things we found ourselves having to do was to
+establish a document test collection from some raw data that had been sent
+to us on a magnetic tape by Peter Vaswani of the National Physical
+Laboratory. I was the tame programmer in the project, so it was my job to
+set up the test collection.
+
+<BR><BR>
+
+On the whole it did not prove too difficult. The data we received was a
+collection of about 11,000 documents (titles and short abstracts), 93
+queries &#x2014; in a free text form, and relevance judgements. All the text was
+in upper case without punctuation, and there were one or two marker
+characters to act as field terminators. By modern standards the data was
+really very small indeed, but at the time it was considerably larger than
+any of the other test collections we had. What you had to do was to cast it
+into a standard form
+for experimental work. You represented terms and documents by numbers, and
+created flat files in text form corresponding to the queries, relevance
+assessments, and term to document index. One process however was less
+straightforward. On their way to becoming numeric terms, the words of the
+source text were put through a process of linguistic normalisation called
+suffix stripping, in which certain derivational and inflectional suffixes
+attached to the words were removed. There was a standard piece of software
+used in Cambridge at that time to do this, written in 1971 by Keith
+Andrews (Andrews, 1971) as part of a Diploma Project.
+One of the courses in
+Cambridge is the one year post-graduate Diploma in Computer Science. Each
+student on the course is required to do a special project, which includes
+writing a significant piece of software &#x2014; significant in the sense of being
+both useful and substantial.
+Keith's piece of software was more useful than most, and it continued to be
+used as a suffix stripping program, or stemmer, for many years after it was
+written.
+
+<BR><BR>
+
+Now by an odd chance I was privy to much of Keith Andrews&#8217; original
+thinking at the time that he was doing the work. The reason for this was
+that in 1971 I was looking for a house in Cambridge, and the base I was
+operating from was a sleeping bag on the living room floor of an old friend
+called John Dawson, who was Keith&#8217;s diploma supervisor. Keith used to come round
+and discuss stemming algorithms with him, while I formed a mute audience. I
+learnt about the Lovins stemming algorithm of 1968 (Lovins, 1968),
+and must I think have
+at least looked at her paper then, since I know it was not new to me when I
+saw it again in 1979. Their view of Lovins&#8217; work was that it did not go far
+enough. There needed to be many more suffixes, and more complex rules to
+determine the criteria for their removal. Much of their discussion was
+about new suffixes to add to the list, and removal rules. It was interesting
+therefore to find myself needing to use Andrews&#8217; work eight years later,
+and questioning some of its assumptions. Did you need that many suffixes?
+Did the rules need to be so complicated? Perhaps one would do better to
+break composite suffixes into smaller units and remove them piecemeal.
+And perhaps syllables would be a better count of stem length than letters.
+So I wrote my own stemmer, which became known as the Porter stemmer, and
+which was published in 1980 (Porter, 1980).
+
+<BR><BR>
+
+I must explain where Karen Sparck Jones fits into all of this. Keith
+Andrews&#8217; piece of work was originally suggested by Karen as a Diploma
+student project, and she was able to use the Andrews stemmer in her IR
+experiments throughout the seventies. In 1979 however Karen had moved much
+more into the field of Natural Language Processing and Artificial
+Intelligence, and by then had two or three research students in that field
+just writing up their PhDs (only one of whom I really got to know &#x2014; John
+Tait, the editor of this volume). So we were in contact, but not working
+together. That again was an odd chance: that Karen had been my research
+supervisor in a topic other than IR, and that when later I was doing IR
+research at Cambridge I was not working with Karen. While I was engaged on
+writing the stemmer, Karen showed some justifiable irritation that I had
+become interested in a topic so very remote from the one for which we had
+received the British Library funding. Nevertheless, she came into my room
+one day, said, &#8216;Look, if you're getting interested in stemming, you&#8217;d
+better read this,&#8217; and handed me the 1968 issue of <I>Mechanical
+Translation</I> that contains the Lovins paper. I still have this issue with
+Karen&#8217;s name across the top. (And I hope she didn't expect it back!)
+
+<BR><BR>
+
+Another 20 years have gone by, and I have been studying the Lovins stemmer
+again, really because I was looking for examples to code up in Snowball, a
+small string processing language I devised in the latter half of 2001
+particularly adapted for writing stemming algorithms. Lovins&#8217; stemmer
+strikes me now as a fine piece of work, for which she never quite received
+the credit she deserved. It was the first stemmer for English set out as
+an algorithm that described the stemming process exactly. She explained
+how it was intended to be used to improve IR performance, in just the way
+in which stemmers are used today. It is not seriously short of suffixes:
+the outstanding omissions are the plural forms <B><I>ements</I></B> and <B><I>ents</I></B>
+corresponding to her <B><I>ement</I></B> and <B><I>ent</I></B>, and it is easy enough to add
+them into the definition. It performs well in practice. In fact it is
+still in use, and can be downloaded in various languages from the net (1).
+The tendency since 1980 has been to attach the name &#8216;Porter&#8217; to any
+language stemming process that does not use a dictionary, even when it is
+quite dissimilar to the original Porter stemmer (witness the Dutch Porter
+stemmer of Kraaij and Pohlmann (2) (Kraaij, 1994 and Kraaij, 1995), but
+the priority really belongs to Lovins. It also has one clear advantage
+over the Porter algorithm, in that it involves fewer steps. Coded up well,
+it should run a lot faster.
+
+<BR><BR>
+
+A number of things intrigued me. Why are the Lovins and Porter stemmers so
+different, when what they do looks so similar? Could the stemmer, in some
+sense, be brought up-to-date? Could the Porter stemmer be cast into the
+Lovins form, and so run faster?
+
+<BR><BR>
+
+This paper is about the answers for these questions. In discovering them, I
+have learned a lot more about my own stemmer.
+
+<BR>&nbsp;<H2>Why stem?</H2>
+
+It may be worth saying a little on what stemming is all about. We can imagine
+a document with the title,
+
+<DL><DD>
+    Pre-raphaelitism: A Study of Four Critical Approaches
+</DL>
+
+and a query, containing the words
+
+<DL><DD>
+    PRE-RAPHAELITE CRITICISM
+</DL>
+
+We want to match query against title so that &#8216;Pre-raphaelitism&#8217; matches
+&#8216;PRE-RAPHAELITE&#8217; and &#8216;Critical&#8217; matches &#8216;CRITICISM&#8217;. This leads to the
+idea of removing endings from words as part of the process of extracting index
+terms from documents, a similar process of ending removal being applied to
+queries prior to the match. For example, we would like to remove the endings
+from
+
+<DL><DD>
+critical<BR>
+critically<BR>
+criticism<BR>
+criticisms<BR>
+critics<BR>
+</DL>
+
+so that each word is reduced to &#8216;critic&#8217;. This is the <I>stem</I>, from which the
+other words are formed, so the process as a whole is called <I>stemming</I>. It is
+a feature of English morphology that the part of the word we want to remove is
+at the end &#x2014; the suffix. But the same is broadly true of French, German and other
+languages of the Indo-European group. It is also true of numerous languages
+outside Indo-European, Finnish for example, although there is a
+boundary beyond which it is not true. So Chinese, where words are simple
+units without affixes, and Arabic, where the stem is modified by
+prefixes and infixes as well as suffixes, lie outside the
+boundary. As an IR technique it therefore has wide applicability. In developing
+stemmers two points were recognised quite early on. One is that the
+morphological regularities that you find in English (or other languages) mean
+that you can attempt to do stemming by a purely algorithmic process. Endings
+<B><I>al</I></B>, <B><I>ally</I></B>, <B><I>ism</I></B> etc. occur throughout English vocabulary, and are
+easy to detect and remove: you don&#8217;t need access to an on-line dictionary. The
+other is that the morphological irregularities of English set a limit to the
+success of an algorithmic approach. Syntactically, what look like endings may
+not be endings (<I>offspring</I> is not <I>offspr</I> + <B><I>ing</I></B>), and the list of
+endings seems to extend indefinitely (<I>trapez-oid</I>, <I>likeli-hood</I>,
+<I>guardian-ship</I>, <I>Tibet-an</I>, <I>juven-ilia</I>, <I>Roman-esque</I>, <I>ox-en</I>
+...) It is difficult to gauge where to set the cut-off for these rarer forms.
+Semantically, the addition of a suffix may alter the meaning of a word a
+little, a lot, or completely, and morphology alone cannot measure the degree of
+change (<I>prove</I> and <I>provable</I> have closely related meanings; <I>probe</I> and
+<I>probable</I> do not.) This meant that stemming, if employed at all, became the
+most challenging, and the most difficult part of the indexing process.
+
+<BR><BR>
+
+In the seventies, stemming might be applied as part of the process of
+establishing a test collection, and when it was there would not usually be any
+attempt to make the stemming process well-defined, or easily repeatable by
+another researcher. This was really because the basis for experiment replication
+was the normalised data that came out of the stemming process, rather than the
+source data plus a description of stemming procedures. Stemming tended to be
+applied, and then forgotten about. But by the 1980s, stemming itself was being
+investigated. Lennon and others (Lennon, 1981) found no substantial differences
+between the use of different stemmers for English. Harman (Harman, 1991)
+challenged the effectiveness of stemming altogether, when she reported no
+substantial differences between using and not using stemming in a series of
+experiments. But later work has been more positive. Krovetz (Krovetz, 1995), for example,
+reported small but significant improvements with stemming over a range of test
+collections.
+
+<BR><BR>
+
+Of course, all these experiments assume some IR model which will use stemming in
+a particular way, and will measure just those features that tests collections
+are, notoriously, able to measure. We might imagine an IR system where the users
+have been educated in the advantages and disadvantages to be expected from
+stemming, and are able to flag individual search terms to say whether or not
+they are to be used stemmed or unstemmed. Stemming sometimes improves,
+occasionally degrades, search performance, and this would be the best way of
+using it as an IR facility. Again stemming helps regularise the IR vocabulary,
+which is very useful when preparing a list of terms to present to a user as
+candidates for query expansion. But this advantage too is difficult to quantify.
+
+<BR><BR>
+
+An evaluative comparison between the Lovins and later stemmers lies in any case
+outside the scope of this paper, but it is important to
+bear in mind that it is not a straightforward undertaking.
+
+<BR>&nbsp;<H2>The Lovins Stemmer</H2>
+
+Structurally, the Lovins stemmer is in four parts, collected together in
+four Appendices A, B, C and D in her paper. Part A is a list of 294
+endings, each with a letter which identifies a condition for whether or
+not the ending should be removed. (I will follow Lovins in using &#8216;ending&#8217;
+rather than &#8216;suffix&#8217; as a name for the items on the list.)
+Part A therefore looks like this:
+
+<DL><DD>
+    .11.<BR>
+    alistically  &nbsp;  B<BR>
+    arizability  &nbsp;  A<BR>
+    izationally  &nbsp;  B<BR>
+    .10.<BR>
+    antialness  &nbsp;  A<BR>
+    arisations  &nbsp;  A<BR>
+    arizations  &nbsp;  A<BR>
+    entialness  &nbsp;  A<BR>
+    .09.<BR>
+    allically  &nbsp;  C<BR>
+    antaneous  &nbsp;  A<BR>
+    antiality  &nbsp;  A<BR>
+    . . .<BR>
+<BR>
+    .01.<BR>
+    a  &nbsp;  A<BR>
+    e  &nbsp;  A<BR>
+    i  &nbsp;  A<BR>
+    o  &nbsp;  A<BR>
+    s  &nbsp;  W<BR>
+    y  &nbsp;  B
+</DL>
+
+Endings are banked by length, from 11 letters down to 1. Each bank is tried
+in turn until an ending is found which matches the end of the word to be
+stemmed and leaves a stem which satisfies the given condition, when the
+ending is removed. For example condition C says that the stem must have at
+least 4 letters, so <I>bimetallically</I> would lose <B><I>allically</I></B> leaving a
+stem <I>bimet</I> of length 5, but <I>metallically</I> would not reduce to
+<I>met</I>, since its length is only 3.
+
+<BR><BR>
+
+There are 29 such conditions, called A to Z, AA, BB and CC, and they
+constitute part B of the stemmer. Here they are (* stands for any letter):
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>A <TD></TD><TD>  No restrictions on stem
+<TR><TD>B <TD></TD><TD>  Minimum stem length = 3
+<TR><TD>C <TD></TD><TD>  Minimum stem length = 4
+<TR><TD>D <TD></TD><TD>  Minimum stem length = 5
+<TR><TD>E <TD></TD><TD>  Do not remove ending after <I>e</I>
+<TR><TD>F <TD></TD><TD>  Minimum stem length = 3 and do not remove ending after <I>e</I>
+<TR><TD>G <TD></TD><TD>  Minimum stem length = 3 and remove ending only after <I>f</I>
+<TR><TD>H <TD></TD><TD>  Remove ending only after <I>t</I> or <I>ll</I>
+<TR><TD>I <TD></TD><TD>  Do not remove ending after <I>o</I> or <I>e</I>
+<TR><TD>J <TD></TD><TD>  Do not remove ending after <I>a</I> or <I>e</I>
+<TR><TD>K <TD></TD><TD>  Minimum stem length = 3 and remove ending only after <I>l, i</I> or
+<I>u*e</I>
+<TR><TD>L <TD></TD><TD>  Do not remove ending after <I>u, x</I> or <I>s</I>, unless <I>s</I> follows
+<I>o</I>
+<TR><TD>M <TD></TD><TD>  Do not remove ending after <I>a, c, e</I> or <I>m</I>
+<TR><TD>N <TD></TD><TD>  Minimum stem length = 4 after <I>s**</I>, elsewhere = 3
+<TR><TD>O <TD></TD><TD>  Remove ending only after <I>l</I> or <I>i</I>
+<TR><TD>P <TD></TD><TD>  Do not remove ending after <I>c</I>
+<TR><TD>Q <TD></TD><TD>  Minimum stem length = 3 and do not remove ending after <I>l</I> or
+<I>n</I>
+<TR><TD>R <TD></TD><TD>  Remove ending only after <I>n</I> or <I>r</I>
+<TR><TD>S <TD></TD><TD>  Remove ending only after <I>dr</I> or <I>t</I>, unless <I>t</I> follows <I>t</I>
+<TR><TD>T <TD></TD><TD>  Remove ending only after <I>s</I> or <I>t</I>, unless <I>t</I> follows <I>o</I>
+<TR><TD>U <TD></TD><TD>  Remove ending only after <I>l, m, n</I> or <I>r</I>
+<TR><TD>V <TD></TD><TD>  Remove ending only after <I>c</I>
+<TR><TD>W <TD></TD><TD>  Do not remove ending after <I>s</I> or <I>u</I>
+<TR><TD>X <TD></TD><TD>  Remove ending only after <I>l, i</I> or <I>u*e</I>
+<TR><TD>Y <TD></TD><TD>  Remove ending only after <I>in</I>
+<TR><TD>Z <TD></TD><TD>  Do not remove ending after <I>f</I>
+<TR><TD>AA <TD></TD><TD> Remove ending only after <I>d, f, ph, th, l, er, or, es</I> or <I>t</I>
+<TR><TD>BB <TD></TD><TD> Minimum stem length = 3 and do not remove ending after <I>met</I> or
+<I>ryst</I>
+<TR><TD>CC <TD></TD><TD> Remove ending only after <I>l</I>
+</TABLE></DL>
+
+There is an implicit assumption in each condition, A included, that the minimum
+stem length is 2.
+
+<BR><BR>
+
+This is much less complicated than it seems at first. Conditions A to D
+depend on a simple measure of minimum stem length, and E and F are slight
+variants of A and B. Out of the 294 endings, 259 use one of these
+6 conditions. The remaining 35 endings use the other 23 conditions, so
+conditions G, H ... CC have less than 2 suffixes each, on average. What is
+happening here is that Lovins is trying to capture a rule which gives a
+good removal criterion for one ending, or a small number of similar
+endings. She does not explain the thinking behind the conditions, but it is
+often not too difficult to reconstruct. Here for example are the last few
+conditions with their endings,
+
+<DL><DD>
+
+Y (<B><I>early, &nbsp;  ealy, &nbsp;  eal, &nbsp;  ear</I></B>). <I>collinearly, multilinear</I> are
+stemmed.<BR>
+
+Z (<B><I>eature</I></B>). <I>misfeature</I> does not lose <B><I>eature</I></B>.<BR>
+
+AA (<B><I>ite</I></B>). <I>acolouthite, hemimorphite</I> lose <B><I>ite</I></B>, <I>ignite</I> and
+<I>requite</I> retain it.<BR>
+
+BB (<B><I>allic, &nbsp;  als, &nbsp;  al</I></B>). Words ending <I>metal, crystal</I> retain
+<B><I>al</I></B>.<BR>
+
+CC (<B><I>inity</I></B>). <I>crystallinity</I> <TT>-&gt;</TT> <I>crystall</I>, but <I>affinity</I>,
+<I>infinity</I> are unaltered.
+
+</DL>
+
+
+Part C of the Lovins stemmer is a set of 35 transformation rules used to
+adjust the letters at the end of the stem. These rules are invoked after the
+stemming step proper, irrespective of whether an ending was actually
+removed. Here are about half of them, with examples to show the type of
+transformation intended (letters in square brackets indicate the full form
+of the words),
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    1)  <TD></TD><TD> bb   <TD></TD><TD><TT>-&gt;</TT>  &nbsp;  &nbsp;  <TD></TD><TD> b    <TD></TD><TD>rubb[ing] <TT>-&gt;</TT> rub
+<TR><TD>        <TD></TD><TD> ll   <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> l          <TD></TD><TD>controll[ed] <TT>-&gt;</TT> control
+<TR><TD>        <TD></TD><TD> mm   <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> m          <TD></TD><TD>trimm[ed] <TT>-&gt;</TT> trim
+<TR><TD>        <TD></TD><TD> rr   <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> r          <TD></TD><TD>abhorr[ing] <TT>-&gt;</TT> abhor
+<TR><TD>    2)  <TD></TD><TD> iev  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> ief        <TD></TD><TD>believ[e] <TT>-&gt;</TT> belief
+<TR><TD>    3)  <TD></TD><TD> uct  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> uc         <TD></TD><TD>induct[ion] <TT>-&gt;</TT> induc[e]
+<TR><TD>    4)  <TD></TD><TD> umpt <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> um         <TD></TD><TD>consumpt[ion] <TT>-&gt;</TT> consum[e]
+<TR><TD>    5)  <TD></TD><TD> rpt  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> rb         <TD></TD><TD>absorpt[ion] <TT>-&gt;</TT> absorb
+<TR><TD>    6)  <TD></TD><TD> urs  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> ur         <TD></TD><TD>recurs[ive] <TT>-&gt;</TT> recur
+<TR><TD>    7a) <TD></TD><TD> metr <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> meter  &nbsp;  &nbsp;  <TD></TD><TD>parametr[ic] <TT>-&gt;</TT> paramet[er]
+<TR><TD>    8)  <TD></TD><TD> olv  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> olut       <TD></TD><TD>dissolv[ed] <TT>-&gt;</TT> dissolut[ion]
+<TR><TD>    11) <TD></TD><TD> dex  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> dic        <TD></TD><TD>index <TT>-&gt;</TT> indic[es]
+<TR><TD>    16) <TD></TD><TD> ix   <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> ic         <TD></TD><TD>matrix <TT>-&gt;</TT> matric[es]
+<TR><TD>    18) <TD></TD><TD> uad  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> uas        <TD></TD><TD>persuad[e] <TT>-&gt;</TT> persuas[ion]
+<TR><TD>    19) <TD></TD><TD> vad  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> vas        <TD></TD><TD>evad[e] <TT>-&gt;</TT> evas[ion]
+<TR><TD>    20) <TD></TD><TD> cid  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> cis        <TD></TD><TD>decid[e] <TT>-&gt;</TT> decis[ion]
+<TR><TD>    21) <TD></TD><TD> lid  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> lis        <TD></TD><TD>elid[e] <TT>-&gt;</TT> elis[ion]
+<TR><TD>    31) <TD></TD><TD> ert  <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> ers        <TD></TD><TD>convert[ed] <TT>-&gt;</TT> convers[ion]
+<TR><TD>    33) <TD></TD><TD> yt   <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> ys         <TD></TD><TD>analytic <TT>-&gt;</TT> analysis
+<TR><TD>    34) <TD></TD><TD> yz   <TD></TD><TD><TT>-&gt;</TT><TD></TD><TD> ys         <TD></TD><TD>analyzed <TT>-&gt;</TT> analysed
+</TABLE></DL>
+
+
+Finally, part D suggests certain relaxed matching rules between query terms
+and index terms when the stemmer has been used to set up an IR system, but
+we can regard that as not being part of the stemmer proper.
+
+<BR><BR>
+
+<BR>&nbsp;<H2>The Lovins stemmer in Snowball</H2>
+
+Snowball is a string processing language designed with the idea of making
+the definition of stemming algorithms much more rigorous. The Snowball
+compiler translates a Snowball script into a thread-safe ANSI C module,
+where speed of execution is a major design consideration. The resulting
+stemmers are pleasantly fast, and will process one million or so words a
+second on a high-performance modern PC. The Snowball website (3) gives a
+full description of the language, and also presents stemmers for a range of
+natural languages. Each stemmer is written out as a formal algorithm, with
+the corresponding Snowball script following. The algorithm definition acts
+as program comment for the Snowball script, and the Snowball script gives a
+precise definition to the algorithm. The ANSI C code with the
+same functionality can also be inspected, and sample vocabularies in source
+and stemmed form can be used for test purposes.
+An essential function of
+the Snowball script is therefore comprehensibility &#x2014; it should be fully understood
+by the reader of the script, and Snowball has been designed with this in mind.
+It contrasts interestingly in this respect with a system like Perl.
+Perl has a very big definition. Writing your own scripts in Perl is easy,
+after the initial learning hurdle, but understanding other scripts can be
+quite hard. The size of the language means that there are many different
+ways of doing the same thing, which gives programmers the opportunity of
+developing highly idiosyncratic styles. Snowball has a small, tight
+definition. Writing Snowball is much less easy than writing Perl, but on
+the other hand once it is written it is fairly easy to understand
+(or at least one hopes that it is). This is
+illustrated by the Lovins stemmer in Snowball, which is given in Appendix
+1. There is a very easy and natural correspondence
+between the different parts of the stemmer definition in Lovins' original
+paper and their Snowball equivalents.
+For example, the Lovins conditions A, B ... CC code up very neatly
+into routines with the same name. Taking condition L,
+
+<DL><DD>
+    L  &nbsp;  Do not remove ending after <I>u, x</I> or <I>s</I>, unless <I>s</I> follows
+    <I>o</I>
+</DL>
+
+corresponds to
+
+<BR><PRE>
+    define L as ( test hop 2 not 'u' not 'x' not ('s' not 'o') )
+</PRE>
+
+When &nbsp;<TT>L</TT>&nbsp; is called, we are the right end of the stem, moving left towards the
+front of the word. Each Lovins condition has an implicit test for a stem of
+length 2, and this is done by &nbsp;<TT>test hop 2</TT>, which sees if it is possible to
+hop two places left. If it is not, the routine immediately returns with a
+false signal, otherwise it carries on. It tests that the character at the
+right hand end is not <B><I>u</I></B>, and also not <B><I>x</I></B>, and also not <B><I>s</I></B> following a letter
+which is not <B><I>o</I></B>. This is equivalent to the Lovins condition. Here is not of
+course the place to give the exact semantics, but the you can quickly get
+the feel of the language by comparing the 29 Lovins conditions with their
+Snowball definitions.
+
+<BR><BR>
+
+Something must be said about the &nbsp;<TT>among</TT>&nbsp; feature of Snowball however,
+since this is central to the efficient implementation of stemmers. It is
+also the one part of Snowball that requires just a little effort to
+understand.
+
+<BR><BR>
+
+At its simplest, &nbsp;<TT>among</TT>&nbsp; can be used to test for alternative strings. The
+<TT>among</TT>s used in the definition of condition AA and the &nbsp;<TT>undouble</TT>
+routine have this form. In Snowball you can write
+
+<BR><PRE>
+    'sh' or 's' or 't'  'o' or 'i'  'p'
+</PRE>
+
+which will match the various forms <I>shop, ship, sop, sip, top, tip</I>. The
+order is important, because if &nbsp;<TT>'sh'</TT>&nbsp; and &nbsp;<TT>'s'</TT>&nbsp; are swapped over, the
+<TT>'s'</TT>&nbsp; would match the first letter of ship, while &nbsp;<TT>'o'</TT>&nbsp; or &nbsp;<TT>'i'</TT>
+would fail to match with the following &nbsp;<TT>'h'</TT>&nbsp; &#x2014; in other words the pattern
+matching has no backtracking. But it can also be written as
+
+<BR><PRE>
+    among('sh' 's' 't') among('i' 'o') 'p'
+</PRE>
+
+The order of the strings in each &nbsp;<TT>among</TT>&nbsp; is not important, because the
+match will be with the longest of all the strings that can match. In
+Snowball the implementation of &nbsp;<TT>among</TT>&nbsp; is based on the binary-chop idea,
+but has been carefully optimised. For example, in the Lovins stemmer, the
+main &nbsp;<TT>among</TT>&nbsp; in the &nbsp;<TT>endings</TT>&nbsp; routine has 294 different strings of average
+length 5.2 characters. A search for an ending involves accessing a number
+of characters within these 294 strings. The order is going to be
+<I>K</I>log<SUB>2</SUB>294, or 8.2<I>K</I>, where <I>K</I> is a number that one hopes will
+be small, although one must certainly expect it to be greater than 1. It
+turns out that, for the successive words of a standard test vocabulary,
+<I>K</I> averages to 1.6, so for each word there are about 13 character
+comparisons needed to determine whether it has one of the Lovins endings.
+
+<BR><BR>
+
+Each string in an &nbsp;<TT>among</TT>&nbsp; construction can be followed by a routine name. The
+routine returns a true/false signal, and then the &nbsp;<TT>among</TT>&nbsp; searches for the
+longest substring whose associated routine gives a true signal. A string not
+followed by a routine name can be thought of as a string which is associated
+with a routine that does nothing except give a true signal. This is the way
+that the &nbsp;<TT>among</TT>&nbsp; in the &nbsp;<TT>endings</TT>&nbsp; routine works, where indeed every string is
+followed by a routine name.
+
+<BR><BR>
+
+More generally, lists of strings in the &nbsp;<TT>among</TT>&nbsp; construction can be followed
+by bracketed commands, which are obeyed if one of the strings in the list is
+picked out for the longest match. The syntax is then
+
+<BR><PRE>
+    among( S<SUB>11</SUB> S<SUB>12</SUB> ... (C<SUB>1</SUB>)
+           S<SUB>21</SUB> S<SUB>22</SUB> ... (C<SUB>2</SUB>)
+           ...
+
+           S<SUB>n1</SUB> S<SUB>n2</SUB> ... (C<SUB>n</SUB>)
+         )
+</PRE>
+
+where the &nbsp;<TT>S<SUB>ij</SUB></TT>&nbsp; are strings, optionally followed by their routine names,
+and the &nbsp;<TT>C<SUB>i</SUB></TT>&nbsp; are Snowball command sequences. The semantics is a bit
+like a switch in C, where the switch is on a string rather than a numerical
+value:
+
+<BR><PRE>
+    switch(...) {
+        case S<SUB>11</SUB>: case S<SUB>12</SUB>: ... C<SUB>1</SUB>; break;
+        case S<SUB>21</SUB>: case S<SUB>22</SUB>: ... C<SUB>2</SUB>; break;
+        ...
+
+        case S<SUB>n1</SUB>: case S<SUB>n2</SUB>: ... C<SUB>n</SUB>; break;
+    }
+</PRE>
+
+The &nbsp;<TT>among</TT>&nbsp; in the &nbsp;<TT>respell</TT>&nbsp; routine has this form.
+
+The full form however is to use &nbsp;<TT>among</TT>&nbsp; with a preceding &nbsp;<TT>substring</TT>, with
+<TT>substring</TT>&nbsp; and &nbsp;<TT>among</TT>&nbsp; possibly separated by further commands.
+<TT>substring</TT>
+triggers the test for the longest matching substring, and the &nbsp;<TT>among</TT>&nbsp; then
+causes the corresponding bracketed command to be obeyed. At a simple
+level this can be used to cut down the size of the code, in that
+
+<BR><PRE>
+    substring C among( S<SUB>11</SUB> S<SUB>12</SUB> ... (C<SUB>1</SUB>)
+                       S<SUB>21</SUB> S<SUB>22</SUB> ... (C<SUB>2</SUB>)
+                       ...
+
+                       S<SUB>n1</SUB> S<SUB>n2</SUB> ... (C<SUB>n</SUB>)
+                     )
+</PRE>
+
+is a shorter form of
+
+<BR><PRE>
+    among( S<SUB>11</SUB> S<SUB>12</SUB> ... (C C<SUB>1</SUB>)
+           S<SUB>21</SUB> S<SUB>22</SUB> ... (C C<SUB>2</SUB>)
+           ...
+
+           S<SUB>n1</SUB> S<SUB>n2</SUB> ... (C C<SUB>n</SUB>)
+         )
+</PRE>
+
+More importantly, &nbsp;<TT>substring</TT>&nbsp; and &nbsp;<TT>among</TT>&nbsp; can work in different contexts. For
+example, &nbsp;<TT>substring</TT>&nbsp; could be used to test for the longest string, matching from
+right to left, while the commands in the &nbsp;<TT>among</TT>&nbsp; could operate in a left to
+right direction. In the Lovins stemmer, &nbsp;<TT>substring</TT>&nbsp; is used in this style:
+<BR><PRE>
+    [substring] among ( ... )
+</PRE>
+The two square brackets are in fact individual commands, so before the &nbsp;<TT>among</TT>
+come three commands. &nbsp;<TT>[</TT>&nbsp; sets a lower marker, &nbsp;<TT>substring</TT>&nbsp; is obeyed, searching
+for the strings in the following among, and then &nbsp;<TT>]</TT>&nbsp; sets an upper marker.
+The region between the lower and upper markers is called the slice, and this
+may subsequently be copied, replaced or deleted.
+
+<BR><BR>
+
+It was possible to get the Lovins stemmer working in Snowball very quickly.
+The Sourceforge versions (1) could be used to get the long list of endings and
+to help with the debugging. There was however one problem, that rules 24 and
+30 of part C conflicted. They are given as
+
+<DL><DD>
+    24) end <TT>-&gt;</TT> ens except following <I>s</I><BR>
+    ...<BR>
+    30) end <TT>-&gt;</TT> ens except following <I>m</I>
+</DL>
+
+This had not been noticed in the Sourceforge implementations, but
+immediately gave rise to a compilation error in Snowball. Experience
+suggested that I was very unlikely to get this problem resolved. Only a few
+months before, I had hit a point in a stemming algorithm where
+something did not quite make sense. The algorithm had been published just a
+few years ago, and  contacting one at least of the authors was quite easy.
+But I never sorted it out. The author I traced was not <I>au fait</I>
+with the linguistic background, and the language expert had been swallowed
+up in the wilds of America. So what chance would I have here? Even if I was
+able to contact Lovins, it seemed to me inconceivable that she would have
+any memory of, or even interest in, a tiny problem in a paper which she
+published 33 years ago. But the spirit of academic enquiry forced me to
+venture the attempt. After pursuing a number of red-herrings, email contact
+was finally made.
+
+<BR><BR>
+
+Her reply was a most pleasant surprise.
+
+<DL><DD>
+    ... The explanation is both mundane and exciting.  You have just found
+    a typo in the MT article, which I was unaware of all these years, and I
+    suspect has puzzled a lot of other people too.  The original paper, an
+    MIT-published memorandum from June 1968, has rule 30 as
+    <BR><BR>
+     &nbsp;  &nbsp;  &nbsp;       ent <TT>-&gt;</TT> ens except following <I>m</I>
+    <BR><BR>
+    and that is undoubtedly what it should be ...
+</DL>
+
+
+<BR>&nbsp;<H2>An analysis of the Lovins stemmer</H2>
+
+
+It is very important in understanding the Lovins stemmer to know something
+of the IR background of the late sixties. In the first place there was an
+assumption that IR was all, or mainly, about the retrieval of
+technical scientific papers, and research projects were set up accordingly.
+I remember being shown, in about 1968, a graph illustrating the
+&#8216;information explosion&#8217;, as it was understood at the time, which showed
+just the rate of growth of publications of scientific papers in various
+different domains over the previous 10 or 20 years. Computing resources
+were very precious, and they could not be wasted by setting up IR systems
+for information that was, by comparison, merely frivolous (articles in
+popular magazines, say). And even in 1980, when I was working in IR, the
+data I was using came from the familiar, and narrow, scientific domain.
+Lovins was working with Project Intrex (Overhage, 1966), where the data came from
+papers in materials science and engineering.
+
+<BR><BR>
+
+Secondly, the idea of indexing on every word in a document, or even looking
+at every word before deciding whether or not to put it into an index, would
+have seemed quite impractical, even though it might have been recognised as
+theoretically best. In the first place, the computing resources necessary to
+store and analyse complete documents in machine readable form were absent, and in the
+second, the rigidities of the printing industry almost guaranteed that one
+would never get access to them.
+A stemmer, therefore, would be seen as something not
+applied to general text but to certain special words, and in the case of the
+Lovins stemmer, the plan was to apply it to the subject terms that were used
+to categorize each document. Subsequently it would be used with each word
+in a query, where it
+was hoped that the vocabulary of the queries would match the vocabulary of
+the catalogue of subject terms.
+
+<BR><BR>
+
+This accounts for: &#x2014;
+
+<BR><BR>
+
+1) The emphasis on the scientific vocabulary. This can be seen in the
+endings, which include <B><I>oidal, on, oid, ide,</I></B> for words like <I>colloidal,
+proton, spheroid, nucleotide</I>. It can be seen in the transformation rules,
+with their concern for Greek <B><I>sis</I></B> and Latin <B><I>ix</I></B> suffixes. And also it can be
+seen in in the word samples of the paper (<I>magnesia, magnesite, magnesian,
+magnesium, magnet, magnetic, magneto</I> etc. of Fig. 2).
+
+<BR><BR>
+
+2) The slight shortage of plural forms. The subject terms would naturally
+have been mainly in the singular, and one might also expect the same of
+query terms.
+
+<BR><BR>
+
+3) The surprising shortness of the allowed minimum stems &#x2014; usually 2
+letters. A controlled technical vocabulary will contain longish words, and
+the problem of minimum stem lengths only shows up with shorter words.
+
+<BR><BR>
+
+If we take a fairly ordinary vocabulary of modern English, derived from
+non-scientific writing, it is interesting to see how much of the Lovins
+stemmer does not actually get used. We use vocabulary <I>V</I>, derived from a
+sample of modern texts from Project Gutenberg (4). <I>V</I> can be inspected
+at (5). It contains 29,401 words, and begins
+<DL><DD>
+    <I>a  &nbsp;  aback  &nbsp;  abandon  &nbsp;  abandoned  &nbsp;  abandoning  &nbsp;  abandonment  &nbsp;
+    abandons  &nbsp;  abasement  &nbsp;  abashed  &nbsp;  abate  &nbsp;  abated</I> ...
+</DL>
+We find that 22,311, or about 76%, of the words in <I>V</I> have one of the
+294 endings removed if passed through the Lovins stemmer. Of this 76%, over a
+half (55%) of the removals are done by just five of the endings, the breakdown
+being,
+<DL><DD>
+    <B><I>s</I></B> (13%)  &nbsp;  <B><I>ed</I></B> (12%)  &nbsp;  <B><I>e</I></B> (10%)  &nbsp;  <B><I>ing</I></B> (10%)  &nbsp;  <B><I>es</I></B> (6%)  &nbsp;  <B><I>y</I></B> (4%)
+</DL>
+If, on the other hand, you look at the least frequent endings, 51% of them
+do only 1.4% of the removals. So of the ones removed, half the endings in
+<I>V</I>
+correspond to 2% of the endings in the stemmer, and 1.4% of the endings in
+<I>V</I>
+correspond to half the endings in the stemmer. In fact 62 of the endings
+(about a fifth) do not lead to any ending removals in <I>V</I> at all. These are
+made up of the rarer &#8216;scientific&#8217; endings, such as <B><I>aroid</I></B> and <B><I>oidal</I></B>, and
+long endings, such as <B><I>alistically</I></B> and <B><I>entiality</I></B>.
+
+<BR><BR>
+
+This helps explain why the Porter and Lovins stemmers behave in a fairly
+similar way despite the fact that they look completely different &#x2014; it is
+because most of the work is being done in just a small part of the stemmer,
+and in that part there is a lot of overlap. Porter and Lovins stem 64% of
+the words in <I>V</I> identically, which is quite high. (By contrast, an
+erroneous but plausibly written Perl script
+advertised on the Web as an implementation of the Porter stemmer
+still proves to stem only 86% of the words in <I>V</I>
+to the same forms that are produced by the Porter stemmer.)
+
+<BR><BR>
+
+A feature of the Lovins stemmer that is worth looking at in some detail is
+the transformation rules. People who come to the problem of stemming for
+the first time usually devote a lot of mental energy to the issue of
+morphological irregularity which they are trying to address.
+
+<BR><BR>
+
+A good starting point is the verbs of English. Although grammatically
+complex, the morphological forms of the English verb are few, and are
+illustrated by the pattern <I>harm, harms, harming, harmed</I>, where the basic
+verb form adds <B><I>s</I></B>, <B><I>ing</I></B> and <B><I>ed</I></B> to make the other three forms. There are
+certain special rules: to add <B><I>s</I></B> to a verb ending <B><I>ss</I></B> an <B><I>e</I></B> is inserted,
+so <I>pass</I> becomes <I>passes</I>, and adding <B><I>e</I></B> and <B><I>ing</I></B> replaces a final <B><I>e</I></B> of
+the verb (<I>love</I> to <I>loves</I>), and can cause consonant doubling (<I>hop</I> to
+<I>hopped</I>), but
+apart from this all verbs in the language follow the basic pattern with the
+exception of a finite class of irregular verbs.
+In a regular verb, the addition of <B><I>ed</I></B> to the basic verb creates both the
+past form (&#8216;I harmed&#8217;) and the p.p. (past participle) form (&#8216;I have
+harmed&#8217;). An irregular verb, such as <I>ring</I>, forms its past in some other
+way (&#8216;I rang&#8217;), and may have a distinct p.p. (&#8216;I have rung&#8217;).
+The irregular verbs have a
+different past form, and sometimes a separate p.p. form.
+It is easy to think up more examples,
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    stem  <TD></TD><TD> past  <TD></TD><TD> p.p.
+<TR><TD>
+<TR><TD>    <I>ring</I>  <TD></TD><TD> <I>rang</I>  <TD></TD><TD> <I>rung</I>
+<TR><TD>    <I>rise</I>  <TD></TD><TD> <I>rose</I>  <TD></TD><TD> <I>risen</I>
+<TR><TD>    <I>sleep</I> <TD></TD><TD> <I>slept</I> <TD></TD><TD> <I>slept</I>
+<TR><TD>    <I>fight</I>  &nbsp;  &nbsp;  &nbsp; <TD></TD><TD> <I>fought</I>  &nbsp;  &nbsp;  &nbsp; <TD></TD><TD> <I>fought</I>
+<TR><TD>    <I>come</I>  <TD></TD><TD> <I>came</I>  <TD></TD><TD> <I>come</I>
+<TR><TD>    <I>go</I>    <TD></TD><TD> <I>went</I>  <TD></TD><TD> <I>gone</I>
+<TR><TD>    <I>hit</I>   <TD></TD><TD> <I>hit</I>   <TD></TD><TD> <I>hit</I>
+</TABLE></DL>
+
+How many of these verbs are there altogether? On 20 Jan 2000, in order to
+test the hypothesis that the number is consistently over-estimated, I asked
+this question in a carefully worded email to a mixed group of
+about 50
+well-educated
+work colleagues (business rather than academic people). Ten of them replied,
+and here are the
+guesses they made:
+
+<DL><DD>
+    20, &nbsp;  25, &nbsp;  25, &nbsp;  50, &nbsp;  180, &nbsp;  200, &nbsp;  426, &nbsp;  25000, &nbsp;  10%, &nbsp;  20%
+</DL>
+
+The last two numbers mean 10% and 20% of all English verbs.
+My hypothesis was of course wrong. The truth is that most people have no
+idea at all how many irregular verbs there are in English.
+In
+fact there are around 135 (see section 3.3 of Palmer, 1965).
+If a stemming algorithm handles suffix removal
+of all regular verbs correctly, the question arises as to whether it is
+worth making it do the same for the irregular forms. Conflating <I>fought</I> and
+<I>fight</I>, for example, could be useful in IR queries about boxing. It seems
+easy: you make a list of the irregular verbs and create a mapping of the
+past and p.p. forms to the main form. We can call the process
+English verb respelling. But when you try it, numerous problems arise. Are
+<I>forsake, beseech, cleave</I> really verbs of contemporary English? If so, what
+is the p.p. of <I>cleave</I>?
+Or take the verb <I>stride</I>, which is common enough. What is its p.p.? My
+<I>Concise Oxford English Dictionary</I> says it is <I>stridden</I> (6), but have we ever
+heard this word used? (&#8216;I have stridden across the paving.&#8217;)
+
+<BR><BR>
+
+To compose a realistic list for English verb respelling we therefore need to
+judge word rarity. But among the commoner verb forms even greater problems
+arise because of their use as homonyms. A <I>rose</I> is a type of flower, so
+is it wise
+to conflate <I>rose</I> and <I>rise</I>? Is it wise to conflate
+<I>saw</I> and <I>see</I> when <I>saw</I> can mean a cutting instrument?
+
+<BR><BR>
+
+We suddenly get to
+the edge of what it is useful to include in a stemming algorithm. So long as
+a stemming algorithm is built around general rules, the full impact of the
+stemmer on a vocabulary need not be studied too closely. It is sufficient to
+know that the stemmer, judiciously used, improves retrieval performance. But
+when we look at its effect on individual words these issues can no longer be
+ignored. To build even a short list of words into a stemmer for special
+treatment takes us into the area of the dictionary-based stemmer, and the
+problem of determining, for a pair of related words in the dictionary, a
+measure of semantic similarity which tells us whether or not the words
+should be conflated together.
+
+<BR><BR>
+
+About half the transformation rules in the Lovins stemmer deal with a
+problem which is similar to that posed by the irregular verbs of English,
+and which ultimately goes back to the irregular forms of second conjugation
+verbs in Latin. We can call it Latin verb respelling. Verbs like
+<I>induce, consume, commit</I> are perfectly regular in modern English, but
+the adjectival and noun forms <I>induction, consumptive, commission</I> that
+derive from them correspond to p.p. forms in Latin.
+You can see the descendants of these Latin irregularities
+in modern Italian, which has <I>commettere</I> with p.p.
+<I>commesso</I>, like our <I>commit</I> and <I>commission</I>, and <I>scendere</I> with
+p.p. <I>sceso</I> like our <I>ascend</I> and <I>ascension</I> (although <I>scendere</I>
+means &#8216;to go down&#8217; rather than &#8216;to go up&#8217;).
+
+<BR><BR>
+
+Latin verb respelling often seems to be more the territory of a stemmer than
+English verb respelling, presumably because Latin verb irregularities
+correspond to consonantal changes at the end of the stem, where the
+stemmer naturally operates, while English verb irregularities more often
+correspond to vowel changes in the middle. Lovins was no doubt
+particularly interested in Latin verb respelling because so many of the
+words affected have scientific usages.
+
+<BR><BR>
+
+We can judge that Latin verb respellings constitute a small set because the
+number of second conjugation verbs of Latin form a small, fixed set. Again,
+looking at Italian, a modern list of irregular verbs contains 150 basic forms
+(nearly all of them second conjugation), not unlike the number of forms in
+English. Extra verbs are formed with prefixes. Corresponding English words
+that exhibit the Latin verb respelling problem
+will be a subset of this system. In fact we
+can offer a Snowball script that does the Latin verb respelling with more
+care. It should be invoked, in the Porter stemmer, after removal of <B><I>ive</I></B> or
+<B><I>ion</I></B> endings only,
+
+<BR><PRE>
+define prefix as (
+
+    among (
+
+        'a' 'ab' 'ad' 'al' 'ap' 'col' 'com' 'con' 'cor' 'de'
+        'di' 'dis' 'e' 'ex' 'in' 'inter' 'o' 'ob' 'oc' 'of'
+        'per' 'pre' 'pro' 're' 'se' 'sub' 'suc' 'trans'
+    ) atlimit
+)
+
+define second_conjugation_form as (
+
+    [substring] prefix among (
+
+        'cept'    (<-'ceiv')    //-e    con de re
+        'cess'    (<-'ced')     //-e    con ex inter pre re se suc
+        'cis'     (<-'cid')     //-e    de (20)
+        'clus'    (<-'clud')    //-e    con ex in oc (26)
+        'curs'    (<-'cur')     //      re (6)
+        'dempt'   (<-'deem')    //      re
+        'duct'    (<-'duc')     //-e    de in re pro (3)
+        'fens'    (<-'fend')    //      de of
+        'hes'     (<-'her')     //-e    ad (28)
+        'lis'     (<-'lid')     //-e    e col (21)
+        'lus'     (<-'lud')     //-e    al de e
+        'miss'    (<-'mit')     //      ad com o per re sub trans (29)
+        'pans'    (<-'pand')    //      ex (23)
+        'plos'    (<-'plod')    //-e    ex
+        'prehens' (<-'prehend') //      ap com
+        'ris'     (<-'rid')     //-e    de (22)
+        'ros'     (<-'rod')     //-e    cor e
+        'scens'   (<-'scend')   //      a
+        'script'  (<-'scrib')   //-e    de in pro
+        'solut'   (<-'solv')    //-e    dis re (8)
+        'sorpt'   (<-'sorb')    //      ab (5)
+        'spons'   (<-'spond')   //      re (25)
+        'sumpt'   (<-'sum')     //      con pre re (4)
+        'suas'    (<-'suad')    //-e    dis per (18)
+        'tens'    (<-'tend')    //      ex in pre (24)
+        'trus'    (<-'trud')    //-e    ob (27)
+        'vas'     (<-'vad')     //-e    e (19)
+        'vers'    (<-'vert')    //      con in re (31)
+        'vis'     (<-'vid')     //-e    di pro
+    )
+)
+</PRE>
+
+This means that if <B><I>suas</I></B>, for example, is preceded by one of the strings
+in &nbsp;<TT>prefix</TT>, and there is nothing more before the prefix string (which is
+what the
+<TT>atlimit</TT>
+command tests), it is replaced by <B><I>suad</I></B>. So <I>dissuas(ion)</I> goes to
+<I>dissuad(e)</I>
+and <I>persuas(ive)</I> to <I>persuad(e)</I>. Of course, <I>asuas(ion), absuas(ion),
+adsuas(ion)</I> and so on would get the same treatment, but not being words of
+English that does not really matter. The corresponding Lovins rules are
+shown in brackets.
+This is not quite the end
+of the story, however, because the Latin forms <I>ex</I> + <I>cedere</I> (&#8216;go
+beyond&#8217;) <I>pro</I> + <I>cedere</I> (&#8216;go forth&#8217;), and <I>sub</I> + <I>cedere</I>
+(&#8216;go after&#8217;) give rise to verbs which,
+by an oddity of English orthography, have an extra letter <B><I>e</I></B>: <I>exceed, proceed,
+succeed</I>. They can be sorted out in a final respelling step:
+
+<BR><PRE>
+define final_respell as (
+
+    [substring] atlimit among(
+
+        'exced'     (<-'exceed')
+        'proced'    (<-'proceed')
+        'succed'    (<-'succeed')
+        /* extra forms here perhaps */
+    )
+)
+</PRE>
+
+As you might expect, close inspection of this process creates doubts in
+the same way as for English verb respelling. (Should we really conflate
+<I>commission</I> and <I>commit</I>? etc.)
+
+<BR><BR>
+
+The other transformation rules are concerned with unusual plurals, mainly
+of Latin or Greek origin, <B><I>er</I></B> and <B><I>re</I></B> differences, as in <I>parameter</I> and
+<I>parametric</I>, and the <B><I>sis/tic</I></B> connection of certain words of Greek origin:
+<I>analysis/analytic, paralysis/paralytic</I> ... (rule 33), and
+<I>hypothesis/hypothetic, kinesis/kinetic</I> ... (rule 32). Again, these
+irregularities might be tackled by forming explicit word lists. Certainly
+rule 30, given as,
+
+<DL><DD>
+    ent <TT>-&gt;</TT> ens except following <I>m</I>,
+</DL>
+
+goes somewhat wild when given a general English vocabulary (<I>dent</I> becomes
+<I>dens</I> for example), although it is the only rule that might be said to
+have a damaging effect.
+
+<BR><BR>
+
+<BR>&nbsp;<H2>A Lovins shape for the Porter stemmer</H2>
+
+The 1980 paper (Porter, 1980) may be said to define the &#8216;pure&#8217; Porter stemmer.
+The stemmer distributed at (7) can be called the &#8216;real&#8217; Porter
+stemmer, and differs from the pure stemmer in three small respects, which
+are carefully explained. This disparity does not require much excuse,
+since the oldest traceable encodings of the stemmer have always contained
+these differences. There is also a revised stemmer for English, called
+&#8216;Porter2&#8217; and still subject to slight changes. Unless otherwise stated,
+it is the real Porter stemmer which is being studied below.
+
+<BR><BR>
+
+The Porter stemmer differs from the Lovins stemmer in a number of
+respects. In the first place, it only takes account of fairly common
+features of English. So rare suffixes are not included, and there is no
+equivalent of Lovins&#8217; transformation rules, other than her rule (1), the
+undoubling of terminal double letters. Secondly, it removes suffixes only
+when the residual stem is fairly substantial. Some suffixes are removed
+only when at least one syllable is left, and most are removed only when at least two
+syllables are left. (One might say that this is based on a guess about the
+way in which the meanings of a stem is related to its length in syllables (8).)
+The Porter stemmer is therefore &#8216;conservative&#8217; in its removal
+of suffixes, or at least that is how it has often been described. Thirdly,
+it removes suffixes in a series of steps, often reducing a compound suffix
+to its first part, so a step might reduce <B><I>ibility</I></B> to <B><I>ible</I></B>, where
+<B><I>ibility</I></B> is thought of as being <B><I>ible</I></B> + <B><I>ity</I></B>. Although the
+description of the whole stemmer is a bit complicated, the total number of
+suffixes is quite small &#x2014; about 60.
+
+<BR><BR>
+
+The Porter stemmer has five basic steps. Step 1 removes an
+inflectional suffix. There are only three of these: <B><I>ed</I></B> and <B><I>ing</I></B>, which are
+verbal, and <B><I>s</I></B>, which is verbal (<I>he sings</I>), plural (<I>the songs</I>) or possessive
+(<I>the horses&#8217; hooves</I>), although the rule for <B><I>s</I></B> removal is the same in all
+three cases. Step 1 may also restore an <B><I>e</I></B> (<I>hoping <TT>-&gt;</TT> hope</I>), undouble a
+double letter pair (<I>hopping <TT>-&gt;</TT> hop</I>), or change <B><I>y</I></B> to <B><I>i</I></B> (<I>poppy <TT>-&gt;</TT>
+poppi</I>, to match with <I>poppies <TT>-&gt;</TT> poppi</I>.) Steps 2 to 4 remove derivational
+suffixes. So
+<B><I>ibility</I></B> may reduce to <B><I>ible</I></B> in step 2, and <B><I>ible</I></B> itself may be removed in step
+4. Step 5 is for removing final <B><I>e</I></B>, and undoubling <B><I>ll</I></B>.
+
+<BR><BR>
+
+A clear advantage of the Lovins stemmer over the Porter stemmer is speed.
+The Porter stemmer has five steps of suffix removal to the Lovins stemmer&#8217;s
+one. It is instructive therefore to try and cast the Porter stemmer into
+the shape of the Lovins stemmer, if only for the promise of certain speed
+advantages. As we will see, we learn a few other things from the exercise
+as well.
+
+<BR><BR>
+
+First we need a list of endings. The Lovins endings were built up by hand,
+but we can construct a set of endings for the Porter stemmer by writing an
+ending generator that follows the algorithm definition. From an analysis of
+the suffixes in steps 2 to 4 of the Porter stemmer we can construct
+the following diagram:
+<BR><BR>
+<IMG SRC="porter-1.jpg">
+<BR><BR>
+This is not meant to be a linguistic analysis of the suffix structure of
+English, but is merely intended to show how the system of endings works in
+the stemming algorithm. Suffixes combine if their boxes are connected by
+an arrow. So <B><I>ful</I></B> combines with <B><I>ness</I></B> to make <B><I>fulness</I></B>.
+
+<DL><DD>
+    <B><I>ful</I></B> + <B><I>ness</I></B> <TT>-&gt;</TT>  <B><I>fulness</I></B>
+</DL>
+
+The combination is not always a concatenation of the strings
+however, for we have,
+
+<DL><DD>
+    <B><I>able</I></B> + <B><I>ity</I></B> <TT>-&gt;</TT> <B><I>ability</I></B><BR>
+    <B><I>able</I></B> + <B><I>ly</I></B> <TT>-&gt;</TT> <B><I>ably</I></B><BR>
+    <B><I>ate</I></B> + <B><I>ion</I></B> <TT>-&gt;</TT> <B><I>ation</I></B><BR>
+    <B><I>ible</I></B> + <B><I>ity</I></B> <TT>-&gt;</TT> <B><I>ibility</I></B><BR>
+    <B><I>ible</I></B> + <B><I>ly</I></B> <TT>-&gt;</TT> <B><I>ibly</I></B><BR>
+    <B><I>ize</I></B> + <B><I>ate</I></B> + <B><I>ion</I></B> <TT>-&gt;</TT> <B><I>ization</I></B>
+</DL>
+
+The path from <B><I>ize</I></B> to <B><I>ion</I></B> goes via <B><I>ate</I></B>, so we can form <B><I>ization</I></B>, but there is
+no suffix <B><I>izate</I></B>. Three of the suffixes, <B><I>ator</I></B>, <B><I>ance</I></B> and <B><I>ence</I></B>, do not connect
+into the rest of the diagram, and <B><I>ance, ence</I></B> also appear in the forms
+<B><I>ancy, ency</I></B>. The letter to the left of the box is going to be the
+condition for the
+removal of the suffix in the box, so
+
+<BR><PRE>
+      B +-------+ n
+        |  ism  |
+        +-------+
+</PRE>
+
+means that <B><I>ism</I></B> will be removed if it follows a stem that satisfies
+condition B. On the right of the box is either <I>n, v</I> or hyphen. <I>n</I> means the
+suffix is of noun type. So if a word ends <B><I>ism</I></B> it is a noun. <I>v</I> means verb
+type. hyphen means neither: <B><I>ly</I></B> (adverbial) and <B><I>ful, ous</I></B> (adjectival) are of
+this type. If a suffix is a noun type it can have a plural form (<I>criticism,
+criticisms</I>), so we have to generate <B><I>isms</I></B> as well as <B><I>ism</I></B>. Again, the
+combining is not just concatenation,
+
+<DL><DD>
+    <B><I>ity</I></B> + <B><I>s</I></B> <TT>-&gt;</TT> <B><I>ities</I></B><BR>
+    <B><I>ness</I></B> + <B><I>s</I></B> <TT>-&gt;</TT> <B><I>nesses</I></B>
+</DL>
+
+If a suffix has <I>v</I> type, it has <B><I>s</I></B>, <B><I>ed</I></B> and <B><I>ing</I></B> forms,
+
+<DL><DD>
+    <B><I>ize</I></B> + <B><I>s</I></B> <TT>-&gt;</TT> <B><I>izes</I></B><BR>
+    <B><I>ize</I></B> + <B><I>ed</I></B> <TT>-&gt;</TT> <B><I>ized</I></B><BR>
+    <B><I>ize</I></B> + <B><I>ing</I></B> <TT>-&gt;</TT> <B><I>izing</I></B>
+</DL>
+
+Type <I>v</I> therefore includes type <I>n</I>, and we should read this type as &#8216;verb or
+noun&#8217;, rather than just &#8216;verb&#8217;. For example, <I>condition</I>, with suffix <B><I>ion</I></B>, is
+both verb (&#8216;They have been conditioned to behave like that&#8217;) and noun
+(&#8216;It is subject to certain conditions&#8217;).
+
+<BR><BR>
+
+The diagram is therefore a scheme for generating combined derivational
+suffixes, each combination possibly terminated with an inflectional suffix.
+A problem is that it contains a loop in
+
+<DL><DD>
+    <B><I>ize</I></B> <TT>-&gt;</TT> <B><I>ate</I></B> <TT>-&gt;</TT> <B><I>ion</I></B> <TT>-&gt;</TT> <B><I>al</I></B> <TT>-&gt;</TT> <B><I>ize</I></B> <TT>-&gt;</TT> ...
+</DL>
+
+suggesting suffixes of the form <B><I>izationalizational</I></B>... We break the loop by
+limiting the number of joined derivational suffixes of diagram 1 to four.
+(Behaviour of the Porter stemmer shows that removal of five combined
+derivation suffixes is never desirable, even supposing five ever combine.)
+We can then generate 181 endings, with their removal codes. But 75 of these
+suffixes do not occur as endings in <I>V</I>, and they can be eliminated as rare
+forms, leaving 106. Alphabetically, the endings begin,
+
+<DL><DD>
+    <B><I>abilities  &nbsp;   ability  &nbsp;   able  &nbsp;   ables  &nbsp;   ably  &nbsp;   al  &nbsp;   alism  &nbsp;
+    (alisms)  &nbsp;   alities  &nbsp;  ality  &nbsp;   alization  &nbsp;   (alizationed)  &nbsp;
+    (alizationing)  &nbsp;   (alizations)  &nbsp;   alize  &nbsp;  alized  &nbsp;   (alizer)  &nbsp;
+    (alizered)  &nbsp;   (alizering)  &nbsp;   (alizers)  &nbsp;   (alizes)  &nbsp;  (alizing)  &nbsp;
+    ally  &nbsp;   alness  &nbsp;   (alnesses)  &nbsp;   als  &nbsp;   ance  &nbsp;   ances  &nbsp;   ancies  &nbsp;
+    ancy ...</I></B>
+</DL>
+
+The eliminated rare forms are shown bracketed.
+
+<BR><BR>
+
+The 106 endings are arranged in a file as a list of strings followed by
+condition letter,
+
+<BR><PRE>
+    'abilities'     B
+    'ability'       B
+    'able'          B
+    'ables'         B
+    'ably'          B
+    'al'            B
+    ....
+</PRE>
+
+This ending list is generated by running the ANSI C program shown in
+Appendix 4, and line-sorting the result into a file,
+and this file is called in by the &nbsp;<TT>get</TT>&nbsp; directive in the Snowball script of
+Appendix 2, which is the Porter stemming algorithm laid out in the style of
+the Lovins algorithm. In fact, precise equivalence cannot be achieved, but
+in <I>V</I> only 137 words stem differently, which is 0.4% of <I>V</I>. There are 10
+removal conditions, compared with Lovins&#8217; 29, and 11 transformation or
+respelling rules, compared with Lovins&#8217; 35. We can describe the process in
+Lovins style, once we have got over a few preliminaries.
+
+<BR><BR>
+
+We have to distinguish <B><I>y</I></B> as a vowel from <B><I>y</I></B> as a consonant. We treat initial
+<B><I>y</I></B>, and <B><I>y</I></B> before vowel, as a consonant, and make it upper case. Thereafter
+<B><I>a, e, i, o, u</I></B> and <B><I>y</I></B> are vowels, and the other lower case letters and <B><I>Y</I></B> are
+consonants. If [C] stands for zero or more consonants, C for one or more
+consonants, and V for one or more vowels, then a stem of shape [C]VC has
+length 1s (1 syllable), of shape [C]VCVC length 2s, and so on.
+
+<BR><BR>
+
+A stem ends with a short vowel if the ending has the form <I>cvx</I>, where <I>c</I> is a
+consonant, <I>v</I> a vowel, and <I>x</I> a consonant other than <B><I>w</I></B>, <B><I>x</I></B> or <B><I>Y</I></B>.
+(Short vowel endings with <B><I>ed</I></B> and <B><I>ing</I></B> imply loss of an <B><I>e</I></B> from
+the stem, as in <I>removing</I> = <I>remove</I> + <I>ing</I>.)
+
+<BR><BR>
+
+Here are the removal conditions,
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>A  &nbsp; <TD></TD><TD> Minimum stem length = 1s
+<TR><TD>B <TD></TD><TD> Minimum stem length = 2s
+<TR><TD>C <TD></TD><TD> Minimum stem length = 2s and remove ending only after <B><I>s</I></B> or <B><I>t</I></B>
+<TR><TD>D <TD></TD><TD> Minimum stem length = 2s and do not remove ending after <B><I>m</I></B>
+<TR><TD>E <TD></TD><TD> Remove ending only after <B><I>e</I></B> or <B><I>ous</I></B> after minimum stem length 1s
+<TR><TD>F <TD></TD><TD> Remove ending only after <B><I>ss</I></B> or <B><I>i</I></B>
+<TR><TD>G <TD></TD><TD> Do not remove ending after <B><I>s</I></B>
+<TR><TD>H <TD></TD><TD> Remove ending only if stem contains a vowel
+<TR><TD>I <TD></TD><TD> Remove ending only if stem contains a vowel and does not end in <B><I>e</I></B>
+<TR><TD>J <TD></TD><TD> Remove ending only after ee after minimum stem length 1s
+</TABLE></DL>
+
+In condition J the stem must end <B><I>ee</I></B>, and the part of the stem before the
+<B><I>ee</I></B> must have minimum length 1s. Condition E is similar.
+
+<BR><BR>
+
+Here are the respelling rules, defined with the help of the removal
+conditions. In each case, the stem being tested does not include the string
+at the end which has been identified for respelling.
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> 1) &nbsp;  <TD></TD><TD> Remove <B><I>e</I></B> if A, or if B and the stem does not end with a short vowel
+<TR><TD> 2) <TD></TD><TD> Remove <B><I>l</I></B> if B and the stem ends with <B><I>l</I></B>
+<TR><TD> 3) <TD></TD><TD> <B><I>enci/ency</I></B> <TT>-&gt;</TT> <B><I>enc</I></B> if A, otherwise <TT>-&gt;</TT> <B><I>enci</I></B>
+<TR><TD> 4) <TD></TD><TD> <B><I>anci/ancy</I></B> <TT>-&gt;</TT> <B><I>anc</I></B> if A, otherwise <TT>-&gt;</TT> <B><I>anci</I></B>
+<TR><TD> 5) <TD></TD><TD> <B><I>ally</I></B> <TT>-&gt;</TT> <B><I>al</I></B> if A, otherwise <TT>-&gt;</TT> <B><I>alli</I></B>
+<TR><TD> 6) <TD></TD><TD> <B><I>ently</I></B> <TT>-&gt;</TT> <B><I>ent</I></B> if A, otherwise <TT>-&gt;</TT> <B><I>entli</I></B>
+<TR><TD> 7) <TD></TD><TD> <B><I>ator</I></B> <TT>-&gt;</TT> <B><I>at</I></B> if A
+<TR><TD> 8) <TD></TD><TD> <B><I>logi/logy</I></B> <TT>-&gt;</TT> <B><I>log</I></B> if A, otherwise <TT>-&gt;</TT> <B><I>log</I></B>
+<TR><TD> 9) <TD></TD><TD> <B><I>bli/bly</I></B> <TT>-&gt;</TT> <B><I>bl</I></B> if A, otherwise <TT>-&gt;</TT> <B><I>bli</I></B>
+<TR><TD>10) <TD></TD><TD> <B><I>bil</I></B> <TT>-&gt;</TT> <B><I>bl</I></B> if stem ends vowel after A
+<TR><TD>11) <TD></TD><TD> <B><I>y/Y</I></B> <TT>-&gt;</TT> <B><I>i</I></B> if stem contains a vowel
+</TABLE></DL>
+
+The 106 endings are distributed among conditions A to E as A(5), B(87),
+C(8), D(3) and E(1). F to J deal with the purely inflectional endings: F
+with <B><I>es</I></B>, G with <B><I>s</I></B>, H with <B><I>ing</I></B> and <B><I>ings</I></B>, I with <B><I>ed</I></B> and J with <B><I>d</I></B>.
+There is however one point at which the Lovins structure breaks down, in that
+removal of <B><I>ed</I></B> and <B><I>ing(s)</I></B> after conditions I and H requires a special
+adjustment that cannot be left to a separate transformation rule. It is to
+undouble the last letter, and to restore a final <B><I>e</I></B> if the stem has length 1s
+and ends with a short vowel (so <I>shopping</I> loses a <B><I>p</I></B> and becomes <I>shop</I>,
+<I>sloping</I> gains an <B><I>e</I></B> and becomes <I>slope</I>.)
+
+<BR><BR>
+
+The Porter stemmer cast into this form runs significantly faster than the
+multi-stage stemmer &#x2014; about twice as fast in tests with Snowball.
+
+<BR><BR>
+
+We will call the Porter stemmer P, the Lovins stemmer L, and this Lovins
+version of the Porter stemmer LP. As we have said, P and LP are not identical,
+but stem 137 of the 29,401 words of <I>V</I> differently.
+
+<BR><BR>
+
+A major cause of difference is unexpected suffix combinations. These can be
+subdivided into combinations of what seem to be suffixes but are not, and
+rare combinations of valid suffixes.
+
+<BR><BR>
+
+The first case is illustrated by the word <I>disenchanted</I>. P stems this to
+<I>disench</I>, first taking off suffix <B><I>ed</I></B>, and then removing <B><I>ant</I></B>, which is
+a suffix in English, although not a suffix in this word. P also stems
+<I>disenchant</I> to <I>disench</I>, so the two words <I>disenchant</I> and
+<I>disenchanted</I> are conflated by P, even though they make an error in the
+stemming process. But <B><I>ant</I></B> is a noun type suffix, and so does not combine
+with <B><I>ed</I></B>. <B><I>anted</I></B> is therefore omitted from the suffix list of LP, so LP
+stems <I>disenchanted</I> to <I>disenchant</I>, but <I>disenchant</I> to <I>disench</I>.
+
+<BR><BR>
+
+This illustrates a frequently encountered problem in stemming. <B><I>S</I></B><FONT SIZE=-1><SUB>1</SUB></FONT>
+and <B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT> are suffixes of a language, but the combination
+<B><I>S</I></B><FONT SIZE=-1><SUB>1</SUB></FONT><B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT> is
+not. A word has the form <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT>, where <B><I>x</I></B> is some string, but in
+<B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT>, <B><I>S</I></B><FONT SIZE=-1><SUB>1</SUB></FONT> is not actually a suffix, but part of the stem.
+<B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT> is a valid suffix for this word, so <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT><B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT> is
+another word in the language. An algorithmic stemmer stems <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT> to
+<B><I>x</I></B> in error. If presented with <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT><B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT> it can either
+(<I>a</I>) stem it to <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT>, knowing <B><I>S</I></B><FONT SIZE=-1><SUB>1</SUB></FONT> cannot be a suffix in
+this context, or (<I>b</I>) stem it to <B><I>x</I></B>, ignoring the knowledge to be
+derived from the presence of <B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT>. (<I>a</I>) gives the correct stemming
+of at least <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT><B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT>, although the stemming of <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT>
+will be wrong, while (<I>b</I>) overstems both words, but at least achieves
+their conflation. In other words (<I>a</I>) fails to conflate the two forms, but
+may achieve correct conflations of <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT><B><I>S</I></B><FONT SIZE=-1><SUB>2</SUB></FONT> with similar forms
+<B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT><B><I>S</I></B><FONT SIZE=-1><SUB>3</SUB></FONT>, <B><I>xS</I></B><FONT SIZE=-1><SUB>1</SUB></FONT><B><I>S</I></B><FONT SIZE=-1><SUB>4</SUB></FONT> etc., while (<I>b</I>) conflates
+the two forms, but at the risk of additional false conflations. Often a study
+of the results of a stemming strategy on a sample vocabulary leads one to
+prefer approach (<I>b</I>) to (<I>a</I>) for certain classes of ending. This is
+true in particular of the inflectional endings of English, which is why the
+removals in step 1 of P are not remembered in some state variable, which
+records whether the ending just removed is verb-type, noun-or-verb-type etc.
+On balance you get better results by throwing that information away, and then
+the many word pairs on the pattern of <I>disenchant</I> / <I>disenchanted</I> will
+conflate together.
+
+<BR><BR>
+
+Other examples from <I>V</I> can be given: in <I>misrepresenting</I>, <B><I>ent</I></B> is
+not a suffix, and <B><I>enting</I></B> not a valid suffix combination); in
+<I>witnessed</I>, <B><I>ness</I></B> is not a suffix, and <B><I>nessed</I></B> not a valid
+suffix combination.
+
+<BR><BR>
+This highlights a disadvantage of stemmers that work with a fixed list of
+endings. To get the flexibility of context-free ending removal, we need to
+build in extra endings which are not grammatically correct (like <B><I>anted</I></B> =
+<B><I>ant</I></B> + <B><I>ed</I></B>), and this adds considerably to the burden of constructing
+the list. In fact L does not include <B><I>anted</I></B>, but it does include for
+example <B><I>antic</I></B> (<B><I>ant</I></B> + <B><I>ic</I></B>), which may be serving a similar
+purpose.
+
+<BR><BR>
+
+
+For the second case, the rare combinations of valid suffixes, one may instance
+<B><I>ableness</I></B>. Here again the multi-step stemmer makes life easier. P removes
+<B><I>ness</I></B> in step 3 and <B><I>able</I></B> in step 4, but without making any necessary
+connection. L has <B><I>ableness</I></B> as an ending, dictionaries contain many
+<B><I>ableness</I></B> words, and it is an easy matter to make the connection across from
+<B><I>able</I></B> to <B><I>ness</I></B> in diagram 1 and generate extra endings. Nevertheless the
+ending is very rare in actual use. For example, Dickens&#8217; <I>Nicholas Nickleby</I>
+contains no examples, <I>Bleak House</I> contains two, in the same sentence:
+
+<DL><DD>
+    I was sure you would feel it yourself and would excuse the
+    reasonableness of MY feelings when coupled with the known
+    excitableness of my little woman.
+</DL>
+
+<I>reasonableness</I> is perhaps the commonest word in English of this form, and
+<I>excitableness</I> (instead of <I>excitability</I>) is there for contrast. Thackeray&#8217;s
+<I>Vanity Fair</I>, a major source in testing out P and Porter2, contains one
+word of this form, <I>charitableness</I>. One may say of this word that it is
+inevitably rare, because it has no really distinct
+meaning from the simpler <I>charity</I>, but that it has to be formed by adding
+<B><I>ableness</I></B> rather than <B><I>ability</I></B>, because the repeated <B><I>ity</I></B> in <I>charity</I> +
+<B><I>ability</I></B> is morphologically unacceptable. Other rare combinations are
+<B><I>ateness</I></B>, <B><I>entness</I></B>
+and <B><I>eds</I></B> (as in <I>intendeds</I> and <I>beloveds</I>).
+<B><I>fuls</I></B> is another interesting case. The <B><I>ful</I></B> suffix, usually adjectival,
+can sometimes create nouns, giving plurals such as <I>mouthfuls</I> and
+<I>spoonfuls</I>. But in longer words <B><I>sful</I></B> is a more &#8216;elegant&#8217; plural
+(<I>handbagsful</I>, <I>dessertspoonsful</I>).
+
+<BR><BR>
+
+These account for most of the differences, but there are a few others.
+
+<BR><BR>
+
+One is in forms like <I>bricklayers</I> <TT>-&gt;</TT> <I>bricklai</I> (P), <I>bricklay</I> (LP).
+Terminal <B><I>y</I></B> is usefully turned to <B><I>i</I></B> to help conflate words where <B><I>y</I></B> is changed
+to <B><I>i</I></B> and <B><I>es</I></B> added to form the plural, but this does not happen when
+<B><I>y</I></B>
+follows a vowel. LP improves on P here, but the Porter2 algorithm makes the
+same improvement, so we have nothing to learn.
+There is also a difference in words endings <B><I>lle</I></B> or <B><I>lles</I></B>,
+<I>quadrille</I> <TT>-&gt;</TT> <I>quadril</I> (P), <I>quadrill</I> (LP). This is because <B><I>e</I></B> and
+<B><I>l</I></B>
+removal are successive in step 5 of P, and done as alternatives in the
+respelling rules
+of LP. In LP this is not quite correct, since
+Lovins makes it clear that her transformation rules should be
+applied in succession. Even so, LP seems better than P, suggesting
+that step 5<I>b</I> of P (undouble <B><I>l</I></B>) should not have been attempted after <B><I>e</I></B> removal
+in step 5<I>a</I>. So here is a possible small improvement to Porter2. Another
+small, but quite interesting difference, is the condition attached to the
+<B><I>ative</I></B> ending. The ending generator makes B the removal condition by a
+natural process, but in P its removal condition is A. This goes back to step
+3 as originally presented in the paper of 1980:
+
+<DL><DD>
+    (<I>m</I>>0) ICATE <TT>-&gt;</TT> IC<BR>
+    (<I>m</I>>0) ATIVE <TT>-&gt;</TT><BR>
+    (<I>m</I>>0) ALIZE <TT>-&gt;</TT> AL<BR>
+    (<I>m</I>>0) ICITI <TT>-&gt;</TT> IC<BR>
+    (<I>m</I>>0) ICAL <TT>-&gt;</TT> IC<BR>
+    (<I>m</I>>0) FUL <TT>-&gt;</TT><BR>
+    (<I>m</I>>0) NESS <TT>-&gt;</TT>
+</DL>
+(<I>m</I>>0) corresponds to A. With removal condition B, the second line would be
+
+<DL><DD>
+    (<I>m</I>>1) ATIVE <TT>-&gt;</TT>
+</DL>
+
+which looks slightly incongruous. Nevertheless it is probably correct, because we
+remove a half suffix from <B><I>icate, alize, icity</I></B> and <B><I>ical</I></B> when the stem
+length is at least s1, and so we should remove the full <B><I>ate</I></B> + <B><I>ive</I></B> suffix when the stem
+length is at least s2. We should not be influenced by <B><I>ful</I></B> and <B><I>ness</I></B>.
+They are &#8216;native English&#8217; stems, unlike the other five, which
+have a &#8216;Romance&#8217; origin, and for these two condition A has been found to
+be more appropriate. In fact putting in this adjustment to Porter2 results in an
+improvement in the small class of words thereby affected.
+
+
+<BR>&nbsp;<H2>Conclusion</H2>
+
+You never learn all there is to know about a computer program, unless the
+program is really very simple. So even after 20 years of regular use,
+we can learn something new about P by creating LP and comparing the
+two. And in the process we learn a lot about L, the Lovins stemmer itself.
+
+<BR><BR>
+
+
+The
+truth is that the main motivation for studying L was to see how well the
+Snowball system could be used for implementing and analyzing Lovins&#8217;
+original work, and the interest in what she had actually achieved in 1968
+only came later. I hope that this short account helps clarify her work, and
+place it the context of the development of stemmers since then.
+
+<BR><BR>
+
+&nbsp;<H4>Notes</H4>
+
+The http addresses below have a &#8216;last visited&#8217; date of December 2001.
+<BR><BR>
+
+1) The Lovins stemmer is avaliable at
+<BR><PRE>
+    http://www.cs.waikato.ac.nz/~eibe/stemmers
+    http://sourceforge.net/projects/stemmers
+</PRE>
+
+2) See &nbsp;<TT>http://www-uilots.let.uu.nl/~uplift/</TT>
+<BR><BR>
+
+3) See &nbsp;<TT>http://snowball.sourceforge.net</TT>
+<BR><BR>
+
+4) See &nbsp;<TT>http://promo.net/pg/</TT>
+<BR><BR>
+
+5) See &nbsp;<TT>http://snowball.sourceforge.net/english/voc.txt</TT>
+<BR><BR>
+
+6) In looking at verbs with the pattern <I>ride, rode, ridden</I>, Palmer,
+1965, notes that &#8216;we should perhaps add <FONT SIZE=-1>STRIDE</FONT>, with past tense <I>strode</I>,
+but without a past participle (there is no *<I>stridden</I>).&#8217;
+<BR><BR>
+
+7) See &nbsp;<TT>http://www.tartarus.org/~martin/PorterStemmer</TT>
+<BR><BR>
+
+8) Lovins (1968), p. 25, mentions that a stemming algorithm developed by
+ James L. Dolby in California used a two-syllable minimum stem length as a
+ condition for most of the stemming.
+
+&nbsp;<H4>Bibiliography</H4>
+
+Andrews K (1971) The development of a fast conflation algorithm for English.
+<I>Dissertation for the Diploma in Computer Science</I>, Computer Laboratory,
+University of Cambridge.
+<BR><BR>
+
+Harman D (1991) How effective is suffixing? <I>Journal of the American
+Society for Information Science</I>, <B>42</B>: 7-15.
+<BR><BR>
+
+Kraaij W and Pohlmann R (1994) Porter&#8217;s stemming algorithm for Dutch. In
+Noordman LGM and de Vroomen WAM, eds. <I>Informatiewetenschap 1994:
+Wetenschappelijke bijdragen aan de derde STINFON Conferentie</I>, Tilburg,
+1994. pp. 167-180.
+<BR><BR>
+
+Kraaij W and Pohlmann R (1995) Evaluation of a Dutch stemming algorithm.
+Rowley J, ed. <I>The New Review of Document and Text Management</I>, volume 1,
+Taylor Graham, London, 1995. pp. 25-43,
+<BR><BR>
+
+Krovetz B (1995) <I>Word sense disambiguation for large text databases</I>. PhD
+Thesis. Department of Computer Science, University of Massachusetts
+Amherst.
+<BR><BR>
+
+Lennon M, Pierce DS, Tarry BD and Willett P (1981) An evaluation of some
+conflation algorithms for information retrieval. <I>Journal of Information
+Science</I>, <B>3</B>: 177-183.
+<BR><BR>
+
+Lovins JB (1968) Development of a stemming algorithm. <I>Mechanical
+Translation and Computational Linguistics</I>, <B>11</B>: 22-31.
+<BR><BR>
+
+Overhage, CFJ (1966) Plans for project Intrex. <I>Science</I>, <B>152</B>:
+1032-1037.
+<BR><BR>
+
+Palmer FR (1965) <I>A linguistic study of the English verb.</I> London,
+Longmans.
+<BR><BR>
+
+Porter MF (1980) An algorithm for suffix stripping. <I>Program</I>, 14:
+130-137.
+<BR><BR>
+
+
+
+</TR>
+
+<TR><TD>
+<BR>&nbsp;<H2>Appendix 1</H2>
+
+The Lovins stemmer in Snowball.
+
+<BR><PRE>
+
+stringescapes {}
+
+routines (
+   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA BB CC
+
+   endings
+
+   undouble respell
+)
+
+externals ( stem )
+
+backwardmode (
+
+  /* Lovins' conditions A, B ... CC, as given in her Appendix B, where
+     a test for a two letter prefix ('test hop 2') is implicitly
+     assumed. Note that 'e' next 'u' corresponds to her u*e because
+     Snowball is scanning backwards. */
+
+  define A  as ( hop 2 )
+  define B  as ( hop 3 )
+  define C  as ( hop 4 )
+  define D  as ( hop 5 )
+  define E  as ( test hop 2 not 'e' )
+  define F  as ( test hop 3 not 'e' )
+  define G  as ( test hop 3 'f' )
+  define H  as ( test hop 2 't' or 'll' )
+  define I  as ( test hop 2 not 'o' not 'e' )
+  define J  as ( test hop 2 not 'a' not 'e' )
+  define K  as ( test hop 3 'l' or 'i' or ('e' next 'u') )
+  define L  as ( test hop 2 not 'u' not 'x' not ('s' not 'o') )
+  define M  as ( test hop 2 not 'a' not 'c' not 'e' not 'm' )
+  define N  as ( test hop 3 ( hop 2 not 's' or hop 2 ) )
+  define O  as ( test hop 2 'l' or 'i' )
+  define P  as ( test hop 2 not 'c' )
+  define Q  as ( test hop 2 test hop 3 not 'l' not 'n' )
+  define R  as ( test hop 2 'n' or 'r' )
+  define S  as ( test hop 2 'dr' or ('t' not 't') )
+  define T  as ( test hop 2 's' or ('t' not 'o') )
+  define U  as ( test hop 2 'l' or 'm' or 'n' or 'r' )
+  define V  as ( test hop 2 'c' )
+  define W  as ( test hop 2 not 's' not 'u' )
+  define X  as ( test hop 2 'l' or 'i' or ('e' next 'u') )
+  define Y  as ( test hop 2 'in' )
+  define Z  as ( test hop 2 not 'f' )
+  define AA as ( test hop 2 among ( 'd' 'f' 'ph' 'th' 'l' 'er' 'or'
+                                    'es' 't' ) )
+  define BB as ( test hop 3 not 'met' not 'ryst' )
+  define CC as ( test hop 2 'l' )
+
+
+  /* The system of endings, as given in Appendix A. */
+
+  define endings as (
+    [substring] among(
+    'alistically' B 'arizability' A 'izationally' B
+
+     'antialness' A  'arisations' A  'arizations' A  'entialness' A
+
+      'allically' C   'antaneous' A   'antiality' A   'arisation' A
+      'arization' A   'ationally' B   'ativeness' A   'eableness' E
+      'entations' A   'entiality' A   'entialize' A   'entiation' A
+      'ionalness' A   'istically' A   'itousness' A   'izability' A
+      'izational' A
+
+       'ableness' A    'arizable' A    'entation' A    'entially' A
+       'eousness' A    'ibleness' A    'icalness' A    'ionalism' A
+       'ionality' A    'ionalize' A    'iousness' A    'izations' A
+       'lessness' A
+
+        'ability' A     'aically' A     'alistic' B     'alities' A
+        'ariness' E     'aristic' A     'arizing' A     'ateness' A
+        'atingly' A     'ational' B     'atively' A     'ativism' A
+        'elihood' E     'encible' A     'entally' A     'entials' A
+        'entiate' A     'entness' A     'fulness' A     'ibility' A
+        'icalism' A     'icalist' A     'icality' A     'icalize' A
+        'ication' G     'icianry' A     'ination' A     'ingness' A
+        'ionally' A     'isation' A     'ishness' A     'istical' A
+        'iteness' A     'iveness' A     'ivistic' A     'ivities' A
+        'ization' F     'izement' A     'oidally' A     'ousness' A
+
+         'aceous' A      'acious' B      'action' G      'alness' A
+         'ancial' A      'ancies' A      'ancing' B      'ariser' A
+         'arized' A      'arizer' A      'atable' A      'ations' B
+         'atives' A      'eature' Z      'efully' A      'encies' A
+         'encing' A      'ential' A      'enting' C      'entist' A
+         'eously' A      'ialist' A      'iality' A      'ialize' A
+         'ically' A      'icance' A      'icians' A      'icists' A
+         'ifully' A      'ionals' A      'ionate' D      'ioning' A
+         'ionist' A      'iously' A      'istics' A      'izable' E
+         'lessly' A      'nesses' A      'oidism' A
+
+          'acies' A       'acity' A       'aging' B       'aical' A
+          'alist' A       'alism' B       'ality' A       'alize' A
+          'allic'BB       'anced' B       'ances' B       'antic' C
+          'arial' A       'aries' A       'arily' A       'arity' B
+          'arize' A       'aroid' A       'ately' A       'ating' I
+          'ation' B       'ative' A       'ators' A       'atory' A
+          'ature' E       'early' Y       'ehood' A       'eless' A
+          'elity' A       'ement' A       'enced' A       'ences' A
+          'eness' E       'ening' E       'ental' A       'ented' C
+          'ently' A       'fully' A       'ially' A       'icant' A
+          'ician' A       'icide' A       'icism' A       'icist' A
+          'icity' A       'idine' I       'iedly' A       'ihood' A
+          'inate' A       'iness' A       'ingly' B       'inism' J
+          'inity'CC       'ional' A       'ioned' A       'ished' A
+          'istic' A       'ities' A       'itous' A       'ively' A
+          'ivity' A       'izers' F       'izing' F       'oidal' A
+          'oides' A       'otide' A       'ously' A
+
+           'able' A        'ably' A        'ages' B        'ally' B
+           'ance' B        'ancy' B        'ants' B        'aric' A
+           'arly' K        'ated' I        'ates' A        'atic' B
+           'ator' A        'ealy' Y        'edly' E        'eful' A
+           'eity' A        'ence' A        'ency' A        'ened' E
+           'enly' E        'eous' A        'hood' A        'ials' A
+           'ians' A        'ible' A        'ibly' A        'ical' A
+           'ides' L        'iers' A        'iful' A        'ines' M
+           'ings' N        'ions' B        'ious' A        'isms' B
+           'ists' A        'itic' H        'ized' F        'izer' F
+           'less' A        'lily' A        'ness' A        'ogen' A
+           'ward' A        'wise' A        'ying' B        'yish' A
+
+            'acy' A         'age' B         'aic' A         'als'BB
+            'ant' B         'ars' O         'ary' F         'ata' A
+            'ate' A         'eal' Y         'ear' Y         'ely' E
+            'ene' E         'ent' C         'ery' E         'ese' A
+            'ful' A         'ial' A         'ian' A         'ics' A
+            'ide' L         'ied' A         'ier' A         'ies' P
+            'ily' A         'ine' M         'ing' N         'ion' Q
+            'ish' C         'ism' B         'ist' A         'ite'AA
+            'ity' A         'ium' A         'ive' A         'ize' F
+            'oid' A         'one' R         'ous' A
+
+             'ae' A          'al'BB          'ar' X          'as' B
+             'ed' E          'en' F          'es' E          'ia' A
+             'ic' A          'is' A          'ly' B          'on' S
+             'or' T          'um' U          'us' V          'yl' R
+           '{'}s' A        's{'}' A
+
+              'a' A           'e' A           'i' A           'o' A
+              's' W           'y' B
+
+        (delete)
+    )
+  )
+
+  /* Undoubling is rule 1 of appendix C. */
+
+  define undouble as (
+    test substring among ('bb' 'dd' 'gg' 'll' 'mm' 'nn' 'pp' 'rr' 'ss'
+                          'tt')
+    [next] delete
+  )
+
+  /* The other appendix C rules can be done together. */
+
+  define respell as (
+    [substring] among (
+      'iev'  (<-'ief')
+      'uct'  (<-'uc')
+      'umpt' (<-'um')
+      'rpt'  (<-'rb')
+      'urs'  (<-'ur')
+      'istr' (<-'ister')
+      'metr' (<-'meter')
+      'olv'  (<-'olut')
+      'ul'   (not 'a' not 'i' not 'o' <-'l')
+      'bex'  (<-'bic')
+      'dex'  (<-'dic')
+      'pex'  (<-'pic')
+      'tex'  (<-'tic')
+      'ax'   (<-'ac')
+      'ex'   (<-'ec')
+      'ix'   (<-'ic')
+      'lux'  (<-'luc')
+      'uad'  (<-'uas')
+      'vad'  (<-'vas')
+      'cid'  (<-'cis')
+      'lid'  (<-'lis')
+      'erid' (<-'eris')
+      'pand' (<-'pans')
+      'end'  (not 's' <-'ens')
+      'ond'  (<-'ons')
+      'lud'  (<-'lus')
+      'rud'  (<-'rus')
+      'her'  (not 'p' not 't' <-'hes')
+      'mit'  (<-'mis')
+      'ent'  (not 'm' <-'ens')
+        /* 'ent' was 'end' in the 1968 paper - a typo. */
+      'ert'  (<-'ers')
+      'et'   (not 'n' <-'es')
+      'yt'   (<-'ys')
+      'yz'   (<-'ys')
+    )
+  )
+)
+
+define stem as (
+
+  backwards (
+    do endings
+    do undouble
+    do respell
+  )
+)
+
+</PRE>
+</TR>
+
+<TR><TD>
+<BR>&nbsp;<H2>Appendix 2</H2>
+
+The Porter stemmer, cast, as far as is possible, into Lovins form.
+<BR><BR>
+
+<BR><PRE>
+integers ( p1 p2 )
+booleans ( Y_found )
+
+routines (
+    endings respell
+    shortv
+    undouble
+    A B C D E F G H I J
+)
+
+externals ( stem )
+
+groupings ( v v_WXY )
+
+define v        'aeiouy'
+define v_WXY    v + 'wxY'
+
+backwardmode (
+
+    define shortv as ( non-v_WXY v non-v )
+
+    define undouble as (
+        among ('bb' 'dd' 'ff' 'gg' 'mm' 'nn' 'pp' 'rr' 'tt')
+        and ([next] delete)
+    )
+
+    define A as $p1 <= cursor
+    define B as $p2 <= cursor
+    define C as (B 's' or 't')
+    define D as (B not 'm')
+    define E as ('e' or 'ous' A)
+
+    define F as ('ss' or 'i')
+    define G as not 's'
+    define H as gopast v
+    define I as (not 'e' gopast v)
+    define J as ('ee' A)
+
+    define endings as (
+
+        [substring] among (
+
+            'ed'   I
+            'ing'  H
+            'ings' H
+
+                   (delete
+                    undouble or (atmark p1  test shortv  <+ 'e')
+                   )
+
+            'd'    J
+            'es'   F
+            's'    G
+
+            get '/home/martin/Snowball/festschrift/endings'
+                   (delete)
+        )
+    )
+
+    define respell as (
+        [substring] among (
+            'e'     (B or (A not shortv) delete)
+            'l'     (B 'l' delete)
+            'enci'
+            'ency'  ((A <- 'enc') or <- 'enci')
+            'anci'
+            'ancy'  ((A <- 'anc') or <- 'anci')
+            'ally'  ((A <- 'al') or <- 'alli')
+            'ently' ((A <- 'ent') or <- 'entli')
+            'ator'  (A <- 'at')
+
+            'logi'
+            'logy'  ((A <- 'log') or <- 'logi')
+            'bli'
+            'bly'   ((A <- 'bl') or <- 'bli')
+            'bil'   (v A <- 'bl')
+            'y' 'Y'
+                    (gopast v  <-'i')
+
+        )
+    )
+)
+
+define stem as (
+    test hop 3
+    unset Y_found
+    do ( ['y'] <-'Y' set Y_found)
+    do repeat(goto (v ['y']) <-'Y' set Y_found)
+
+    $p1 = limit
+    $p2 = limit
+    do(
+        gopast v  gopast non-v  setmark p1
+        gopast v  gopast non-v  setmark p2
+    )
+
+    backwards (
+        do endings
+        do respell
+    )
+    do(Y_found  repeat(goto (['Y']) <-'y'))
+
+)
+</PRE>
+</TR>
+
+<TR><TD>
+<BR>&nbsp;<H2>Appendix 3</H2>
+
+The list of 181 endings included by the &nbsp;<TT>get</TT>&nbsp; directive in the program
+of Appendix 2. The numbers to the right show their frequency of occurrence
+in the sample vocabulary. The 75 rare endings are shown commented out.
+<BR><BR>
+
+<BR><PRE>
+    'abilities'     B /*   (3) */
+    'ability'       B /*  (14) */
+    'able'          B /* (293) */
+    'ables'         B /*   (4) */
+    'ably'          B /*  (68) */
+    'al'            B /* (285) */
+    'alism'         B /*   (5) */
+//  'alisms'        B /*   (-) */
+    'alities'       B /*   (7) */
+    'ality'         B /*  (24) */
+    'alization'     B /*   (1) */
+//  'alizationed'   B /*   (-) */
+//  'alizationing'  B /*   (-) */
+//  'alizations'    B /*   (-) */
+    'alize'         B /*   (2) */
+    'alized'        B /*   (4) */
+//  'alizer'        B /*   (-) */
+//  'alizered'      B /*   (-) */
+//  'alizering'     B /*   (-) */
+//  'alizers'       B /*   (-) */
+//  'alizes'        B /*   (-) */
+//  'alizing'       B /*   (-) */
+    'ally'          B /*  (78) */
+    'alness'        B /*   (2) */
+//  'alnesses'      B /*   (-) */
+    'als'           B /*  (46) */
+    'ance'          B /*  (93) */
+    'ances'         B /*  (30) */
+    'ancies'        B /*   (2) */
+    'ancy'          B /*  (18) */
+    'ant'           B /*  (92) */
+    'ants'          B /*  (29) */
+    'ate'           B /* (261) */
+    'ated'          B /* (208) */
+    'ately'         B /*  (38) */
+    'ates'          B /*  (73) */
+    'ating'         B /* (119) */
+    'ation'         B /* (356) */
+    'ational'       B /*   (4) */
+//  'ationalism'    B /*   (-) */
+//  'ationalisms'   B /*   (-) */
+//  'ationalities'  B /*   (-) */
+//  'ationality'    B /*   (-) */
+//  'ationalize'    B /*   (-) */
+//  'ationalized'   B /*   (-) */
+//  'ationalizes'   B /*   (-) */
+//  'ationalizing'  B /*   (-) */
+    'ationally'     B /*   (2) */
+//  'ationalness'   B /*   (-) */
+//  'ationalnesses' B /*   (-) */
+//  'ationals'      B /*   (-) */
+//  'ationed'       B /*   (-) */
+//  'ationing'      B /*   (-) */
+    'ations'        B /* (139) */
+    'ative'         B /*  (40) */
+    'atively'       B /*   (4) */
+//  'ativeness'     B /*   (-) */
+//  'ativenesses'   B /*   (-) */
+    'atives'        B /*   (7) */
+//  'ativities'     B /*   (-) */
+//  'ativity'       B /*   (-) */
+    'ator'          B /*  (25) */
+    'ators'         B /*  (10) */
+    'ement'         B /*  (70) */
+//  'emently'       B /*   (-) */
+    'ements'        B /*  (31) */
+    'ence'          B /* (100) */
+    'ences'         B /*  (25) */
+    'encies'        B /*   (9) */
+    'ency'          B /*  (41) */
+    'ent'           D /* (154) */
+    'ently'         D /*  (53) */
+    'ents'          D /*  (25) */
+    'er'            B /* (613) */
+    'ered'          B /*  (44) */
+    'ering'         B /*  (31) */
+    'ers'           B /* (281) */
+    'ful'           A /* (163) */
+    'fulness'       A /*  (31) */
+//  'fulnesses'     A /*   (-) */
+    'fuls'          A /*   (5) */
+    'ibilities'     B /*   (2) */
+    'ibility'       B /*  (10) */
+    'ible'          B /*  (53) */
+    'ibles'         B /*   (2) */
+    'ibly'          B /*  (14) */
+    'ic'            B /* (142) */
+    'ical'          B /*  (91) */
+//  'icalism'       B /*   (-) */
+//  'icalisms'      B /*   (-) */
+//  'icalities'     B /*   (-) */
+    'icality'       B /*   (1) */
+//  'icalize'       B /*   (-) */
+//  'icalized'      B /*   (-) */
+//  'icalizer'      B /*   (-) */
+//  'icalizered'    B /*   (-) */
+//  'icalizering'   B /*   (-) */
+//  'icalizers'     B /*   (-) */
+//  'icalizes'      B /*   (-) */
+//  'icalizing'     B /*   (-) */
+    'ically'        B /*  (59) */
+//  'icalness'      B /*   (-) */
+//  'icalnesses'    B /*   (-) */
+    'icals'         B /*   (2) */
+    'icate'         B /*   (9) */
+    'icated'        B /*   (7) */
+//  'icately'       B /*   (-) */
+    'icates'        B /*   (4) */
+    'icating'       B /*   (3) */
+    'ication'       B /*  (23) */
+//  'icational'     B /*   (-) */
+//  'icationals'    B /*   (-) */
+//  'icationed'     B /*   (-) */
+//  'icationing'    B /*   (-) */
+    'ications'      B /*   (8) */
+    'icative'       B /*   (2) */
+//  'icatively'     B /*   (-) */
+//  'icativeness'   B /*   (-) */
+//  'icativenesses' B /*   (-) */
+//  'icatives'      B /*   (-) */
+//  'icativities'   B /*   (-) */
+//  'icativity'     B /*   (-) */
+    'icities'       B /*   (1) */
+    'icity'         B /*   (5) */
+    'ics'           B /*  (21) */
+    'ion'           C /* (383) */
+    'ional'         C /*  (18) */
+//  'ionalism'      C /*   (-) */
+//  'ionalisms'     C /*   (-) */
+    'ionalities'    C /*   (1) */
+    'ionality'      C /*   (1) */
+//  'ionalize'      C /*   (-) */
+//  'ionalized'     C /*   (-) */
+//  'ionalizer'     C /*   (-) */
+//  'ionalizered'   C /*   (-) */
+//  'ionalizering'  C /*   (-) */
+//  'ionalizers'    C /*   (-) */
+//  'ionalizes'     C /*   (-) */
+//  'ionalizing'    C /*   (-) */
+    'ionally'       C /*  (12) */
+    'ionalness'     C /*   (1) */
+//  'ionalnesses'   C /*   (-) */
+    'ionals'        C /*   (1) */
+    'ioned'         C /*  (13) */
+    'ioning'        C /*   (3) */
+    'ions'          C /* (192) */
+    'ism'           B /*  (33) */
+    'isms'          B /*   (5) */
+    'ities'         B /*  (62) */
+    'ity'           B /* (236) */
+    'ive'           B /* (132) */
+    'ively'         B /*  (34) */
+    'iveness'       B /*  (14) */
+//  'ivenesses'     B /*   (-) */
+    'ives'          B /*  (12) */
+//  'ivities'       B /*   (-) */
+    'ivity'         B /*   (1) */
+    'ization'       B /*   (4) */
+//  'izational'     B /*   (-) */
+//  'izationals'    B /*   (-) */
+//  'izationed'     B /*   (-) */
+//  'izationing'    B /*   (-) */
+    'izations'      B /*   (1) */
+    'ize'           B /*  (32) */
+    'ized'          B /*  (32) */
+    'izer'          B /*   (3) */
+//  'izered'        B /*   (-) */
+//  'izering'       B /*   (-) */
+    'izers'         B /*   (1) */
+    'izes'          B /*   (6) */
+    'izing'         B /*  (30) */
+    'ly'            E /* (135) */
+    'ment'          B /* (105) */
+//  'mently'        B /*   (-) */
+    'ments'         B /*  (50) */
+    'ness'          A /* (428) */
+    'nesses'        A /*  (21) */
+    'ous'           B /* (340) */
+    'ously'         B /* (130) */
+    'ousness'       B /*  (22) */
+//  'ousnesses'     B /*   (-) */
+</PRE>
+</TR>
+
+<TR><TD>
+<BR>&nbsp;<H2>Appendix 4</H2>
+
+An ANSI C program which will generate on &nbsp;<TT>stdout</TT>&nbsp; the raw ending list
+(endings with condition letters) from which the list of Appendix 3 is
+constructed.
+<BR><BR>
+
+<BR><PRE>
+
+#include &lt;stdio.h>
+#include &lt;stdlib.h>
+
+static char * p;
+static k = 0;
+static int depth;
+
+static int add(char * s, int i)
+{   int j = 0;
+    int ch;
+    while (ch = s[j]) {
+        p[i] = ch;
+        j++; i++;
+    }
+    p[i] = 0; k = i;
+}
+
+static void w(int code) { printf("'%s' %c\n", p, 'A' - 1 + code); }
+
+static void wn(int code)
+{   w(code);
+    {   int ch = p[k - 1];
+        if (ch == 'y') p[k - 1] = 'i';
+        printf("'%s", p);
+        if (ch == 'y' || ch == 's') printf("e");
+        printf("s' %c\n", 'A' - 1 + code);
+        p[k - 1] = ch;
+    }
+}
+
+static void wv(int code)
+{   wn(code);
+    {   int ch = p[k - 1];
+        if (ch == 'e') p[k - 1] = 0;
+        printf("'%sed' %c\n", p, 'A' - 1 + code);
+        printf("'%sing' %c\n", p, 'A' - 1 + code);
+        p[k - 1] = ch;
+    }
+}
+
+static void f(void (*gen)(), int i, int code)
+{   if (depth > 2) return;
+    depth++; gen(i, code); depth--;
+}
+
+static void gen_ize(int i, int code);
+static void gen_ism(int i, int code);
+static void gen_ity(int i, int code);
+static void gen_ly(int i, int code);
+static void gen_ness(int i, int code);
+static void gen_ic(int i, int code);
+static void gen_ate(int i, int code);
+static void gen_ive(int i, int code);
+static void gen_tion(int i, int code);
+
+static void gen_al(int i, int code)
+{   i = add("al", i); wn(code);
+    f(gen_ize, i, code); f(gen_ism, i, code); f(gen_ity, i, code); f(gen_ly, i, code);
+    f(gen_ness, i, code);
+}
+
+static void gen_ance(int i, int code)
+{   i = add("ance", i); wn(code);
+    add("y", i - 1); wn(code);
+}
+
+static void gen_ence(int i, int code)
+{   i = add("ence", i); wn(code);
+    add("y", i - 1); wn(code);
+}
+
+static void gen_er(int i, int code)  {  add("er", i); wv(code); }
+
+static void gen_ic(int i, int code)
+{   i = add("ic", i); wn(code);
+    f(gen_ate, i, code); f(gen_ity, i, code); f(gen_al, i, code);
+}
+
+static void gen_able(int i, int code)
+{   add("able", i); wn(code);
+    add("abil", i); f(gen_ity, i + 4, code);
+    add("ab", i); f(gen_ly, i + 2, code);
+}
+
+static void gen_ible(int i, int code)
+{   add("ible", i); wn(code);
+    add("ibil", i); f(gen_ity, i + 4, code);
+    add("ib", i); f(gen_ly, i + 2, code);
+}
+
+static void gen_ant(int i, int code)
+{   add("ant", i); wn(code);
+/*  f(gen_ly, i, code);  */
+}
+
+static void gen_ement(int i, int code)
+{   i = add("ement", i); wn(code);
+    f(gen_ly, i, code);
+}
+
+static void gen_ment(int i, int code)
+{   i = add("ment", i); wn(code);
+    f(gen_ly, i, code);
+}
+
+static void gen_ent(int i, int code)
+{   i = add("ent", i); wn(code);
+    f(gen_ly, i, code);
+}
+
+static void gen_ism(int i, int code)  {  add("ism", i); wn(code); }
+
+static void gen_ate(int i, int code)
+{   add("ate", i); wv(code);
+    f(gen_ly, i + 3, code); f(gen_ive, i + 2, code); f(gen_tion, i + 1, code);
+}
+
+static void gen_ator(int i, int code)  {  add("ator", i); wn(code); }
+
+static void gen_ful(int i, int code)
+{   i = add("ful", i); w(code);
+    f(gen_ness, i, code);
+/*  f(gen_ly, i, code);  */
+}
+
+static void gen_ly(int i, int code)  {  add("ly", i); w(code); }
+static void gen_ness(int i, int code)  {  add("ness", i); wn(code); }
+static void gen_ity(int i, int code)  {  add("ity", i); wn(code); }
+
+static void gen_ous(int i, int code)
+{   i = add("ous", i); w(code);
+    f(gen_ly, i, code); f(gen_ness, i, code);
+}
+
+static void gen_ive(int i, int code)
+{   i = add("ive", i); wn(code);
+    f(gen_ness, i, code);
+    f(gen_ly, i, code);
+    f(gen_ity, i - 1, code);
+}
+
+static void gen_ize(int i, int code)
+{   i = add("ize", i); wv(code);
+    f(gen_er, i - 1, code);
+    add("a", i - 1);
+    depth ++; f(gen_tion, i, code); depth--;
+}
+
+static void gen_tion(int i, int code)
+{   i = add(i == 0 ? "ion" : "tion", i); wv(code);
+    f(gen_al, i, code);
+}
+
+
+main()
+{
+    p = malloc(100);
+    depth = 0;
+
+    gen_al(0, 2);
+    gen_ance(0, 2);
+    gen_ence(0, 2);
+    gen_er(0, 2);
+    gen_ic(0, 2);
+    gen_able(0, 2);
+    gen_ible(0, 2);
+    gen_ant(0, 2);
+    gen_ement(0, 2);
+    gen_ment(0, 2);
+    gen_ent(0, 4);
+    gen_ism(0, 2);
+    gen_ate(0, 2); gen_ator(0, 2);
+    gen_ful(0, 1);
+    gen_ly(0, 5);
+    gen_ness(0, 1);
+    gen_ity(0, 2);
+    gen_ous(0, 2);
+    gen_ive(0, 2);
+    gen_ize(0, 2);
+    gen_tion(0, 3);
+    free(p);
+    return 0;
+}
+
+</PRE>
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

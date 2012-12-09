@@ -1,0 +1,128 @@
+
+<HTML>
+<HEAD>
+<TITLE>Romance language stemmers</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Romance language stemmers</H1>
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links to resources</H2>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF=".."> Snowball main page</A>
+<TR><TD><A HREF="../algorithms/french/stemmer.html">     French stemmer</A>
+<TR><TD><A HREF="../algorithms/spanish/stemmer.html">    Spanish stemmer</A>
+<TR><TD><A HREF="../algorithms/portuguese/stemmer.html"> Portuguese stemmer</A>
+<TR><TD><A HREF="../algorithms/italian/stemmer.html">    Italian stemmer</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+
+
+The Romance languages have a wealth of different <I>i</I>-suffixes <A HREF="glossary.html">(*)</A> among the verb
+forms, and relatively few for the other parts of speech. In addition to
+this, many verbs exhibit irregularities. Many also have short stems,
+leading to dangers of over-stemming. The verb, therefore, tends to
+dominate initial thinking about stemming in these languages.
+<BR><BR>
+An algorithmic stemmer can usually reduce the multiple forms of a verb to at
+most two or three, and often just one. This is probably
+adequate for standard IR use, where the verb is used rather less than other
+parts of speech in short queries.
+<BR><BR>
+In French the verb endings <B><I>ent</I></B> and <B><I>ons</I></B> cannot be removed without
+unacceptable overstemming. The <B><I>ons</I></B> form is rarer, but <B><I>ent</I></B> forms
+are quite common, and will
+appear
+regularly throughout a stemmed vocabulary.
+<BR><BR>
+In Italian, the final vowel of nouns and adjectives indicates number and
+gender (<I>amico</I> is male friend, <I>amica</I> is female friend) and its removal is a
+necessary part of stemming, but the final vowel sometimes separates words
+of different meanings (<I>banco</I> is bench, <I>banca</I> is bank), which leads to some
+over-stemming.
+<BR><BR>
+The <I>d</I>-suffixes of all four languages follow a similar pattern. They can be
+tabulated as follows,
+<DL><DD><TABLE CELLPADDING=0>
+
+<TR><TD>     <TD></TD><TD>              <TD></TD><TD>   French   <TD></TD><TD>   Spanish  <TD></TD><TD>   Portug.  <TD></TD><TD>   Italian
+<TR><TD>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ANCE</FONT>   <TD></TD><TD> <B><I>ance</I></B>     <TD></TD><TD> <B><I>anza</I></B>     <TD></TD><TD> <B><I>eza</I></B>      <TD></TD><TD><B><I>anza</I></B>
+<TR><TD> adjective <TD></TD><TD> <FONT SIZE=-1>IC</FONT>     <TD></TD><TD> <B><I>ique</I></B>     <TD></TD><TD> <B><I>ico</I></B>      <TD></TD><TD> <B><I>ico</I></B>      <TD></TD><TD> <B><I>ico</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ISM</FONT>    <TD></TD><TD> <B><I>isme</I></B>     <TD></TD><TD> <B><I>ismo</I></B>     <TD></TD><TD> <B><I>ismo</I></B>     <TD></TD><TD> <B><I>ismo</I></B>
+<TR><TD> adjective <TD></TD><TD> <FONT SIZE=-1>ABLE</FONT>   <TD></TD><TD> <B><I>able</I></B>     <TD></TD><TD> <B><I>able</I></B>     <TD></TD><TD> <B><I>&aacute;vel</I></B>   <TD></TD><TD> <B><I>abile</I></B>
+<TR><TD> adjective <TD></TD><TD> <FONT SIZE=-1>IBLE</FONT>   <TD></TD><TD> -            <TD></TD><TD> <B><I>ible</I></B>     <TD></TD><TD> <B><I>&iacute;vel</I></B>   <TD></TD><TD> <B><I>ibile</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>IST</FONT>    <TD></TD><TD> <B><I>iste</I></B>     <TD></TD><TD> <B><I>ista</I></B>     <TD></TD><TD> <B><I>ista</I></B>     <TD></TD><TD> <B><I>ista</I></B>
+<TR><TD> adjective <TD></TD><TD> <FONT SIZE=-1>OUS</FONT>    <TD></TD><TD> <B><I>eux</I></B>      <TD></TD><TD> <B><I>oso</I></B>      <TD></TD><TD> <B><I>oso</I></B>      <TD></TD><TD> <B><I>oso</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>MENT</FONT>   <TD></TD><TD> <B><I>ment</I></B>     <TD></TD><TD> <B><I>amiento</I></B>  <TD></TD><TD> <B><I>amento</I></B>   <TD></TD><TD> <B><I>mente</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ATOR</FONT>   <TD></TD><TD> <B><I>ateur</I></B>    <TD></TD><TD> <B><I>ador</I></B>     <TD></TD><TD> <B><I>ador</I></B>     <TD></TD><TD> <B><I>attore</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ATRESS</FONT> <TD></TD><TD> <B><I>atrice</I></B>   <TD></TD><TD> -            <TD></TD><TD> -            <TD></TD><TD> <B><I>atrice</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ATION</FONT>  <TD></TD><TD> <B><I>ation</I></B>    <TD></TD><TD> <B><I>aci&oacute;n</I></B>  <TD></TD><TD> <B><I>a&ccedil;&atilde;o</I></B> <TD></TD><TD> <B><I>azione</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>LOGY</FONT>   <TD></TD><TD> <B><I>logie</I></B>    <TD></TD><TD> <B><I>log&iacute;a</I></B>  <TD></TD><TD> <B><I>log&iacute;a</I></B>  <TD></TD><TD> <B><I>logia</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>USION</FONT>  <TD></TD><TD> <B><I>usion</I></B>    <TD></TD><TD> <B><I>uci&oacute;n</I></B>  <TD></TD><TD> <B><I>uci&oacute;n</I></B>  <TD></TD><TD> <B><I>uzione</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ENCE</FONT>   <TD></TD><TD> <B><I>ence</I></B>     <TD></TD><TD> <B><I>encia</I></B>    <TD></TD><TD> <B><I>&ecirc;ncia</I></B>  <TD></TD><TD> <B><I>enza</I></B>
+<TR><TD> adjective <TD></TD><TD> <FONT SIZE=-1>ENT</FONT>    <TD></TD><TD> <B><I>ent</I></B>      <TD></TD><TD> <B><I>ente</I></B>     <TD></TD><TD> <B><I>ente</I></B>     <TD></TD><TD> <B><I>ente</I></B>
+
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ANCE</FONT>   <TD></TD><TD> <B><I>ance</I></B>     <TD></TD><TD> <B><I>ancia</I></B>    <TD></TD><TD> <B><I>&acirc;ncia</I></B>  <TD></TD><TD> <B><I>anza</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ANT</FONT>    <TD></TD><TD> <B><I>ant</I></B>      <TD></TD><TD> <B><I>ante</I></B>     <TD></TD><TD> <B><I>ante</I></B>     <TD></TD><TD> <B><I>ante</I></B>
+
+<TR><TD> adverb    <TD></TD><TD> <FONT SIZE=-1>LY</FONT>     <TD></TD><TD> (<B><I>e</I></B>)<B><I>ment</I></B>  <TD></TD><TD> (<B><I>a</I></B>)<B><I>mente</I></B> <TD></TD><TD> (<B><I>a</I></B>)<B><I>mente</I></B> <TD></TD><TD>
+(<B><I>a</I></B>)<B><I>mente</I></B>
+<TR><TD> noun      <TD></TD><TD> <FONT SIZE=-1>ITY</FONT>    <TD></TD><TD> <B><I>it&eacute;</I></B>    <TD></TD><TD> <B><I>idad</I></B>     <TD></TD><TD> <B><I>idade</I></B>    <TD></TD><TD> <B><I>it&agrave;</I></B>
+<TR><TD> adjective <TD></TD><TD> <FONT SIZE=-1>IVE</FONT>    <TD></TD><TD> <B><I>if</I></B>       <TD></TD><TD> <B><I>ive</I></B>      <TD></TD><TD> <B><I>ivo</I></B>      <TD></TD><TD> <B><I>ivo</I></B>
+<TR><TD> verb      <TD></TD><TD> <FONT SIZE=-1>ATE</FONT>    <TD></TD><TD> <B><I>at</I></B>       <TD></TD><TD> <B><I>at</I></B>       <TD></TD><TD> <B><I>at</I></B>       <TD></TD><TD> <B><I>at</I></B>
+</TABLE></DL>
+
+Equivalent English forms are shown in upper case. In English, <FONT SIZE=-1>ATE</FONT> is a valid ending, but
+in the Romance languages it only exists in combinations. The endings can appear in a
+number of styles. In Italian, <B><I>oso</I></B> can also be <B><I>osa</I></B>, <B><I>osi</I></B> or <B><I>ose</I></B>, French
+<B><I>ique</I></B> becomes <B><I>ic</I></B> in combinations.
+
+<BR><BR>
+The important combining forms are summarised in the following picture:
+<BR><PRE>
+                               OUS
+
+                                |
+                                |
+                                v
+
+         .----------------->    LY   <---------  ANT
+         |                           <-----.
+         |                      ^          |
+         |                      |          |
+         |                      |          |
+
+        IVE   <--   ATE   <--   IC        ABLE
+
+         |                      |          |
+         |                      |          |
+         |                      v          |
+         |                                 |
+         `----------------->   ITY   <-----'
+
+</PRE>
+In English, <FONT SIZE=-1>ABLE</FONT> combines with <FONT SIZE=-1>LY</FONT> to form <FONT SIZE=-1>ABLY</FONT>. So in French, for example,
+<B><I>able</I></B> combines with (<B><I>e</I></B>)<B><I>ment</I></B> to form <B><I>ablement</I></B>.
+In some languages particular combinations are rare. In Italian, for example,
+<FONT SIZE=-1>ANT</FONT> + <FONT SIZE=-1>LY</FONT>, which would be the ending <B><I>antemente</I></B>, is so rare that it does not
+figure in the stemming algorithm.
+According to the picture, we
+should encounter the forms <FONT SIZE=-1>ICATIVELY</FONT> and <FONT SIZE=-1>ICATIVITY</FONT>, and dictionaries
+instance a few English words with these endings (<I>communicatively</I> for
+example).
+But in practice three is the maximum number of derivational
+suffixes that one need consider in combination.
+
+<BR><BR>
+<BR><BR>
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

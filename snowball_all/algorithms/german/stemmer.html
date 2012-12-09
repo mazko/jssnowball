@@ -1,0 +1,469 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>German stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>German stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample German vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent in two columns</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">     German stop word list</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="stem_MS_DOS_Latin_I.sbl">    The stemmer in Snowball &#x2014; MS DOS Latin I encodings</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../../texts/germanic.html">
+                  Germanic language stemmers</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of German vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+aufeinander<BR>
+aufeinanderbiss<BR>
+aufeinanderfolge<BR>
+aufeinanderfolgen<BR>
+aufeinanderfolgend<BR>
+aufeinanderfolgende<BR>
+aufeinanderfolgenden<BR>
+aufeinanderfolgender<BR>
+aufeinanderfolgt<BR>
+aufeinanderfolgten<BR>
+aufeinanderschlügen<BR>
+aufenthalt<BR>
+aufenthalten<BR>
+aufenthaltes<BR>
+auferlegen<BR>
+auferlegt<BR>
+auferlegten<BR>
+auferstand<BR>
+auferstanden<BR>
+auferstehen<BR>
+aufersteht<BR>
+auferstehung<BR>
+auferstünde<BR>
+auferwecken<BR>
+auferweckt<BR>
+auferzogen<BR>
+aufessen<BR>
+auffa<BR>
+auffallen<BR>
+auffallend<BR>
+auffallenden<BR>
+auffallender<BR>
+auffällig<BR>
+auffälligen<BR>
+auffälliges<BR>
+auffassen<BR>
+auffasst<BR>
+auffaßt<BR>
+auffassung<BR>
+auffassungsvermögen<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+aufeinand<BR>
+aufeinanderbiss<BR>
+aufeinanderfolg<BR>
+aufeinanderfolg<BR>
+aufeinanderfolg<BR>
+aufeinanderfolg<BR>
+aufeinanderfolg<BR>
+aufeinanderfolg<BR>
+aufeinanderfolgt<BR>
+aufeinanderfolgt<BR>
+aufeinanderschlug<BR>
+aufenthalt<BR>
+aufenthalt<BR>
+aufenthalt<BR>
+auferleg<BR>
+auferlegt<BR>
+auferlegt<BR>
+auferstand<BR>
+auferstand<BR>
+aufersteh<BR>
+aufersteht<BR>
+aufersteh<BR>
+auferstund<BR>
+auferweck<BR>
+auferweckt<BR>
+auferzog<BR>
+aufess<BR>
+auffa<BR>
+auffall<BR>
+auffall<BR>
+auffall<BR>
+auffall<BR>
+auffall<BR>
+auffall<BR>
+auffall<BR>
+auffass<BR>
+auffasst<BR>
+auffasst<BR>
+auffass<BR>
+auffassungsvermog<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+kategorie<BR>
+kategorien<BR>
+kategorisch<BR>
+kategorische<BR>
+kategorischen<BR>
+kategorischer<BR>
+kater<BR>
+katerliede<BR>
+katern<BR>
+katers<BR>
+käthchen<BR>
+kathedrale<BR>
+kathinka<BR>
+katholik<BR>
+katholische<BR>
+katholischen<BR>
+katholischer<BR>
+kattun<BR>
+kattunhalstücher<BR>
+katz<BR>
+kätzchen<BR>
+kätzchens<BR>
+katze<BR>
+katzen<BR>
+katzenschmer<BR>
+katzensprung<BR>
+katzenwürde<BR>
+kätzin<BR>
+kätzlein<BR>
+katzmann<BR>
+kauen<BR>
+kauerte<BR>
+kauf<BR>
+kaufe<BR>
+kaufen<BR>
+käufer<BR>
+kauffahrer<BR>
+kaufherr<BR>
+kaufleute<BR>
+käuflich<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+kategori<BR>
+kategori<BR>
+kategor<BR>
+kategor<BR>
+kategor<BR>
+kategor<BR>
+kat<BR>
+katerlied<BR>
+kat<BR>
+kat<BR>
+kathch<BR>
+kathedral<BR>
+kathinka<BR>
+kathol<BR>
+kathol<BR>
+kathol<BR>
+kathol<BR>
+kattun<BR>
+kattunhalstuch<BR>
+katz<BR>
+katzch<BR>
+katzch<BR>
+katz<BR>
+katz<BR>
+katzenschm<BR>
+katzenspr<BR>
+katzenwurd<BR>
+katzin<BR>
+katzlein<BR>
+katzmann<BR>
+kau<BR>
+kauert<BR>
+kauf<BR>
+kauf<BR>
+kauf<BR>
+kauf<BR>
+kauffahr<BR>
+kaufherr<BR>
+kaufleut<BR>
+kauflich<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR>&nbsp;<H2>The stemming algorithm</H2>
+
+German includes the following accented forms,
+<DL><DD>
+    <B><I>ä  &nbsp;  ö  &nbsp;  ü</I></B>
+</DL>
+and a special letter, <B><I>ß</I></B>, equivalent to double <B><I>s</I></B>.
+<BR><BR>
+The following letters are vowels:
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  y  &nbsp;  ä  &nbsp;  ö  &nbsp;  ü</I></B>
+</DL>
+First, replace <B><I>ß</I></B> by <B><I>ss</I></B>, and put <B><I>u</I></B> and <B><I>y</I></B> between vowels into upper case.
+<I>R</I>1 and <I>R</I>2 are first set up in the standard way
+(see the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2),
+but then <I>R</I>1 is
+adjusted so that the region before it contains at least 3 letters.
+<BR><BR>
+Define a valid <B><I>s</I></B>-ending as one of <B><I>b</I></B>, <B><I>d</I></B>, <B><I>f</I></B>, <B><I>g</I></B>, <B><I>h</I></B>, <B><I>k</I></B>, <B><I>l</I></B>, <B><I>m</I></B>, <B><I>n</I></B>, <B><I>r</I></B> or <B><I>t</I></B>.
+<BR><BR>
+Define a valid <B><I>st</I></B>-ending as the same list, excluding letter <B><I>r</I></B>.
+<BR><BR>
+Do each of steps 1, 2 and 3.
+<BR><BR>
+Step 1:
+<DL><DD>
+    Search for the longest among the following suffixes,
+<BR><BR><DL><DD>
+        (<I>a</I>) <B><I>em  &nbsp;  ern  &nbsp;  er</I></B><BR>
+        (<I>b</I>) <B><I>e  &nbsp;  en  &nbsp;  es</I></B><BR>
+        (<I>c</I>) <B><I>s</I></B> (preceded by a valid <B><I>s</I></B>-ending)
+</DL><BR>
+    and delete if in <I>R</I>1. (Of course the letter of the valid <B><I>s</I></B>-ending is
+    not necessarily in <I>R</I>1.) If an ending of group (<I>b</I>) is deleted, and the ending
+    is preceded by <B><I>niss</I></B>, delete the final <B><I>s</I></B>.
+<BR><BR>
+    (For example, <I>äckern</I> <TT>-&gt;</TT> <I>äck</I>, <I>ackers</I> <TT>-&gt;</TT> <I>acker</I>,
+    <I>armes</I> <TT>-&gt;</TT> <I>arm</I>, <I>bedürfnissen</I> <TT>-&gt;</TT> <I>bedürfnis</I>)
+</DL>
+Step 2:
+<DL><DD>
+    Search for the longest among the following suffixes,
+<BR><BR><DL><DD>
+        (<I>a</I>) <B><I>en  &nbsp;  er  &nbsp;  est</I></B><BR>
+        (<I>b</I>) <B><I>st</I></B> (preceded by a valid <B><I>st</I></B>-ending, itself preceded by at least 3
+        letters)
+</DL><BR>
+    and delete if in <I>R</I>1.
+<BR><BR>
+    (For example, <I>derbsten</I> <TT>-&gt;</TT> <I>derbst</I> by step 1, and <I>derbst</I> <TT>-&gt;</TT> <I>derb</I> by step
+    2, since <B><I>b</I></B> is a valid <B><I>st</I></B>-ending, and is preceded by just 3 letters)
+</DL>
+Step 3: <I>d</I>-suffixes <A HREF="../../texts/glossary.html">(*)</A>
+<DL><DD>
+    Search for the longest among the following suffixes, and perform the
+    action indicated.
+<BR><BR>
+<DL>
+    <DT><B><I>end  &nbsp;  ung</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>ig</I></B>, delete if in <I>R</I>2 and not preceded by <B><I>e</I></B>
+<BR><BR>
+    <DT><B><I>ig  &nbsp;  ik  &nbsp;  isch</I></B>
+        <DD>delete if in <I>R</I>2 and not preceded by <B><I>e</I></B>
+<BR><BR>
+    <DT><B><I>lich  &nbsp;  heit</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>er</I></B> or <B><I>en</I></B>, delete if in <I>R</I>1
+<BR><BR>
+    <DT><B><I>keit</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>lich</I></B> or <B><I>ig</I></B>, delete if in <I>R</I>2
+</DL>
+</DL>
+Finally,
+<DL><DD>
+    turn <B><I>U</I></B> and <B><I>Y</I></B> back into lower case, and remove the umlaut accent from <B><I>a</I></B>,
+    <B><I>o</I></B> and <B><I>u</I></B>.
+</DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR>&nbsp;<H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+
+/*
+    Extra rule for -nisse ending added 11 Dec 2009
+*/
+
+routines (
+           prelude postlude
+           mark_regions
+           R1 R2
+           standard_suffix
+)
+
+externals ( stem )
+
+integers ( p1 p2 x )
+
+groupings ( v s_ending st_ending )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef a"   hex 'E4'
+stringdef o"   hex 'F6'
+stringdef u"   hex 'FC'
+stringdef ss   hex 'DF'
+
+define v 'aeiouy{a"}{o"}{u"}'
+
+define s_ending  'bdfghklmnrt'
+define st_ending s_ending - 'r'
+
+define prelude as (
+
+    test repeat (
+        (
+            ['{ss}'] <- 'ss'
+        ) or next
+    )
+
+    repeat goto (
+        v [('u'] v <- 'U') or
+           ('y'] v <- 'Y')
+    )
+)
+
+define mark_regions as (
+
+    $p1 = limit
+    $p2 = limit
+
+    test(hop 3 setmark x)
+
+    gopast v  gopast non-v  setmark p1
+    try($p1 < x  $p1 = x)  // at least 3
+    gopast v  gopast non-v  setmark p2
+
+)
+
+define postlude as repeat (
+
+    [substring] among(
+        'Y'    (<- 'y')
+        'U'    (<- 'u')
+        '{a"}' (<- 'a')
+        '{o"}' (<- 'o')
+        '{u"}' (<- 'u')
+        ''     (next)
+    )
+
+)
+
+backwardmode (
+
+    define R1 as $p1 <= cursor
+    define R2 as $p2 <= cursor
+
+    define standard_suffix as (
+        do (
+            [substring] R1 among(
+                'em' 'ern' 'er'
+                (   delete
+                )
+                'e' 'en' 'es'
+                (   delete
+                    try (['s'] 'nis' delete)
+                )
+                's'
+                (   s_ending delete
+                )
+            )
+        )
+        do (
+            [substring] R1 among(
+                'en' 'er' 'est'
+                (   delete
+                )
+                'st'
+                (   st_ending hop 3 delete
+                )
+            )
+        )
+        do (
+            [substring] R2 among(
+                'end' 'ung'
+                (   delete
+                    try (['ig'] not 'e' R2 delete)
+                )
+                'ig' 'ik' 'isch'
+                (   not 'e' delete
+                )
+                'lich' 'heit'
+                (   delete
+                    try (
+                        ['er' or 'en'] R1 delete
+                    )
+                )
+                'keit'
+                (   delete
+                    try (
+                        [substring] R2 among(
+                            'lich' 'ig'
+                            (   delete
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    )
+)
+
+define stem as (
+    do prelude
+    do mark_regions
+    backwards
+        do standard_suffix
+    do postlude
+)
+</DL>
+</PRE>
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,89 @@
+
+<HTML>
+<HEAD>
+<TITLE>Snowball: Quick introduction</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+
+<TR><TD>
+<BR><BR>
+<H1>Snowball: Quick introduction</H1>
+<BR><BR>
+</TR>
+
+
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links</H2>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF=".."> Snowball main page</A>
+</TABLE></DL>
+</TR>
+
+<TR><TD>
+<BR><BR>
+
+You can use this site at a number of levels:
+
+<BR><BR>
+
+- You can look at the stemming algorithm definitions themselves, and use
+them as templates for coding your own versions of stemmers in the computer
+language of your choice.
+
+<BR><BR>
+
+- You can use the various ANSI C
+and Java stemmers in programs of your own,
+without bothering yourself
+with the Snowball system that generated them. To do that,
+download either the
+
+<A HREF="../dist/libstemmer_c.tgz">C</A>
+or the
+<A HREF="../dist/libstemmer_java.tgz">Java</A>
+
+version of the libstemmer library, and follow the instructions
+contained in the &nbsp;<TT>README</TT>&nbsp; files within these tarballs.
+The tarballs also contain simple example
+programs which allow you to run the stemmers from the command line.
+<BR><BR>
+
+- You can get involved in Snowball itself. This is particularly worthwhile
+if you want to adjust the stemmers or develop new stemmers. A typical reason
+for adjusting the stemmers is that you are working with a different encoding
+of accented letters from the ISO Latin I encoding assumed in most of the scripts
+here. Then you need to make your own version of the Snowball compiler and
+work with the Snowball scripts.
+
+<DL><DD>
+
+Snowball is a language in which stemming algorithms can be easily
+represented. The Snowball compiler translates a Snowball script (a &nbsp;<TT>.sbl</TT>
+file) into either a thread-safe ANSI C program or a Java program.
+For ANSI C, each Snowball script produces a program file and
+corresponding header file
+(with &nbsp;<TT>.c</TT>&nbsp; and &nbsp;<TT>.h</TT>&nbsp; extensions). The language has a full
+
+    <A HREF="../compiler/snowman.html"> manual</A>,
+
+and the various stemming scripts act as example programs.
+
+</DL>
+
+- You can get deeply interested in stemming. If you do, read the
+
+    <A HREF="../texts/introduction.html"> introductory paper</A>
+
+about Snowball. It is a bit heavyweight, but provides essential background.
+And look at the
+
+    <A HREF="../texts/howtohelp.html"> notes</A>
+
+on how you can help.
+
+<BR><BR>
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

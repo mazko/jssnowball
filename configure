@@ -1,0 +1,20 @@
+JAVA_SRC_DWNLOADED=java_snowball_dwnloaded
+
+rm -fr $JAVA_SRC_DWNLOADED snowball_code snowball_all
+make clean
+
+wget http://snowball.tartarus.org/dist/snowball_code.tgz
+tar xf snowball_code.tgz
+rm snowball_code.tgz*
+
+wget -P $JAVA_SRC_DWNLOADED http://snowball.tartarus.org/dist/libstemmer_java.tgz
+tar xf $JAVA_SRC_DWNLOADED/libstemmer_java.tgz -C $JAVA_SRC_DWNLOADED
+rm $JAVA_SRC_DWNLOADED/libstemmer_java.tgz*
+
+wget http://snowball.tartarus.org/dist/snowball_all.tgz
+tar xf snowball_all.tgz
+rm snowball_all.tgz*
+
+make JAVA_SRC_DWNLD="$JAVA_SRC_DWNLOADED" java_src_check
+
+cp js_snowball/generator_js.c snowball_code/compiler/generator_java.c

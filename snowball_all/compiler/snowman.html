@@ -1,0 +1,1004 @@
+
+<HTML>
+<HEAD>
+<TITLE>Snowball Manual</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Snowball Manual</H1>
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links to resources</H2>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF=".."> Snowball main page</A>
+<TR><TD><A HREF="../runtime/use.html">          Using Snowball</A>
+<TR><TD><A HREF="../algorithms/porter/stemmer.html"> Porter stemmer &#x2014; a case study</A>
+</TABLE></DL>
+</TR>
+
+<TR><TD>
+<BR><BR>
+
+<BR>&nbsp;<H2>Snowball definition</H2>
+
+Snowball is a small string-handling language, and its name was chosen as a
+tribute to SNOBOL (Farber 1964, Griswold 1968 &#x2014;
+see the references at the end of the
+<A HREF="../texts/introduction.html">introduction</A>),
+with which it shares the
+concept of string patterns delivering signals that are used to control the
+flow of the program.
+
+<BR>&nbsp;<H2>1 Data types</H2>
+
+The basic data types handled by Snowball are strings of characters, signed
+integers, and boolean truth values, or more simply <I>strings</I>, <I>integers</I>
+and <I>booleans</I>. Snowball's characters are either 8-bit wide, or
+16-bit, depending on the mode of use. In particular, both 8-bit
+ASCII and 16-bit Unicode are supported.
+
+<BR>&nbsp;<H2>2 Names</H2>
+
+A name in Snowball is a letter followed by zero or more letters, digits
+and underlines. A name can be of type <I>string</I>, <I>integer</I>, <I>boolean</I>,
+<I>routine</I>, <I>external</I> or <I>grouping</I>. All names must be declared. A
+declaration has the form
+<BR><PRE>
+    Ts ( ... )
+</PRE>
+where symbol &nbsp;<TT>T</TT>&nbsp; is one of &nbsp;<TT>string</TT>, &nbsp;<TT>integer</TT>&nbsp; etc, and the region in
+brackets contains a list of names separated by whitespace. For example,
+<BR><PRE>
+    integers ( p1 p2 )
+    booleans ( Y_found )
+
+    routines (
+       shortv
+       R1 R2
+       Step_1a Step_1b Step_1c Step_2 Step_3 Step_4 Step_5a Step_5b
+    )
+
+    externals ( stem )
+
+    groupings ( v v_WXY v_LSZ )
+</PRE>
+<TT>p1</TT>&nbsp; and &nbsp;<TT>p2</TT>&nbsp; are integers, &nbsp;<TT>Y_found</TT>&nbsp; is boolean, and so on. Snowball is quite
+strict about the declarations, so all the names go in the same name space,
+no name may be declared twice, all used names must be declared, no two
+routine definitions can have the same name, etc. Names declared and
+subsequently not used are merely reported in a warning message. A name may
+not be one of the reserved words of Snowball.
+
+<BR>&nbsp;<H2>3 Literals</H2>
+
+A literal integer is a digit sequence, and is always interpreted as
+decimal. A literal string is written between single quotes, for example,
+<BR><PRE>
+    'aeiouy'
+</PRE>
+In a &nbsp;<TT>stringdef</TT>&nbsp; (see below), string may be preceded by the word &nbsp;<TT>hex</TT>,
+or the word &nbsp;<TT>decimal</TT>,
+in which case the contents are
+interpreted as characters written out in hexadecimal, or decimal, notation.
+The characters should be separated by spaces. For example,
+<BR><PRE>
+    hex 'DA'        /* is character hex DA */
+    hex 'D A'       /* is the two characters, hex D and A (carriage
+                       return, and line feed) */
+    decimal '10'    /* character 10 (line feed) */
+    decimal '13 10' /* characters 13 and 10 (carriage return, and
+                       line feed) */
+</PRE>
+The following forms are equivalent,
+<BR><PRE>
+    hex 'd a'      /* lower case also allowed */
+    hex '0D 000A'  /* leading zeroes ignored */
+    hex ' D  A  '  /* extra spacing is harmless */
+</PRE>
+<TT>stringdef</TT>s define special <I>string macros</I>, to handle unusual
+character combinations.
+<BR><BR>
+Macro &nbsp;<TT>m</TT>&nbsp; may is defined in the form &nbsp;<TT>stringdef m 'S'</TT>, where &nbsp;<TT>'S'</TT>&nbsp; is a
+string, and &nbsp;<TT>m</TT>&nbsp; a sequence of one or more printing characters terminating
+with whitespace.
+<BR><BR>
+Two special <I>insert characters</I> are defined by the directive
+<TT>stringescapes AB</TT>, where &nbsp;<TT>A</TT>&nbsp; and &nbsp;<TT>B</TT>&nbsp; are printing characters, and &nbsp;<TT>A</TT>&nbsp; is not
+single quote. (<TT>B</TT>&nbsp; may equal &nbsp;<TT>A</TT>, but then &nbsp;<TT>A</TT>&nbsp; itself can never be escaped.) For
+example,
+<BR><PRE>
+    stringescapes []
+</PRE>
+A subsequent occurrence of the same directive redefines the insert
+characters.
+<BR><BR>
+Thereafter, &nbsp;<TT>[m]</TT>&nbsp; inside a string causes &nbsp;<TT>S</TT>&nbsp; to be substituted in place of &nbsp;<TT>m</TT>.
+<BR><BR>
+Immediately after the stringescapes directive, &nbsp;<TT>[']</TT>&nbsp; will substitute &nbsp;<TT>'</TT>&nbsp; and
+<TT>[[]</TT>&nbsp; will substitute &nbsp;<TT>[</TT>, although macros &nbsp;<TT>'</TT>&nbsp; and &nbsp;<TT>[</TT>&nbsp; may subsequently be
+redefined. A further feature is that &nbsp;<TT>[<I>W</I>]</TT>&nbsp; inside a string, where &nbsp;<TT><I>W</I></TT>&nbsp; is a
+sequence of whitespace characters including one or more newlines, is
+ignored. This enables long strings to be written over a number of lines.
+<BR><BR>
+For example,
+<BR><PRE>
+    stringescapes []
+
+    /* special Spanish characters (in MS-DOS Latin I) */
+
+    stringdef a'   hex 'A0'  // a-acute
+    stringdef e'   hex '82'  // e-acute
+    stringdef i'   hex 'A1'  // i-acute
+    stringdef o'   hex 'A2'  // o-acute
+    stringdef u'   hex 'A3'  // u-acute
+    stringdef u"   hex '81'  // u-diaeresis
+    stringdef n~   hex 'A4'  // n-tilde
+
+    /* and in the next string we define all the characters in Spanish
+       used to represent vowels
+    */
+
+    define v 'aeiou[a'][e'][i'][o'][u'][u"]'
+</PRE>
+<BR>&nbsp;<H2>4 Routines</H2>
+
+A routine definition has the form
+<BR><PRE>
+    define R as C
+</PRE>
+where &nbsp;<TT>R</TT>&nbsp; is the routine name and &nbsp;<TT>C</TT>&nbsp; is a command, or bracketed group of
+commands. So a routine is defined as a sequence of zero or more commands.
+Snowball routines do not (at present) take parameters. For example,
+<BR><PRE>
+    define Step_5b as (      // this defines Step_5b
+        ['l']                // three commands here: [, 'l' and ]
+        R2 'l'               // two commands, R2 and 'l'
+        delete               // delete is one command
+    )
+
+    define R1 as $p1 <= cursor
+        /* R1 is defined as the single command "$p1 <= cursor" */
+</PRE>
+A routine is called simply by using its name, &nbsp;<TT>R</TT>, as a command.
+
+<BR>&nbsp;<H2>5 Commands and signals</H2>
+
+The flow of control in Snowball is arranged by the implicit use of
+<I>signals</I>, rather than the explicit use of constructs like the &nbsp;<TT>if</TT>,
+<TT>then</TT>, &nbsp;<TT>break</TT>&nbsp; of C. The scheme is designed for handling strings, but is
+perhaps easier to introduce using integers. Suppose &nbsp;<TT>x</TT>, &nbsp;<TT>y</TT>, &nbsp;<TT>z</TT>&nbsp; ... are
+integers. The command
+<BR><PRE>
+    $x = 1
+</PRE>
+sets &nbsp;<TT>x</TT>&nbsp; to 1. The command
+<BR><PRE>
+    $x > 0
+</PRE>
+tests if &nbsp;<TT>x</TT>&nbsp; is greater than zero. Both commands give a signal <B><I>t</I></B> or <B><I>f</I></B>,
+(<I>true</I> or <I>false</I>), but while the second command gives <B><I>t</I></B> if &nbsp;<TT>x</TT>&nbsp; is greater
+than zero and <B><I>f</I></B> otherwise, the first command always gives <B><I>t</I></B>. In Snowball,
+every command gives a <B><I>t</I></B> or <B><I>f</I></B> signal. A sequence of commands can be turned
+into as a single command by putting them in a list surrounded by round
+brackets:
+<BR><PRE>
+    ( C<SUB>1</SUB> C<SUB>2</SUB> C<SUB>3</SUB> ... C<SUB>i</SUB> C<SUB>i+1</SUB> ... )
+</PRE>
+When this is obeyed, &nbsp;<TT>C<SUB>i+1</SUB></TT>&nbsp; will be obeyed if each of the preceding &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; ...
+<TT>C<SUB>i</SUB></TT>&nbsp; give <B><I>t</I></B>, but as soon as a &nbsp;<TT>C<SUB>i</SUB></TT>&nbsp; gives <B><I>f</I></B>, the subsequent &nbsp;<TT>C<SUB>i+1</SUB> C<SUB>i+2</SUB></TT>&nbsp; ...
+are ignored, and the whole sequence gives signal <B><I>f</I></B>. If all the &nbsp;<TT>C<SUB>i</SUB></TT>&nbsp; give <B><I>t</I></B>,
+however, the bracketed command sequence also gives <B><I>t</I></B>. So,
+<BR><PRE>
+    $x > 0  $y = 1
+</PRE>
+sets &nbsp;<TT>y</TT>&nbsp; to 1 if &nbsp;<TT>x</TT>&nbsp; is greater than zero. If &nbsp;<TT>x</TT>&nbsp; is less than or equal to zero
+the two commands give <B><I>f</I></B>.
+<BR><BR>
+If &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; and &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; are commands, we can build up the larger commands,
+<DL><DD><DL>
+    <DT><TT>C<SUB>1</SUB> or C<SUB>2</SUB></TT>
+        <DD>&#x2014; Do &nbsp;<TT>C<SUB>1</SUB></TT>. If it gives <B><I>t</I></B> ignore &nbsp;<TT>C<SUB>2</SUB></TT>, otherwise do &nbsp;<TT>C<SUB>2</SUB></TT>. The resulting
+        signal is <B><I>t</I></B> if and only &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; or &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; gave <B><I>t</I></B>.
+    <DT><TT>C<SUB>1</SUB> and C<SUB>2</SUB></TT>
+        <DD>&#x2014; Do &nbsp;<TT>C<SUB>1</SUB></TT>. If it gives <B><I>f</I></B> ignore &nbsp;<TT>C<SUB>2</SUB></TT>, otherwise do &nbsp;<TT>C<SUB>2</SUB></TT>. The resulting
+        signal is <B><I>t</I></B> if and only &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; and &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; gave <B><I>t</I></B>.
+    <DT><TT>not C</TT>
+        <DD>&#x2014; Do &nbsp;<TT>C</TT>. The resulting signal is <B><I>t</I></B> if &nbsp;<TT>C</TT>&nbsp; gave <B><I>f</I></B>, otherwise <B><I>f</I></B>.
+    <DT><TT>try C</TT>
+        <DD>&#x2014; Do &nbsp;<TT>C</TT>. The resulting signal is <B><I>t</I></B> whatever the signal of &nbsp;<TT>C</TT>.
+    <DT><TT>fail C</TT>
+        <DD>&#x2014; Do &nbsp;<TT>C</TT>. The resulting signal is <B><I>f</I></B> whatever the signal of &nbsp;<TT>C</TT>.
+</DL></DL>
+So for example,
+<DL><DD><DL>
+    <DT><TT>($x > 0  $y = 1) or ($y = 0)</TT>
+        <DD>&#x2014; sets &nbsp;<TT>y</TT>&nbsp; to 1 if &nbsp;<TT>x</TT>&nbsp; is greater than zero, otherwise to zero.
+
+    <DT><TT>try( ($x > 0) and ($z > 0) $y = 1)</TT>
+        <DD>&#x2014; sets &nbsp;<TT>y</TT>&nbsp; to 1 if both &nbsp;<TT>x</TT>&nbsp; and &nbsp;<TT>z</TT>&nbsp; are greater than 0, and gives <B><I>t</I></B>.
+</DL></DL>
+This last example is the same as
+<BR><PRE>
+    try($x > 0  $z > 0  $y = 1)
+</PRE>
+so that &nbsp;<TT>and</TT>&nbsp; seems unnecessary here. But we will see that &nbsp;<TT>and</TT>&nbsp; has a
+particular significance in string commands.
+<BR><BR>
+When a &#8216;monadic&#8217; construct like &nbsp;<TT>not</TT>, &nbsp;<TT>try</TT>&nbsp; or &nbsp;<TT>fail</TT>&nbsp; is not followed by a
+round bracket, the construct applies to the shortest following valid command.
+So for example
+<BR><PRE>
+    try not $x < 1 $z > 0
+</PRE>
+would mean
+<BR><PRE>
+    try ( not ( $x < 1 ) ) $z > 0
+</PRE>
+because &nbsp;<TT>$x < 1</TT>&nbsp; is the shortest valid command following &nbsp;<TT>not</TT>, and then
+<TT>not $x < 1</TT>&nbsp; is the shortest valid command following &nbsp;<TT>try</TT>.
+<BR><BR>
+The &#8216;dyadic&#8217; constructs like &nbsp;<TT>and</TT>&nbsp; and &nbsp;<TT>or</TT>&nbsp; must sit in a bracketed list
+of commands anyway, for example,
+<BR><PRE>
+    ( C<SUB>1</SUB> C<SUB>2</SUB> and C<SUB>3</SUB> C<SUB>4</SUB> or C<SUB>5</SUB> )
+</PRE>
+And then in this case &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; and &nbsp;<TT>C<SUB>3</SUB></TT>&nbsp; are connected by the &nbsp;<TT>and</TT>; &nbsp;<TT>C<SUB>4</SUB></TT>&nbsp; and &nbsp;<TT>C<SUB>5</SUB></TT>&nbsp; are
+connected by the &nbsp;<TT>or</TT>. So
+<BR><PRE>
+    $x > 0  not $y > 0 or not $z > 0  $t > 0
+</PRE>
+means
+<BR><PRE>
+    $x > 0  ((not ($y > 0)) or (not ($z > 0)))  $t > 0
+</PRE>
+<TT>and</TT>&nbsp; and &nbsp;<TT>or</TT>&nbsp; are equally binding, and bind from left to right,
+so &nbsp;<TT>C<SUB>1</SUB> or C<SUB>2</SUB> and C<SUB>3</SUB></TT>&nbsp; means &nbsp;<TT>(C<SUB>1</SUB> or C<SUB>2</SUB>) and C<SUB>3</SUB></TT>&nbsp; etc.
+
+<BR>&nbsp;<H2>6 AEs and integer commands</H2>
+
+An AE (arithmetic expression) consists of integer names and literal
+numbers connected by dyadic &nbsp;<TT>+</TT>, &nbsp;<TT>-</TT>, &nbsp;<TT>*</TT>&nbsp; and &nbsp;<TT>/</TT>, and monadic &nbsp;<TT>-</TT>, with the same
+binding powers and semantics as C. An integer command has the form
+<BR><PRE>
+    $X <I>op</I> AE
+</PRE>
+where &nbsp;<TT>X</TT>&nbsp; is an integer name and <I>op</I> is one of the six tests &nbsp;<TT>==</TT>, &nbsp;<TT>!=</TT>, &nbsp;<TT>>=</TT>, &nbsp;<TT>></TT>,
+<TT><=</TT>, &nbsp;<TT><</TT>, or five assignments &nbsp;<TT>=</TT>, &nbsp;<TT>+=</TT>, &nbsp;<TT>-=</TT>, &nbsp;<TT>*=</TT>, &nbsp;<TT>/=</TT>. Again, the meanings are the
+same as in C.
+<BR><BR>
+As well as integer names and literal numbers, the following may be used in
+AEs:
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><TT>minint</TT>&nbsp;   <TD></TD><TD>  &#x2014; the minimum negative number
+<TR><TD><TT>maxint</TT>&nbsp;   <TD></TD><TD>  &#x2014; the maximum positive number
+<TR><TD><TT>sizeof s</TT>&nbsp; <TD></TD><TD>  &#x2014; the number of characters in &nbsp;<TT>s</TT>, where &nbsp;<TT>s</TT>&nbsp; is the name of a string
+<TR><TD><TT>cursor</TT>&nbsp;   <TD></TD><TD>  &#x2014; the current value of the string <I>cursor</I>
+<TR><TD><TT>limit</TT>&nbsp;    <TD></TD><TD>  &#x2014; the current value of the string <I>limit</I>
+<TR><TD><TT>size</TT>&nbsp;     <TD></TD><TD>  &#x2014; the size of the string, in characters
+</TABLE></DL>
+The <I>cursor</I> and <I>limit</I> concepts are explained below.
+<BR><BR>
+Examples of integer commands are,
+<BR><PRE>
+    $p1 <= cursor  // signal is f if the cursor is before position p1
+    $p1 = limit    // set p1 to the string limit
+</PRE>
+
+<BR>&nbsp;<H2>7 String commands</H2>
+
+If &nbsp;<TT>s</TT>&nbsp; is a string name, a string command has the form
+<BR><PRE>
+    $s C
+</PRE>
+where &nbsp;<TT>C</TT>&nbsp; is a command that operate on the string. Strings can be processed
+left-to-right or right-to-left, but we will describe only the
+left-to-right case for now. The string has a <I>cursor</I>, which we will
+denote by <B><I>c</I></B>, and a limit point, or <I>limit</I>, which we will denote by <B><I>l</I></B>. <B><I>c</I></B>
+advances towards <B><I>l</I></B> in the course of a string command, but the various
+constructs &nbsp;<TT>and</TT>, &nbsp;<TT>or</TT>, &nbsp;<TT>not</TT>&nbsp; etc have side-effects which keep moving it
+backwards. Initially <B><I>c</I></B> is at the start and <B><I>l</I></B> the end of the string. For
+example,
+<BR><PRE>
+        'a|n|i|m|a|d|v|e|r|s|i|o|n'
+        |                         |
+        c                         l
+</PRE>
+<B><I>c</I></B>, and <B><I>l</I></B>, mark the boundaries between characters, and not
+characters themselves. The characters between <B><I>c</I></B> and <B><I>l</I></B> will be denoted by
+<B><I>c:l</I></B>.
+<BR><BR>
+If &nbsp;<TT>C</TT>&nbsp; gives <B><I>t</I></B>, the cursor <B><I>c</I></B> will have a new, well-defined value. But if &nbsp;<TT>C</TT>
+gives <B><I>f</I></B>, <B><I>c</I></B> is undefined. Its later value will in fact be determined by the
+outer context of commands in which &nbsp;<TT>C</TT>&nbsp; came to be obeyed, not by &nbsp;<TT>C</TT>&nbsp; itself.
+<BR><BR>
+Here is a list of the commands that can be used to operate on strings.
+
+&nbsp;<H4>a) Setting a value</H4>
+
+
+<DL>
+<DT><TT>= S</TT>
+    <DD>where &nbsp;<TT>S</TT>&nbsp; is the name of a string or a literal string. <B><I>c:l</I></B> is set equal
+    to &nbsp;<TT>S</TT>, and <B><I>l</I></B> is adjusted to point to the end of the copied string. The
+    signal is <B><I>t</I></B>. For example,
+<BR><PRE>
+        $x = 'animadversion'    /* literal string */
+        $y = x                  /* string name */
+</PRE>
+</DL>
+
+&nbsp;<H4>b) Basic tests</H4>
+
+<DL>
+<DT><TT>S</TT>
+    <DD>here and below, &nbsp;<TT>S</TT>&nbsp; is the name of a string or a literal string. If <B><I>c:l</I></B>
+    begins with the substring &nbsp;<TT>S</TT>, <B><I>c</I></B> is repositioned to the end of this
+    substring, and the signal is <B><I>t</I></B>. Otherwise the signal is <B><I>f</I></B>. For example,
+<BR><PRE>
+        $x 'anim'   /* gives t, assuming the string is 'animadversion' */
+        $x ('anim' 'ad' 'vers')
+                    /* ditto */
+
+        $t = 'anim'
+        $x t        /* ditto */
+</PRE>
+<DT><TT>true</TT>, &nbsp;<TT>false</TT>
+    <DD><TT>true</TT>&nbsp; is a dummy command that generates signal <B><I>t</I></B>. &nbsp;<TT>false</TT>&nbsp; generates
+    signal <B><I>f</I></B>. They are sometimes useful for emphasis,
+<BR><PRE>
+        define start_off as true       // nothing to do
+        define exception_list as false // put in among(...) list later
+</PRE>
+        &nbsp;<TT>true</TT>&nbsp;      is equivalent to     &nbsp;<TT>()</TT>
+<DT><TT>C<SUB>1</SUB> or C<SUB>2</SUB></TT>
+    <DD>This is like the case for integers described above, but the extra
+    touch is that if &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; gives <B><I>f</I></B>, <B><I>c</I></B> is set back to its old position after
+    &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; has given <B><I>f</I></B> and before &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; is tried, so that the test takes place on
+    the same point in the string. So we have
+<BR><PRE>
+        $x ('anim'  /* signal t */
+            'ation' /* signal f */
+           ) or
+           ( 'an'   /* signal t - from the beginning */
+           )
+</PRE>
+<DT><TT>C<SUB>1</SUB> and C<SUB>2</SUB></TT>
+    <DD>And similarly <B><I>c</I></B> is set back to its old position after &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; has given <B><I>t</I></B>
+    and before &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; is tried. So,
+<BR><PRE>
+        $x 'anim' and 'an'   /* signal t */
+        $x ('anim'  'an')    /* signal f, since 'an' and 'ad' mis-match */
+</PRE>
+<DT><TT>not C</TT>
+<DT><TT>try C</TT>
+    <DD>These are like the integer tests, with the added feature that <B><I>c</I></B> is set
+    back to its old position after an <B><I>f</I></B> signal is turned into <B><I>t</I></B>. So,
+<BR><PRE>
+        $x (not 'animation' not 'immersion')
+            /* both tests are done at the start of the string */
+
+        $x (try 'animus' try 'an'
+            'imad')
+            /* - gives t */
+</PRE>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>        &nbsp;<TT>try C</TT>&nbsp;     <TD></TD><TD> is equivalent to <TD></TD><TD>    &nbsp;<TT>C or true</TT>
+</TABLE></DL>
+<DT><TT>test C</TT>
+    <DD>This does command &nbsp;<TT>C</TT>&nbsp; but without advancing <B><I>c</I></B>. Its signal is the same as
+    the signal of &nbsp;<TT>C</TT>, but following signal <B><I>t</I></B>, <B><I>c</I></B> is set back to its old
+    value.
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>        &nbsp;<TT>test C</TT>&nbsp;       <TD></TD><TD>  is equivalent to   <TD></TD><TD>  &nbsp;<TT>not not C</TT>
+<TR><TD>        &nbsp;<TT>test C<SUB>1</SUB> C<SUB>2</SUB></TT>&nbsp; <TD></TD><TD>  is equivalent to   <TD></TD><TD>  &nbsp;<TT>C<SUB>1</SUB> and C<SUB>2</SUB></TT>
+</TABLE></DL>
+<DT><TT>fail C</TT>
+    <DD>This does &nbsp;<TT>C</TT>&nbsp; and gives signal <B><I>f</I></B>. It is equivalent to &nbsp;<TT>C false</TT>. Like
+    &nbsp;<TT>false</TT>&nbsp; it is useful, but only rarely.
+
+<DT><TT>do C</TT>
+    <DD>This does &nbsp;<TT>C</TT>, puts <B><I>c</I></B> back to its old value and gives signal <B><I>t</I></B>. It is
+    very useful as a way of suppressing the side effect of <B><I>f</I></B> signals and
+    cursor movement.
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>        &nbsp;<TT>do C</TT>&nbsp;     <TD></TD><TD>  is equivalent to   <TD></TD><TD>  &nbsp;<TT>try test C</TT>
+<TR><TD>                     <TD></TD><TD>  or                 <TD></TD><TD>  &nbsp;<TT>test try C</TT>
+</TABLE></DL>
+<DT><TT>goto C</TT>
+    <DD><B><I>c</I></B> is moved right until obeying &nbsp;<TT>C</TT>&nbsp; gives <B><I>t</I></B>. But if <B><I>c</I></B> cannot be moved
+    right because it is at <B><I>l</I></B> the signal is <B><I>f</I></B>. <B><I>c</I></B> is set back to the position
+    it had before the last obeying of &nbsp;<TT>C</TT>, so the effect is to leave <B><I>c</I></B> before
+    the pattern which matched against &nbsp;<TT>C</TT>.
+<BR><PRE>
+        $x goto 'ad'         /* positions c after 'anim' */
+        $x goto 'ax'         /* signal f */
+</PRE>
+<DT><TT>gopast C</TT>
+    <DD>Like goto, but <B><I>c</I></B> is not set back, so the effect is to leave <B><I>c</I></B> after
+    the pattern which matched against &nbsp;<TT>C</TT>.
+<BR><PRE>
+        $x gopast 'ad'       /* positions c after 'animad' */
+</PRE>
+<DT><TT>repeat C</TT>
+    <DD><TT>C</TT>&nbsp; is repeated until it gives <B><I>f</I></B>. When this happens <B><I>c</I></B> is set back to the
+    position it had before the last repetition of &nbsp;<TT>C</TT>, and &nbsp;<TT>repeat C</TT>&nbsp; gives
+    signal <B><I>t</I></B>. For example,
+<BR><PRE>
+        $x repeat gopast 'a' /* position c after the last 'a' */
+</PRE>
+<DT><TT>loop AE C</TT>
+    <DD>This is like &nbsp;<TT>C C ... C</TT>&nbsp; written out AE times, where AE is an arithmetic
+    expression. For example,
+<BR><PRE>
+        $x loop 2 gopast ('a' or 'e' or 'i' or 'o' or 'u')
+            /* position c after the second vowel */
+</PRE>
+    The equivalent expression in C has the shape,
+<BR><PRE>
+        {    int i;
+             int limit = AE;
+             for (i = 0; i < limit; i++) C;
+        }
+</PRE>
+<DT><TT>atleast AE C</TT>
+    <DD>This is equivalent to &nbsp;<TT>loop AE C repeat C</TT>.
+
+<DT><TT>hop AE</TT>
+    <DD>moves <B><I>c</I></B> AE character positions towards <B><I>l</I></B>, but if AE is negative, or if
+    there are less than AE characters between <B><I>c</I></B> and <B><I>l</I></B> the signal is <B><I>f</I></B>.
+    For example,
+<BR><PRE>
+        test hop 3
+</PRE>
+    tests that <B><I>c:l</I></B> contains more than 2 characters.
+
+<DT><TT>next</TT>
+    <DD>is equivalent to &nbsp;<TT>hop 1</TT>.
+</DL>
+
+&nbsp;<H4>c) Moving text about</H4>
+
+
+We have seen in (a) that &nbsp;<TT>$x = y</TT>, when &nbsp;<TT>x</TT>&nbsp; and &nbsp;<TT>y</TT>&nbsp; are strings, sets <B><I>c:l</I></B> of &nbsp;<TT>x</TT>
+to the value of &nbsp;<TT>y</TT>. Conversely
+<BR><PRE>
+        $x => y
+</PRE>
+sets the value of &nbsp;<TT>y</TT>&nbsp; to the <B><I>c:l</I></B> region of &nbsp;<TT>x</TT>.
+<BR><BR>
+A more delicate mechanism for pushing text around is to define a substring,
+or <I>slice</I> of the string being tested. Then
+
+<DL>
+<DT><TT>[</TT>
+    <DD>sets the left-end of the slice to <B><I>c</I></B>,
+<DT><TT>]</TT>
+    <DD>sets the right-end of the slice to <B><I>c</I></B>,
+
+<DT><TT>-> s</TT>
+    <DD>moves the slice to variable &nbsp;<TT>s</TT>,
+<DT><TT><- S</TT>
+    <DD>replaces the slice with variable (or literal) &nbsp;<TT>S</TT>.
+</DL>
+For example
+<BR><PRE>
+        /* assume x holds 'animadversion' */
+        $x ( [         // '[animadversion' - [ set as indicated
+             loop 2 gopast 'a'
+                       // '[anima|dversion' - c is marked by '|'
+             ]         // '[anima]dversion' - ] set as indicated
+             -> y      // y is 'anima'
+           )
+</PRE>
+For any string, the slice ends should be assumed to be unset until they are
+set with the two commands &nbsp;<TT>[</TT>, &nbsp;<TT>]</TT>. Thereafter the slice ends will retain
+the same values until altered.
+
+<DL>
+<DT><TT>delete</TT>
+    <DD>is equivalent to &nbsp;<TT><- ''</TT>
+</DL>
+
+This next example deletes all vowels in x,
+<BR><PRE>
+        define vowel ('a' or 'e' or 'i' or 'o' or 'u')
+        ....
+        $ x repeat ( gopast([vowel]) delete )
+</PRE>
+As this example shows, the slice markers &nbsp;<TT>[</TT>&nbsp; and &nbsp;<TT>]</TT>&nbsp; often appear as
+pairs in a bracketed style, which makes for easy reading of the Snowball
+scripts. But it must be remembered that, unusually in a computer
+programming language, they are not true brackets.
+<BR><BR>
+More simply, text can be inserted at <B><I>c</I></B>.
+<DL>
+<DT><TT>insert S</TT>
+    <DD>insert variable or literal &nbsp;<TT>S</TT>&nbsp; before <B><I>c</I></B>, moving <B><I>c</I></B> to the right of the
+    insert. &nbsp;<TT><+</TT>&nbsp; is a synonym for &nbsp;<TT>insert</TT>.
+
+<DT><TT>attach S</TT>
+    <DD>the same, but leave <B><I>c</I></B> at the left of the insert.
+</DL>
+
+&nbsp;<H4>d) Marks</H4>
+
+
+The cursor, <B><I>c</I></B>, (and the limit, <B><I>l</I></B>) can be thought of as having a numeric
+value, from zero upwards:
+<BR><PRE>
+         | a | n | i | m | a | d | v | e | r | s | i | o | n |
+         0   1   2   3   4   5   6   7   8   9  10  11  12  13
+</PRE>
+It is these numeric values of <B><I>c</I></B> and <B><I>l</I></B> which are accessible through
+<TT>cursor</TT>&nbsp; and &nbsp;<TT>limit</TT>&nbsp; in arithmetic expressions.
+<DL>
+<DT><TT>setmark X</TT>
+    <DD>sets &nbsp;<TT>X</TT>&nbsp; to the current value of <B><I>c</I></B>, where &nbsp;<TT>X</TT>&nbsp; is an integer variable.
+
+<DT><TT>tomark AE</TT>
+    <DD>moves <B><I>c</I></B> forward to the position given by AE,
+
+<DT><TT>atmark AE</TT>
+    <DD>tests if <B><I>c</I></B> is at position AE (<B><I>t</I></B> or <B><I>f</I></B> signal).
+</DL>
+In the case of &nbsp;<TT>tomark AE</TT>, a similar fail condition occurs as with &nbsp;<TT>hop AE</TT>.
+If <B><I>c</I></B> is already beyond AE, or if position <B><I>l</I></B> is before position AE, the
+signal is <B><I>f</I></B>.
+<BR><BR>
+In the stemming algorithms, certain regions of the word are defined by
+setting marks, and later the failure condition of &nbsp;<TT>tomark</TT>&nbsp; is used to see if
+<B><I>c</I></B> is inside a particular region.
+<BR><BR>
+Two other commands put <B><I>c</I></B> at <B><I>l</I></B>, and test if <B><I>c</I></B> is at <B><I>l</I></B>,
+<DL>
+<DT><TT>tolimit</TT>
+    <DD>moves <B><I>c</I></B> forward to <B><I>l</I></B> (signal <B><I>t</I></B> always),
+
+<DT><TT>atlimit</TT>
+    <DD>tests if <B><I>c</I></B> is at <B><I>l</I></B> (<B><I>t</I></B> or <B><I>f</I></B> signal).
+</DL>
+
+&nbsp;<H4>e) Changing <B><I>l</I></B></H4>
+
+
+In this account of string commands we see <B><I>c</I></B> moving right towards <B><I>l</I></B>, while
+<B><I>l</I></B> stays fixed at the end. In fact <B><I>l</I></B> can be reset to a new position between
+<B><I>c</I></B> and its old position, to act as a shorter barrier for the movement of <B><I>c</I></B>.
+
+<DL>
+<DT><TT>setlimit C<SUB>1</SUB> for C<SUB>2</SUB></TT>
+    <DD><TT>C<SUB>1</SUB></TT>&nbsp; is obeyed, and if it gives <B><I>f</I></B> the signal from &nbsp;<TT>setlimit</TT>
+     is <B><I>f</I></B> with no further action.
+<BR><BR>
+    Otherwise, the final value of <B><I>c</I></B> becomes the new
+    position of <B><I>l</I></B>. <B><I>c</I></B> is then set back to its old value before &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; was
+    obeyed, and &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; is obeyed. Finally <B><I>l</I></B> is set back to its old position,
+    and the signal of &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; becomes the signal of &nbsp;<TT>setlimit</TT>.
+<BR><BR>
+    So the signal is <B><I>f</I></B> if either &nbsp;<TT>C<SUB>1</SUB></TT>&nbsp; or &nbsp;<TT>C<SUB>2</SUB></TT>&nbsp; gives <B><I>f</I></B>, otherwise <B><I>t</I></B>.
+    For example,
+<BR><PRE>
+    $x ( setlimit goto 's'  // 'animadver}sion' new l as marked '}'
+         for                // below, '|' marks c after each goto
+         ( goto 'a' and     // '|animadver}sion'
+           goto 'e' and     // 'animadv|er}sion'
+           goto 'i' and     // 'an|imadver}sion'
+         )
+       )
+</PRE>
+    This checks that x has characters &#8216;a&#8217;, &#8216;e&#8217; and &#8216;i&#8217; before the first
+    &#8216;s&#8217;.
+</DL>
+
+&nbsp;<H4>f) Backward processing</H4>
+
+String commands have been described with <B><I>c</I></B> to the left of <B><I>l</I></B> and moving
+right. But the process can be reversed.
+
+<DL>
+<DT><TT>backwards C</TT>
+    <DD><B><I>c</I></B> and <B><I>l</I></B> are swapped over, and <B><I>c</I></B> moves left towards <B><I>l</I></B>. &nbsp;<TT>C</TT>&nbsp; is obeyed, the
+    signal given by &nbsp;<TT>C</TT>&nbsp; becomes the signal of &nbsp;<TT>backwards C</TT>, and <B><I>c</I></B> and <B><I>l</I></B> are
+    swapped back to their old values (except that <B><I>l</I></B> may have been adjusted
+    because of deletions and insertions). &nbsp;<TT>C</TT>&nbsp; cannot contain another
+    &nbsp;<TT>backwards</TT>&nbsp; command.
+
+<DT><TT>reverse C</TT>
+    <DD>A similar idea, but here <B><I>c</I></B> simply moves left instead of moving right,
+    with the beginning of the string as the limit, <B><I>l</I></B>. &nbsp;<TT>C</TT>&nbsp; can contain other
+    &nbsp;<TT>reverse</TT>&nbsp; commands, but it cannot contain commands to do deletions or
+    insertions &#x2014; it must be used for testing only. (Without this
+    restriction Snowball's semantics would become very untidy.)
+</DL>
+
+Forward and backward processing are entirely symmetric, except that forward
+processing is the default direction, and literal strings are always
+written out forwards, even when they are being tested backwards. So the
+following are equivalent,
+<BR><PRE>
+    $x (
+        'ani' 'mad' 'version' atlimit
+    )
+
+    $x backwards (
+        'version' 'mad' 'ani' atlimit
+    )
+</PRE>
+If a routine is defined for backwards mode processing, it must be included
+inside a &nbsp;<TT>backwardmode(...)</TT>&nbsp; declaration.
+
+&nbsp;<H4>g) &nbsp;<TT>substring</TT>&nbsp; and &nbsp;<TT>among</TT></H4>
+
+The use of &nbsp;<TT>substring</TT>&nbsp; and &nbsp;<TT>among</TT>&nbsp; is central to the implementation of the
+stemming algorithms. It is like a case switch on strings. In its simpler
+form,
+<BR><PRE>
+        substring among('S<SUB>1</SUB>' 'S<SUB>2</SUB>' 'S<SUB>3</SUB>' ...)
+</PRE>
+searches for the longest matching substring &nbsp;<TT>'S<SUB>1</SUB>'</TT>&nbsp; or &nbsp;<TT>'S<SUB>2</SUB>'</TT>&nbsp; or &nbsp;<TT>'S<SUB>3</SUB>'</TT>&nbsp; ... from
+position <B><I>c</I></B>. (The &nbsp;<TT>'S<SUB>i</SUB>'</TT>&nbsp; must all be different.) So this has the same
+semantics as
+<BR><PRE>
+        ('S<SUB>1</SUB>' or 'S<SUB>2</SUB>' or 'S<SUB>3</SUB>' ...)
+</PRE>
+&#x2014; so long as the &nbsp;<TT>'S<SUB>i</SUB>'</TT>&nbsp; are written out in decreasing order of length.
+<BR><BR>
+<TT>substring</TT>&nbsp; may be omitted, in which case it is attached to its following
+<TT>among</TT>, so
+<BR><PRE>
+    among(...)
+</PRE>
+without a preceding &nbsp;<TT>substring</TT>&nbsp; is equivalent to
+<BR><PRE>
+    (substring among(...))
+</PRE>
+<TT>substring</TT>&nbsp; may also be detached from its &nbsp;<TT>among</TT>, although it must
+precede it textually in the same routine in which the &nbsp;<TT>among</TT>&nbsp; appears.
+The more general form of &nbsp;<TT>substring ... among</TT>&nbsp; is,
+<BR><PRE>
+    substring
+    ...
+    among( 'S<SUB>11</SUB>' 'S<SUB>12</SUB>' ... (C<SUB>1</SUB>)
+           'S<SUB>21</SUB>' 'S<SUB>22</SUB>' ... (C<SUB>2</SUB>)
+           ...
+
+           'S<SUB>n1</SUB>' 'S<SUB>n2</SUB>' ... (C<SUB>n</SUB>)
+         )
+</PRE>
+Obeying &nbsp;<TT>substring</TT>&nbsp; searches for a longest match among the &nbsp;<TT>'S<SUB>ij</SUB>'</TT>. The
+signal from &nbsp;<TT>substring</TT>&nbsp; is <B><I>t</I></B> if a match is found, otherwise <B><I>f</I></B>. When the
+<TT>among</TT>&nbsp; comes to be obeyed, the &nbsp;<TT>C<SUB>i</SUB></TT>&nbsp; corresponding to the matched &nbsp;<TT>'S<SUB>ij</SUB>'</TT>&nbsp; is
+obeyed, and its signal becomes the signal of the &nbsp;<TT>among</TT>&nbsp; command.
+<BR><BR>
+<TT>substring/among</TT>&nbsp; pairs must match up textually inside each routine
+definition. But there is no problem with an &nbsp;<TT>among</TT>&nbsp; containing other
+<TT>substring/among</TT>&nbsp; pairs, and &nbsp;<TT>substring</TT>&nbsp; is optional before &nbsp;<TT>among</TT>&nbsp; anyway.
+The essential constraint is that two &nbsp;<TT>substring</TT>s must be separated by an
+<TT>among</TT>, and each &nbsp;<TT>substring</TT>&nbsp; must be followed by an &nbsp;<TT>among</TT>.
+<BR><BR>
+The effect of obeying &nbsp;<TT>among</TT>&nbsp; when the preceding &nbsp;<TT>substring</TT>&nbsp; is not obeyed
+is undefined. This would happen for example here,
+<BR><PRE>
+    try($x != 617 substring)
+    among(...) // 'substring' is bypassed in the exceptional case where x == 617
+</PRE>
+The significance of separating the &nbsp;<TT>substring</TT>&nbsp; from the &nbsp;<TT>among</TT>&nbsp; is to allow
+them to work in different contexts. For example,
+<BR><PRE>
+    setlimit tomark L for substring
+
+    among( 'S<SUB>11</SUB>' 'S<SUB>12</SUB>' ... (C<SUB>1</SUB>)
+           ...
+
+           'S<SUB>n1</SUB>' 'S<SUB>n2</SUB>' ... (C<SUB>n</SUB>)
+         )
+</PRE>
+Here the test for the longest &nbsp;<TT>'S<SUB>ij</SUB>'</TT>&nbsp; is constrained to the region between <B><I>c</I></B>
+and the mark point given by integer &nbsp;<TT>L</TT>. But the commands &nbsp;<TT>C<SUB>i</SUB></TT>&nbsp; operate outside
+this limit. Another example is
+<BR><PRE>
+    reverse substring
+
+    among( 'S<SUB>11</SUB>' 'S<SUB>12</SUB>' ... (C<SUB>1</SUB>)
+           ...
+
+           'S<SUB>n1</SUB>' 'S<SUB>n2</SUB>' ... (C<SUB>n</SUB>)
+         )
+</PRE>
+The substring test is in the opposite direction in the string to the
+direction of the commands &nbsp;<TT>C<SUB>i</SUB></TT>.
+<BR><BR>
+The last &nbsp;<TT>(C<SUB>n</SUB>)</TT>&nbsp; may be omitted, in which case &nbsp;<TT>(true)</TT>&nbsp; is assumed.
+<BR><BR>
+Another possible abbreviation is that when &nbsp;<TT>substring</TT>&nbsp; is omitted, a
+construct such as
+<BR><PRE>
+    among( 'S<SUB>11</SUB>' 'S<SUB>12</SUB>' ... (C C<SUB>1</SUB>)
+           'S<SUB>21</SUB>' 'S<SUB>22</SUB>' ... (C C<SUB>2</SUB>)
+           ...
+           'S<SUB>n1</SUB>' 'S<SUB>n2</SUB>' ... (C C<SUB>n</SUB>)
+         )
+</PRE>
+can be written
+<BR><PRE>
+    among( (C)
+           'S<SUB>11</SUB>' 'S<SUB>12</SUB>' ... (C<SUB>1</SUB>)
+           'S<SUB>21</SUB>' 'S<SUB>22</SUB>' ... (C<SUB>2</SUB>)
+           ...
+           'S<SUB>n1</SUB>' 'S<SUB>n2</SUB>' ... (C<SUB>n</SUB>)
+         )
+</PRE>
+and this is just equivalent to
+<BR><PRE>
+    substring C
+    among( 'S<SUB>11</SUB>' 'S<SUB>12</SUB>' ... (C<SUB>1</SUB>)
+           'S<SUB>21</SUB>' 'S<SUB>22</SUB>' ... (C<SUB>2</SUB>)
+           ...
+           'S<SUB>n1</SUB>' 'S<SUB>n2</SUB>' ... (C<SUB>n</SUB>)
+         )
+</PRE>
+
+In its most general form, each string &nbsp;<TT>'S<SUB>ij</SUB>'</TT>&nbsp; may be optionally followed by a
+routine name,
+<BR><PRE>
+    among( (C)
+           'S<SUB>11</SUB>' R<SUB>11</SUB> 'S<SUB>12</SUB>' R<SUB>12</SUB> ... (C<SUB>1</SUB>)
+           'S<SUB>21</SUB>' R<SUB>21</SUB> 'S<SUB>22</SUB>' R<SUB>22</SUB> ... (C<SUB>2</SUB>)
+           ...
+           'S<SUB>n1</SUB>' R<SUB>n1</SUB> 'S<SUB>n2</SUB>' R<SUB>n1</SUB> ... (C<SUB>n</SUB>)
+         )
+</PRE>
+So here each &nbsp;<TT>R<SUB>ij</SUB></TT>&nbsp; is either a routine name or is null. If null, it is equivalent
+to a routine which simply returns signal <B><I>t</I></B>,
+<BR><PRE>
+    define null as true
+</PRE>
+&#x2014; so we can imagine each &nbsp;<TT>'S<SUB>ij</SUB>'</TT>&nbsp; having its associated routine
+<TT>R<SUB>ij</SUB></TT>. Then obeying the &nbsp;<TT>among</TT>&nbsp; causes a search for the longest
+<TT>'S<SUB>ij</SUB>'</TT>&nbsp; whose corresponding routine
+<TT>R<SUB>ij</SUB></TT>&nbsp; gives <B><I>t</I></B>. The routines
+<TT>R<SUB>ij</SUB></TT>&nbsp; should be written without any side-effects, other than the inevitable cursor
+movement. (<B><I>c</I></B> is in any case set back to its old value following a call of
+<TT>R<SUB>ij</SUB></TT>.)
+
+<BR>&nbsp;<H2>8 Booleans</H2>
+
+<TT>set B</TT>&nbsp; and &nbsp;<TT>unset B</TT>&nbsp; set &nbsp;<TT>B</TT>&nbsp; to true and false respectively, where &nbsp;<TT>B</TT>&nbsp; is a
+boolean name. &nbsp;<TT>B</TT>&nbsp; as a command gives a signal <B><I>t</I></B> if it is set true, <B><I>f</I></B>
+otherwise. For example,
+<BR><PRE>
+    booleans ( Y_found )   // declare the boolean
+
+    ....
+
+    unset Y_found          // unset it
+    do ( ['y'] <-'Y' set Y_found )
+       /* if c:l begins 'y' replace it by 'Y' and set Y_found */
+
+    do repeat(goto (v ['y']) <-'Y' set Y_found)
+       /* repeatedy move down the string looking for v 'y' and
+          replacing 'y' with 'Y'. Whenever the replacement takes
+          place set Y_found. v is a test for a vowel, defined as
+          a grouping (see below). */
+
+
+    /* Y_found means there are some letters Y in the string.
+       Later we can use this to trigger a conversion back to
+       lower case y. */
+
+    ....
+
+    do (Y_found repeat(goto (['Y']) <- 'y')
+</PRE>
+<BR>&nbsp;<H2>9 Groupings</H2>
+
+A grouping brings characters together and enables them to be looked for
+with a single test.
+<BR><BR>
+If &nbsp;<TT>G</TT>&nbsp; is declared as a grouping, it can be defined by
+<BR><PRE>
+    define G G<SUB>1</SUB> <I>op</I> G<SUB>2</SUB> <I>op</I> G<SUB>3</SUB> ...
+</PRE>
+where <I>op</I> is &nbsp;<TT>+</TT>&nbsp; or &nbsp;<TT>-</TT>, and &nbsp;<TT>G<SUB>1</SUB></TT>, &nbsp;<TT>G<SUB>2</SUB></TT>, &nbsp;<TT>G<SUB>3</SUB></TT>&nbsp; are literal strings, or groupings that
+have already been defined. (There can be zero or more of these additional
+<I>op</I> components). For example,
+<BR><PRE>
+    define capital_letter  'ABDEFGHIJKLMNOPQRSTUVWXYZ'
+    define small_letter    'abdefghijklmnopqrstuvwxyz'
+    define letter          capital_letter + small_letter
+    define vowel           'aeiou' + 'AEIOU'
+    define consonant       letter - vowel
+    define digit           '0123456789'
+    define alphanumeric    letter + digit
+</PRE>
+Once &nbsp;<TT>G</TT>&nbsp; is defined, it can be used as a command, and is equivalent to a test
+<BR><PRE>
+    'ch1' or 'ch2' or ...
+</PRE>
+where &nbsp;<TT>ch1</TT>, &nbsp;<TT>ch2</TT>&nbsp; ... list all the characters in the grouping.
+<BR><BR>
+<TT>non G</TT>&nbsp; is the converse test, and matches any character except the
+characters of &nbsp;<TT>G</TT>. Note that &nbsp;<TT>non G</TT>&nbsp; is not the same as &nbsp;<TT>not G</TT>, in fact
+<BR><PRE>
+    non G    is equivalent to     (not G next)
+</PRE>
+<TT>non</TT>&nbsp; may be optionally followed by hyphen, so one may write
+<BR><PRE>
+    non-vowel
+    non-digit
+</PRE>
+etc.
+
+<BR>&nbsp;<H2>10 A Snowball program</H2>
+
+
+A complete program consists of a sequence of declarations followed by a
+sequence of definitions of groupings and routines. Routines which are
+implicitly defined as operating on <B><I>c:l</I></B> from right to left must be included
+in a &nbsp;<TT>backwardmode(...)</TT>&nbsp; declaration.
+<BR><BR>
+A Snowball program is called up via a simple
+<A HREF="../runtime/use.html">API</A>
+through its defined
+externals. For example,
+<BR><PRE>
+    externals ( stem1 stem2 )
+    ....
+    define stem1 as ( ... /* stem1 commands */ )
+    define stem2 as ( ... /* stem2 commands */ )
+</PRE>
+The API also allows a current string to be defined, and this becomes the
+<B><I>c:l</I></B> string for the external routine to work on. Its final value is the
+result handed back through the API.
+<BR><BR>
+The strings, integers and booleans are accessible from any point in the
+program, and exist throughout the running of the Snowball program. They are
+therefore like static declarations in C.
+
+<BR>&nbsp;<H2>11 Comments, and other whitespace fillers</H2>
+
+At a deeper level, a program is a sequence of <I>tokens</I>, interspersed with
+whitespace. Names, reserved words, literal numbers and strings are all
+tokens. Various symbols, made up of non-alphanumerics, are also tokens.
+<BR><BR>
+A name, reserved word or number is terminated by the first character that
+cannot form part of it. A symbol is recognised as the longest sequence of
+characters that forms a valid symbol. So &nbsp;<TT>+=-</TT>&nbsp; is two symbols, &nbsp;<TT>+=</TT>&nbsp; and
+<TT>-</TT>, because &nbsp;<TT>+=</TT>&nbsp; is a valid symbol in the language while &nbsp;<TT>+=-</TT>&nbsp; is not.
+Whitespace separates tokens but is otherwise ignored. This of course is
+like C.
+<BR><BR>
+Anywhere that whitespace can occur, there may also occur:
+<BR><BR>
+(a) Comments, in the usual multi-line &nbsp;<TT>/* .... */</TT>&nbsp; or single line
+<TT>// ...</TT>&nbsp; format.
+<BR><BR>
+(b) Get directives. These are like &nbsp;<TT>#include</TT>&nbsp; commands in C, and have the form
+<TT>get 'S'</TT>, where &nbsp;<TT>'S'</TT>&nbsp; is a literal string. For example,
+<BR><PRE>
+    get '/home/martin/snowball/main-hdr' // include the file contents
+</PRE>
+(c) &nbsp;<TT>stringescapes XY</TT>&nbsp; where &nbsp;<TT>X</TT>&nbsp; and &nbsp;<TT>Y</TT>&nbsp; are any two printing characters.
+<BR><BR>
+(d) &nbsp;<TT>stringdef m 'S'</TT>&nbsp; where &nbsp;<TT>m</TT>&nbsp; is sequence of characters not including
+whitespace and terminated with whitespace, and &nbsp;<TT>'S'</TT>&nbsp; is a literal string.
+
+<BR>&nbsp;<H2>12 Character representation</H2>
+
+In this description of Snowball, it is assumed that strings are composed of
+<I>characters</I>, and that characters can be defined numerically, but the numeric range
+of these characters is not defined. As implemented, three different schemes
+are supported. Characters can either be (<I>a</I>) bytes in the range 0 to 255,
+as in traditional C strings, or (<I>b</I>) byte pairs in the range 0 to 65535,
+as in Java strings, or (<I>c</I>) UTF-8 encoded bytes sequences in the range 0
+to 65535, so that a character may occupy 1, 2 or 3 bytes.
+
+<BR><BR>
+
+For case (<I>c</I>), we need to make a slight separation of the concept of
+<I>characters</I> into <I>symbols</I>, the units of text being represented, and
+<I>slots</I>, the units of space into which they map. (So in case (<I>a</I>), all
+slots are one byte; in case (<I>b</I>) all slots are two bytes.)
+<B><I>c</I></B> and <B><I>l</I></B> have numeric values that can be used in AEs (arithmetic
+expressions). These values count the number of slots. Similarly
+<TT>setmark</TT>, &nbsp;<TT>tomark</TT>&nbsp; and &nbsp;<TT>atmark</TT>&nbsp; are remembering and then using slot
+counts. &nbsp;<TT>size</TT>&nbsp; and &nbsp;<TT>sizeof</TT>&nbsp; measure string size
+in slots, not symbols. However, &nbsp;<TT>hop N</TT>&nbsp; moves <B><I>c</I></B> over &nbsp;<TT>N</TT>&nbsp; symbols,
+not &nbsp;<TT>N</TT>&nbsp; slots, and &nbsp;<TT>next</TT>&nbsp; is equivalent to &nbsp;<TT>hop 1</TT>.
+
+<BR><BR>
+
+So long as these simple distinctions are recognised, the same Snowball
+script can be compiled to work with any of the three encoding schemes.
+
+<BR><BR>
+<BR><BR>
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+<BR>&nbsp;<H2>Snowball syntax</H2>
+
+<DL><DD>
+<TT>||</TT>&nbsp; is used for alternatives, &nbsp;<TT>[<I>X</I>]</TT>&nbsp; means that <I>X</I> is
+optional, and &nbsp;<TT>[<I>X</I>]*</TT>&nbsp; means that <I>X</I> is repreated zero or more
+times. meta-symbols are defined on the left. &nbsp;<TT>&lt;char></TT>&nbsp; means any
+character.
+<BR><BR>
+The definition of &nbsp;<TT>literal string</TT>&nbsp; does not allow for the escaping
+conventions established by the &nbsp;<TT>stringescapes</TT>&nbsp; directive. The command
+<TT>?</TT>&nbsp; is a debugging aid.
+<BR><BR>
+
+<BR><PRE>
+&lt;letter>        ::= a || b || ... || z || A || B || ... || Z
+&lt;digit>         ::= 0 || 1 || ... || 9
+&lt;name>          ::= &lt;letter> [ &lt;letter> || &lt;digit> || _ ]*
+&lt;s_name>        ::= &lt;name>
+&lt;i_name>        ::= &lt;name>
+&lt;b_name>        ::= &lt;name>
+&lt;r_name>        ::= &lt;name>
+&lt;g_name>        ::= &lt;name>
+&lt;literal string>::= '[&lt;char>]*'
+&lt;number>        ::= &lt;digit> [ &lt;digit> ]*
+
+S               ::= &lt;s_name> || &lt;literal string>
+G               ::= &lt;g_name> || &lt;literal string>
+
+&lt;declaration>   ::= strings ( [&lt;s_name>]* ) ||
+                    integers ( [&lt;i_name>]* ) ||
+                    booleans ( [&lt;b_name>]* ) ||
+                    routines ( [&lt;r_name>]* ) ||
+                    externals ( [&lt;r_name>]* ) ||
+                    groupings ( [&lt;g_name>]* )
+
+&lt;r_definition>  ::= define &lt;r_name> as C
+&lt;plus_or_minus> ::= + || -
+&lt;g_definition>  ::= define &lt;g_name> G [ &lt;plus_or_minus> G ]*
+
+AE              ::= (AE) ||
+                    AE + AE || AE - AE || AE * AE || AE / AE || - AE ||
+                    maxint || minint || cursor || limit || size ||
+                    sizeof &lt;s_name> || &lt;i_name> || &lt;number>
+
+&lt;i_command>     ::= $ &lt;i_name> = AE ||
+                    $ &lt;i_name> += AE || $ &lt;i_name> -= AE ||
+                    $ &lt;i_name> *= AE || $ &lt;i_name> /= AE ||
+                    $ &lt;i_name> == AE || $ &lt;i_name> != AE ||
+                    $ &lt;i_name> > AE || $ &lt;i_name> >= AE ||
+                    $ &lt;i_name> &lt; AE || $ &lt;i_name> &lt;= AE ||
+
+&lt;s_command>     ::= $ &lt;s_name> C
+
+C               ::= ( [C]* ) ||
+                    &lt;i_command> || &lt;s_command> || C or C || C and C ||
+                    not C || test C || try C || do C || fail C ||
+                    goto C || gopast C || repeat C || loop AE C ||
+                    atleast AE C || S || = S || insert S || attach S ||
+                    &lt;- S || delete ||  hop AE || next ||
+                    => &lt;s_name> || [ || ] || -> &lt;s_name> ||
+                    setmark &lt;i_name> || tomark AE || atmark AE ||
+                    tolimit || atlimit || setlimit C for C ||
+                    backwards C || reverse C || substring ||
+                    among ( [&lt;literal string> [&lt;r_name>] || (C)]* ) ||
+                    set &lt;b_name> || unset &lt;b_name> || &lt;b_name> ||
+                    &lt;r_name> || &lt;g_name> || non [-] &lt;g_name> ||
+                    true || false || ?
+
+P              ::=  [P]* || &lt;declaration> ||
+                    &lt;r_definition> || &lt;g_definition> ||
+                    backwardmode ( P )
+
+&lt;program>      ::=  P
+
+
+
+synonyms:      &lt;+ for insert
+</PRE>
+
+
+</DL>
+
+</TR>
+
+
+</TABLE>
+</BODY>
+</HTML>

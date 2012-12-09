@@ -1,0 +1,502 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>Dutch stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Dutch stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Dutch vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent in two columns</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">     Dutch stop word list</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="stem_MS_DOS_Latin_I.sbl">    The stemmer in Snowball &#x2014; MS DOS Latin I encodings</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../../texts/germanic.html">
+                  Germanic language stemmers</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of Dutch vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+lichaamsziek<BR>
+lichamelijk<BR>
+lichamelijke<BR>
+lichamelijkheden<BR>
+lichamen<BR>
+lichere<BR>
+licht<BR>
+lichtbeeld<BR>
+lichtbruin<BR>
+lichtdoorlatende<BR>
+lichte<BR>
+lichten<BR>
+lichtende<BR>
+lichtenvoorde<BR>
+lichter<BR>
+lichtere<BR>
+lichters<BR>
+lichtgevoeligheid<BR>
+lichtgewicht<BR>
+lichtgrijs<BR>
+lichthoeveelheid<BR>
+lichtintensiteit<BR>
+lichtje<BR>
+lichtjes<BR>
+lichtkranten<BR>
+lichtkring<BR>
+lichtkringen<BR>
+lichtregelsystemen<BR>
+lichtste<BR>
+lichtstromende<BR>
+lichtte<BR>
+lichtten<BR>
+lichttoetreding<BR>
+lichtverontreinigde<BR>
+lichtzinnige<BR>
+lid<BR>
+lidia<BR>
+lidmaatschap<BR>
+lidstaten<BR>
+lidvereniging<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+lichaamsziek<BR>
+licham<BR>
+licham<BR>
+licham<BR>
+licham<BR>
+licher<BR>
+licht<BR>
+lichtbeeld<BR>
+lichtbruin<BR>
+lichtdoorlat<BR>
+licht<BR>
+licht<BR>
+lichtend<BR>
+lichtenvoord<BR>
+lichter<BR>
+lichter<BR>
+lichter<BR>
+lichtgevoel<BR>
+lichtgewicht<BR>
+lichtgrijs<BR>
+lichthoevel<BR>
+lichtintensiteit<BR>
+lichtj<BR>
+lichtjes<BR>
+lichtkrant<BR>
+lichtkring<BR>
+lichtkring<BR>
+lichtregelsystem<BR>
+lichtst<BR>
+lichtstrom<BR>
+licht<BR>
+licht<BR>
+lichttoetred<BR>
+lichtverontreinigd<BR>
+lichtzinn<BR>
+lid<BR>
+lidia<BR>
+lidmaatschap<BR>
+lidstat<BR>
+lidveren<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+opgingen<BR>
+opglanzing<BR>
+opglanzingen<BR>
+opglimlachten<BR>
+opglimpen<BR>
+opglimpende<BR>
+opglimping<BR>
+opglimpingen<BR>
+opgraven<BR>
+opgrijnzen<BR>
+opgrijzende<BR>
+opgroeien<BR>
+opgroeiende<BR>
+opgroeiplaats<BR>
+ophaal<BR>
+ophaaldienst<BR>
+ophaalkosten<BR>
+ophaalsystemen<BR>
+ophaalt<BR>
+ophaaltruck<BR>
+ophalen<BR>
+ophalend<BR>
+ophalers<BR>
+ophef<BR>
+opheffen<BR>
+opheffende<BR>
+opheffing<BR>
+opheldering<BR>
+ophemelde<BR>
+ophemelen<BR>
+opheusden<BR>
+ophief<BR>
+ophield<BR>
+ophieven<BR>
+ophoepelt<BR>
+ophoog<BR>
+ophoogzand<BR>
+ophopen<BR>
+ophoping<BR>
+ophouden<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+opging<BR>
+opglanz<BR>
+opglanz<BR>
+opglimlacht<BR>
+opglimp<BR>
+opglimp<BR>
+opglimp<BR>
+opglimp<BR>
+opgrav<BR>
+opgrijnz<BR>
+opgrijz<BR>
+opgroei<BR>
+opgroei<BR>
+opgroeiplat<BR>
+ophal<BR>
+ophaaldienst<BR>
+ophaalkost<BR>
+ophaalsystem<BR>
+ophaalt<BR>
+ophaaltruck<BR>
+ophal<BR>
+ophal<BR>
+ophaler<BR>
+ophef<BR>
+opheff<BR>
+opheff<BR>
+opheff<BR>
+ophelder<BR>
+ophemeld<BR>
+ophemel<BR>
+opheusd<BR>
+ophief<BR>
+ophield<BR>
+ophiev<BR>
+ophoepelt<BR>
+ophog<BR>
+ophoogzand<BR>
+ophop<BR>
+ophop<BR>
+ophoud<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR>&nbsp;<H2>The stemming algorithm</H2>
+
+Dutch includes the following accented forms
+<DL><DD>
+    <B><I>ä  &nbsp;  ë  &nbsp;  ï  &nbsp;  ö  &nbsp;  ü  &nbsp;  á  &nbsp;  é  &nbsp;  í  &nbsp;  ó  &nbsp;  ú  &nbsp;  è</I></B>
+</DL>
+First, remove all umlaut and acute accents. A vowel is then one of,
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  y  &nbsp;  è</I></B>
+</DL>
+Put initial <B><I>y</I></B>, <B><I>y</I></B> after a vowel, and
+<B><I>i</I></B> between vowels into upper case. <I>R</I>1 and
+<I>R</I>2
+(see the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2)
+are then defined as in German.
+<BR><BR>
+Define a valid <B><I>s</I></B>-ending as a non-vowel other than <B><I>j</I></B>.
+<BR><BR>
+Define a valid <B><I>en</I></B>-ending as a non-vowel, and not <B><I>gem</I></B>.
+<BR><BR>
+Define undoubling the ending as removing the last letter if the word ends
+<B><I>kk</I></B>, <B><I>dd</I></B> or <B><I>tt</I></B>.
+<BR><BR>
+Do each of steps 1, 2 3 and 4.
+<BR><BR>
+Step 1:
+<DL><DD>
+    Search for the longest among the following suffixes, and perform the
+    action indicated
+<BR><BR>
+<DL>
+    <DT>(<I>a</I>) <B><I>heden</I></B>
+        <DD>replace with <B><I>heid</I></B> if in <I>R</I>1
+<BR><BR>
+    <DT>(<I>b</I>) <B><I>en  &nbsp;  ene</I></B>
+        <DD>delete if in <I>R</I>1 and preceded by a valid <B><I>en</I></B>-ending, and then
+        undouble the ending
+<BR><BR>
+    <DT>(<I>c</I>) <B><I>s  &nbsp;  se</I></B>
+        <DD>delete if in <I>R</I>1 and preceded by a valid <B><I>s</I></B>-ending
+</DL>
+</DL>
+Step 2:
+<DL><DD>
+    Delete suffix <B><I>e</I></B> if in <I>R</I>1 and preceded by a non-vowel, and then undouble
+    the ending
+</DL>
+Step 3a: <B><I>heid</I></B>
+<DL><DD>
+    delete <B><I>heid</I></B> if in <I>R</I>2 and not preceded by <B><I>c</I></B>, and treat a preceding
+    <B><I>en</I></B> as in step 1(<I>b</I>)
+</DL>
+Step 3b: <I>d</I>-suffixes <A HREF="../../texts/glossary.html">(*)</A>
+<DL><DD>
+    Search for the longest among the following suffixes, and perform the
+    action indicated.
+<BR><BR>
+<DL>
+    <DT><B><I>end  &nbsp;  ing</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>ig</I></B>, delete if in <I>R</I>2 and not preceded by <B><I>e</I></B>, otherwise
+        undouble the ending
+<BR><BR>
+    <DT><B><I>ig</I></B>
+        <DD>delete if in <I>R</I>2 and not preceded by <B><I>e</I></B>
+<BR><BR>
+    <DT><B><I>lijk</I></B>
+        <DD>delete if in <I>R</I>2, and then repeat step 2
+<BR><BR>
+    <DT><B><I>baar</I></B>
+        <DD>delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>bar</I></B>
+        <DD>delete if in <I>R</I>2 and if step 2 actually removed an <B><I>e</I></B>
+</DL>
+</DL>
+Step 4: undouble vowel
+<DL><DD>
+    If the words ends <I>CVD</I>, where <I>C</I> is a non-vowel, <I>D</I> is a non-vowel other
+    than <B><I>I</I></B>, and <I>V</I> is double <B><I>a</I></B>, <B><I>e</I></B>, <B><I>o</I></B> or <B><I>u</I></B>, remove one of the vowels from
+    <I>V</I> (for example, <I>maan</I> <TT>-&gt;</TT> <I>man</I>, <I>brood</I> <TT>-&gt;</TT> <I>brod</I>).
+</DL>
+Finally,
+<DL><DD>
+    Turn <B><I>I</I></B> and <B><I>Y</I></B> back into lower case.
+</DL>
+
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR>&nbsp;<H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+routines (
+           prelude postlude
+           e_ending
+           en_ending
+           mark_regions
+           R1 R2
+           undouble
+           standard_suffix
+)
+
+externals ( stem )
+
+booleans ( e_found )
+
+integers ( p1 p2 )
+
+groupings ( v v_I v_j )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef a"   hex 'E4'
+stringdef e"   hex 'EB'
+stringdef i"   hex 'EF'
+stringdef o"   hex 'F6'
+stringdef u"   hex 'FC'
+
+stringdef a'   hex 'E1'
+stringdef e'   hex 'E9'
+stringdef i'   hex 'ED'
+stringdef o'   hex 'F3'
+stringdef u'   hex 'FA'
+
+stringdef e`   hex 'E8'
+
+define v       'aeiouy{e`}'
+define v_I     v + 'I'
+define v_j     v + 'j'
+
+define prelude as (
+    test repeat (
+        [substring] among(
+            '{a"}' '{a'}'
+                (<- 'a')
+            '{e"}' '{e'}'
+                (<- 'e')
+            '{i"}' '{i'}'
+                (<- 'i')
+            '{o"}' '{o'}'
+                (<- 'o')
+            '{u"}' '{u'}'
+                (<- 'u')
+            ''  (next)
+        ) //or next
+    )
+    try(['y'] <- 'Y')
+    repeat goto (
+        v [('i'] v <- 'I') or
+           ('y']   <- 'Y')
+    )
+)
+
+define mark_regions as (
+
+    $p1 = limit
+    $p2 = limit
+
+    gopast v  gopast non-v  setmark p1
+    try($p1 < 3  $p1 = 3)  // at least 3
+    gopast v  gopast non-v  setmark p2
+
+)
+
+define postlude as repeat (
+
+    [substring] among(
+        'Y'  (<- 'y')
+        'I'  (<- 'i')
+        ''   (next)
+    ) //or next
+
+)
+
+backwardmode (
+
+    define R1 as $p1 <= cursor
+    define R2 as $p2 <= cursor
+
+    define undouble as (
+        test among('kk' 'dd' 'tt') [next] delete
+    )
+
+    define e_ending as (
+        unset e_found
+        ['e'] R1 test non-v delete
+        set e_found
+        undouble
+    )
+
+    define en_ending as (
+        R1 non-v and not 'gem' delete
+        undouble
+    )
+
+    define standard_suffix as (
+        do (
+            [substring] among(
+                'heden'
+                (   R1 <- 'heid'
+                )
+                'en' 'ene'
+                (   en_ending
+                )
+                's' 'se'
+                (   R1 non-v_j delete
+                )
+            )
+        )
+        do e_ending
+
+        do ( ['heid'] R2 not 'c' delete
+             ['en'] en_ending
+           )
+
+        do (
+            [substring] among(
+                'end' 'ing'
+                (   R2 delete
+                    (['ig'] R2 not 'e' delete) or undouble
+                )
+                'ig'
+                (   R2 not 'e' delete
+                )
+                'lijk'
+                (   R2 delete e_ending
+                )
+                'baar'
+                (   R2 delete
+                )
+                'bar'
+                (   R2 e_found delete
+                )
+            )
+        )
+        do (
+            non-v_I
+            test (
+                among ('aa' 'ee' 'oo' 'uu')
+                non-v
+            )
+            [next] delete
+        )
+    )
+)
+
+define stem as (
+
+        do prelude
+        do mark_regions
+        backwards
+            do standard_suffix
+        do postlude
+)
+</DL>
+</PRE>
+</TABLE>
+</BODY>
+</HTML>

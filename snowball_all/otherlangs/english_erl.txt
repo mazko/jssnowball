@@ -1,0 +1,350 @@
+-module(porter).
+
+-export([is_vowel/1, is_double/1, li_ending/1, short_syllable/1]).
+-export([r1/1, r2/1, is_short/1, replace/2]).
+
+-export([step0/1, step1a/1, step1b/1, step1c/1]).
+-export([step2/1, step3/1]).
+
+-export([stem/1]).
+
+% This is an implementation of Porter2, as described at
+% http://snowball.tartarus.org/algorithms/english/stemmer.html
+
+%stem(Word) ->
+%    LWord = string:to_lower(Word),
+    
+
+is_vowel($a) -> true;
+is_vowel($e) -> true;
+is_vowel($i) -> true;
+is_vowel($o) -> true;
+is_vowel($u) -> true;
+is_vowel($y) -> true;
+is_vowel(_) -> false.
+
+is_nonvowel(C) -> not(is_vowel(C)).
+
+is_double("bb") -> true;
+is_double("dd") -> true;
+is_double("ff") -> true;
+is_double("gg") -> true;
+is_double("mm") -> true;
+is_double("nn") -> true;
+is_double("pp") -> true;
+is_double("rr") -> true;
+is_double("tt") -> true;
+is_double(_) -> false.
+
+li_ending($c) -> true;
+li_ending($d) -> true;
+li_ending($e) -> true;
+li_ending($g) -> true;
+li_ending($h) -> true;
+li_ending($k) -> true;
+li_ending($m) -> true;
+li_ending($n) -> true;
+li_ending($r) -> true;
+li_ending($t) -> true;
+li_ending(_) -> false.
+
+short_syllable([A,B,C|_]) when C /= [] ->
+    is_nonvowel(A) andalso 
+	A /= $w andalso A /= $x andalso A /= $Y andalso
+	is_vowel(B) andalso not(is_vowel(C));
+short_syllable([A,B]) ->
+    is_nonvowel(A) andalso is_vowel(B).
+
+r1i("gener" ++ W) ->
+    r1("ner" ++ W);
+r1i("commun" ++ W) ->
+    r1("mun" ++ W);
+r1i("arsen" ++ W) ->
+    r1("sen" ++ W);
+r1i(W) ->
+    S1 = lists:dropwhile(fun is_nonvowel/1, W),
+    S2 = lists:dropwhile(fun is_vowel/1, S1),
+    case S2 of
+	[] -> [];
+	[H|T] ->
+	    B = is_nonvowel(H),
+	    if
+		B -> T;
+		true -> []
+	    end
+    end.
+
+r1(W) ->
+    lists:reverse(r1i(lists:reverse(W))).
+	    
+r2(W) ->
+    R1 = r1(W),
+    r1(R1).
+
+is_short(W) ->
+    short_syllable(W) andalso r1(W) == [].
+
+stem(W) when is_list(W) ->
+    stem_core(modify_ys(drop_quote(string:to_lower(W))));
+stem(W) when is_binary(W) ->
+    list_to_binary(stem(binary_to_list(W))).
+
+stem_core("skis") -> "ski";
+stem_core("skies") -> "sky";
+stem_core("dying") -> "die";
+stem_core("lying") -> "lie";
+stem_core("tying") -> "tie";
+stem_core("idly") -> "idl";
+stem_core("gently") -> "gentl";
+stem_core("ugly") -> "ugli";
+stem_core("early") -> "earli";
+stem_core("only") -> "onli";
+stem_core("singly") -> "singl";
+stem_core("sky") -> "sky";
+stem_core("news") -> "news";
+stem_core("howe") -> "howe";
+stem_core(W) when length(W) < 3 -> W;
+stem_core(W) ->
+    W1 = lists:reverse(W),
+    W2 = step1a(step0(W1)),
+    W5 = case W2 of
+	     "gninni" -> "gninni";
+	     "gnituo" -> "gnituo";
+	     "gninnac" -> "gninnac";
+	     "gnirreh" -> "gnirreh";
+	     "gnirrae" -> "gnirrae";
+	     "deecorp" -> "deecorp";
+	     "deecxe" -> "deecxe";
+	     "deeccus" -> "deeccus";
+	     X -> steps1b_to_5(X)
+	 end,
+    lists:reverse(string:to_lower(W5)). % To get all the Ys back to ys.
+
+steps1b_to_5(W) ->
+    W1b = step1b(W),
+    W1c = step1c(W1b),
+    W2 = step2(W1c),
+    W3 = step3(W2),
+    W4 = step4(W3),
+    W5 = step5(W4),
+    W5.
+
+replace(Word, []) -> Word;
+replace(Word, [{S,Ac}|Ls]) ->
+    B = lists:prefix(S, Word),
+    if 
+	B -> Ac(S, lists:nthtail(length(S), Word));
+	true -> replace(Word, Ls)
+    end.
+
+unchanged() -> fun(Suffix,Stem) -> Suffix ++ Stem end.
+stem() -> fun(_Suffix, Stem) -> Stem end.
+suffix(NewSuffix) -> fun(_Suffix, Stem) -> NewSuffix ++ Stem end.
+length_dependent_suffix(UpperLength, ShortSuffix, LongSuffix) ->
+    fun(_Suffix, Stem) ->
+	    if length(Stem) > UpperLength ->
+		    LongSuffix ++ Stem;
+	       true -> ShortSuffix ++ Stem
+	    end
+    end.
+suffix_in_r1(NewSuffix) -> 
+    fun(Suffix, Stem) ->
+	    B = lists:prefix(Suffix, r1(Suffix++Stem)),
+	    if
+		B -> NewSuffix ++ Stem;
+		true -> Suffix ++ Stem
+	    end
+    end.
+suffix_in_r2(NewSuffix) ->
+    fun(Suffix, Stem) ->
+	    B = lists:prefix(Suffix, r2(Suffix ++ Stem)),
+	    if 
+		B ->
+		     NewSuffix ++ Stem;
+		true -> Suffix ++ Stem
+	    end
+    end.
+
+nonfirst_nonvowel_before(NewSuffix) ->
+    fun(Suffix, Stem = [F|_]) ->
+	    B = length(Stem) > 1 andalso is_nonvowel(F),
+	    if
+		B -> NewSuffix ++ Stem;
+		true -> Suffix ++ Stem
+	    end
+    end.
+		     
+drop_quote([$'|L]) ->				  
+    L;
+drop_quote(S) -> S.
+
+modify_ys([]) -> [];
+modify_ys([$y]) ->
+    [$Y];
+modify_ys([$y,A|Ls]) ->
+    B = is_vowel(A),
+    if
+	B ->
+	    [$Y, A|modify_ys(Ls)];
+	true ->
+	    [$y, A|modify_ys(Ls)]
+    end;
+modify_ys([L|Ls]) ->
+    [L|modify_ys(Ls)].
+
+		     
+
+			       
+step0(W) -> 
+    replace(W, [{"'s'", stem()}, 
+		{"s'", stem()}, 
+		{"'", stem()}]).
+
+step1a(W) ->
+    replace(W, [{"sess", suffix("ss")},
+		{"dei", length_dependent_suffix(1, "ei", "i")},
+		{"sei", length_dependent_suffix(1, "ei", "i")},
+		{"su", unchanged()},
+		{"ss", unchanged()},
+		{"s", fun(Suffix,Stem) ->
+			 B = lists:any(fun is_vowel/1, lists:nthtail(1, Stem)),
+			 if
+			     B -> Stem;
+			     true -> Suffix ++ Stem
+			 end
+		      end}]).
+
+step1b(W) ->
+    F = fun(Suffix, Stem) ->
+	   B = lists:any(fun is_vowel/1, Stem),
+	   if B ->
+		   B1 = lists:prefix("ta", Stem) orelse
+		       lists:prefix("lb", Stem) orelse
+		       lists:prefix("zi", Stem),
+		   B2 = length(Stem) > 2 andalso
+		       is_double(lists:sublist(Stem, 2)),
+		   B3 = is_short(Stem),
+		   if
+		       B1 -> "e" ++ lists:nthtail(2, Stem);
+		       B2 -> lists:nthtail(1,Stem);
+		       B3 -> "e" ++ Stem;
+		       true -> Stem
+		   end;
+	      true -> Suffix ++ Stem
+	   end
+	end,
+    replace(W, [{"yldee", suffix_in_r1("ee")},
+		{"ylgni", F},
+		{"ylde", F},
+		{"gni", F},
+		{"dee", suffix_in_r1("ee")},
+		{"de", F}]).
+
+
+
+step1c(W) ->
+    replace(W, [{"y", nonfirst_nonvowel_before("i")},
+		{"Y", nonfirst_nonvowel_before("i")}]).
+
+	
+step2(W) ->
+    replace(W, [{"ssenevi", suffix_in_r1("evi")},
+		{"ssensuo", suffix_in_r1("suo")},
+		{"ssenluf", suffix_in_r1("luf")},
+		{"lanoita", suffix_in_r1("eta")},
+		{"noitazi", suffix_in_r1("ezi")},
+		{"ilssel", suffix_in_r1("sell")},
+		{"itilib", suffix_in_r1("elb")},
+		{"lanoit", suffix_in_r1("noit")},
+		{"illuf", suffix_in_r1("luf")},
+		{"itivi", suffix_in_r1("evi")},
+		{"ilsuo", suffix_in_r1("suo")},
+		{"itila", suffix_in_r1("la")},
+		{"msila", suffix_in_r1("la")},
+		{"noita", suffix_in_r1("eta")},
+		{"iltne", suffix_in_r1("tne")},
+		{"illa", suffix_in_r1("la")},
+		{"rota", suffix_in_r1("eta")},
+		{"rezi", suffix_in_r1("ezi")},
+		{"ilba", suffix_in_r1("elba")},
+		{"icna", suffix_in_r1("ecna")},
+		{"icne", suffix_in_r1("ecne")},
+		{"igo", fun(Suffix,Stem = [A|_]) ->
+				B = lists:prefix(Suffix, r1(Suffix++Stem)) andalso
+				    A == $l,
+				if
+				    B -> "go" ++ Stem;
+				    true -> Suffix ++ Stem
+				end
+			end},
+		{"ilb", suffix_in_r1("elb")},
+		{"il", fun(Suffix,Stem = [E|_]) ->
+				B = lists:prefix(Suffix, r1(Suffix++Stem)) andalso
+				    li_ending(E),
+				if
+				    B -> Stem;
+				    true -> Suffix ++ Stem
+				end
+			end}]).
+
+
+step3(W) ->
+    replace(W, [{"lanoita", suffix_in_r1("eta")},
+		{"lanoit", suffix_in_r1("noit")},
+		{"evita", suffix_in_r2("")},
+		{"itici", suffix_in_r1("ci")},
+		{"etaci", suffix_in_r1("ci")},
+		{"ezila", suffix_in_r1("la")},
+		{"ssen", suffix_in_r1("")},
+		{"laci", suffix_in_r1("ci")},
+		{"luf", suffix_in_r1("")}]).
+
+step4(W) ->
+    replace(W, [{"tneme", suffix_in_r2("")},
+		{"tnem", suffix_in_r2("")},
+		{"elbi", suffix_in_r2("")},
+		{"elba", suffix_in_r2("")},
+		{"ecne", suffix_in_r2("")},
+		{"ecna", suffix_in_r2("")},
+		{"noi", fun(Suffix, Stem = [C|_]) ->
+				B = lists:prefix(Suffix, r2(Suffix ++ Stem)) andalso
+				    (C == $s orelse C == $t),
+				if 
+				    B ->
+					Stem;
+				    true -> Suffix ++ Stem
+				end
+			end},
+		{"ezi", suffix_in_r2("")},
+		{"evi", suffix_in_r2("")},
+		{"suo", suffix_in_r2("")},
+		{"iti", suffix_in_r2("")},
+		{"eta", suffix_in_r2("")},
+		{"msi", suffix_in_r2("")},
+		{"tne", suffix_in_r2("")},
+		{"tna", suffix_in_r2("")},
+		{"ci", suffix_in_r2("")},
+		{"re", suffix_in_r2("")},
+		{"la", suffix_in_r2("")}]).
+
+step5(W) ->
+    replace(W, [{"e", fun(Suffix, Stem) ->
+			      B = lists:prefix(Suffix, r2(Suffix ++ Stem)) orelse
+				  (lists:prefix(Suffix, r1(Suffix ++ Stem)) andalso
+				   not(short_syllable(Stem))),
+			      if 
+				  B -> Stem;
+				  true -> Suffix ++ Stem
+			      end
+		      end},
+		{"l", fun(Suffix, Stem = [C|_]) ->
+			      
+			      B = lists:prefix(Suffix, r2(Suffix ++ Stem)) andalso
+				  C == $l,
+			      if 
+				  B -> Stem;
+				  true -> Suffix ++ Stem
+			      end
+		      end}]).
+				       
+				      

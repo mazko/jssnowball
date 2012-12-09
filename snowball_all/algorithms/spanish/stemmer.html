@@ -1,0 +1,629 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>Spanish stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Spanish stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Spanish vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent in two columns</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">    Spanish stop word list</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="stem_MS_DOS_Latin_I.sbl">    The stemmer in Snowball &#x2014; MS DOS Latin I encodings</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../../texts/romance.html">
+                  Romance language stemmers</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of Spanish vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+che<BR>
+checa<BR>
+checar<BR>
+checo<BR>
+checoslovaquia<BR>
+chedraoui<BR>
+chefs<BR>
+cheliabinsk<BR>
+chelo<BR>
+chemical<BR>
+chemicalweek<BR>
+chemise<BR>
+chepo<BR>
+cheque<BR>
+chequeo<BR>
+cheques<BR>
+cheraw<BR>
+chesca<BR>
+chester<BR>
+chetumal<BR>
+chetumaleños<BR>
+chevrolet<BR>
+cheyene<BR>
+cheyenne<BR>
+chi<BR>
+chía<BR>
+chiapaneca<BR>
+chiapas<BR>
+chiba<BR>
+chic<BR>
+chica<BR>
+chicago<BR>
+chicana<BR>
+chicano<BR>
+chicas<BR>
+chicharrones<BR>
+chichen<BR>
+chichimecas<BR>
+chicles<BR>
+chico<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+che<BR>
+chec<BR>
+chec<BR>
+chec<BR>
+checoslovaqui<BR>
+chedraoui<BR>
+chefs<BR>
+cheliabinsk<BR>
+chel<BR>
+chemical<BR>
+chemicalweek<BR>
+chemis<BR>
+chep<BR>
+chequ<BR>
+cheque<BR>
+chequ<BR>
+cheraw<BR>
+chesc<BR>
+chest<BR>
+chetumal<BR>
+chetumaleñ<BR>
+chevrolet<BR>
+cheyen<BR>
+cheyenn<BR>
+chi<BR>
+chi<BR>
+chiapanec<BR>
+chiap<BR>
+chib<BR>
+chic<BR>
+chic<BR>
+chicag<BR>
+chican<BR>
+chican<BR>
+chic<BR>
+chicharron<BR>
+chich<BR>
+chichimec<BR>
+chicl<BR>
+chic<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+torá<BR>
+tórax<BR>
+torcer<BR>
+toreado<BR>
+toreados<BR>
+toreándolo<BR>
+torear<BR>
+toreara<BR>
+torearlo<BR>
+toreó<BR>
+torero<BR>
+toreros<BR>
+torio<BR>
+tormenta<BR>
+tormentas<BR>
+tornado<BR>
+tornados<BR>
+tornar<BR>
+tornen<BR>
+torneo<BR>
+torneos<BR>
+tornillo<BR>
+tornillos<BR>
+torniquete<BR>
+torno<BR>
+toro<BR>
+toronto<BR>
+toros<BR>
+torpedearon<BR>
+torpeza<BR>
+torrado<BR>
+torralba<BR>
+torre<BR>
+torrencial<BR>
+torrenciales<BR>
+torrente<BR>
+torreon<BR>
+torreón<BR>
+torres<BR>
+torrescano<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+tor<BR>
+torax<BR>
+torc<BR>
+tor<BR>
+tor<BR>
+tor<BR>
+tor<BR>
+tor<BR>
+tor<BR>
+tore<BR>
+torer<BR>
+torer<BR>
+tori<BR>
+torment<BR>
+torment<BR>
+torn<BR>
+torn<BR>
+torn<BR>
+torn<BR>
+torne<BR>
+torne<BR>
+tornill<BR>
+tornill<BR>
+torniquet<BR>
+torn<BR>
+tor<BR>
+toront<BR>
+tor<BR>
+torped<BR>
+torpez<BR>
+torr<BR>
+torralb<BR>
+torr<BR>
+torrencial<BR>
+torrencial<BR>
+torrent<BR>
+torreon<BR>
+torreon<BR>
+torr<BR>
+torrescan<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR>&nbsp;<H2>The stemming algorithm</H2>
+
+Letters in Spanish include the following accented forms,
+<DL><DD>
+    <B><I>á  &nbsp;  é  &nbsp;  í  &nbsp;  ó  &nbsp;  ú  &nbsp;  ü  &nbsp;  ñ</I></B>
+</DL>
+The following letters are vowels:
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  á  &nbsp;  é  &nbsp;  í  &nbsp;  ó  &nbsp;  ú  &nbsp;  ü</I></B>
+</DL>
+<I>R</I>2 is defined in the usual way &#x2014;
+see the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2.
+<BR><BR>
+<I>RV</I> is defined as follows (and this is not the same as the
+ <A HREF="../french/stemmer.html">French stemmer</A>
+definition):
+<BR><BR>
+If the second letter is a consonant, <I>RV</I> is the region after the next
+following vowel, or if the first two letters are vowels, <I>RV</I> is the region
+after the next consonant, and otherwise (consonant-vowel case) <I>RV</I> is the
+region after the third letter. But <I>RV</I> is the end of the word if these
+positions cannot be found.
+<BR><BR>
+For example,
+<BR><PRE>
+    m a c h o     o l i v a     t r a b a j o     á u r e o
+         |...|         |...|         |.......|         |...|
+</PRE>
+Always do steps 0 and 1.
+<BR><BR>
+Step 0: Attached pronoun
+<DL><DD>
+    Search for the longest among the following suffixes
+<BR><BR><DL><DD>
+        <B><I>me  &nbsp;  se  &nbsp;  sela  &nbsp;  selo  &nbsp;  selas  &nbsp;  selos  &nbsp;  la  &nbsp;  le  &nbsp;  lo  &nbsp;  las  &nbsp;  les  &nbsp;  los  &nbsp;  nos</I></B>
+</DL><BR>
+    and delete it, if comes after one of
+<BR><BR><DL><DD>
+        (<I>a</I>) <B><I>iéndo  &nbsp;  ándo  &nbsp;  ár  &nbsp;  ér  &nbsp;  ír</I></B><BR>
+        (<I>b</I>) <B><I>ando  &nbsp;  iendo  &nbsp;  ar  &nbsp;  er  &nbsp;  ir</I></B><BR>
+        (<I>c</I>) <B><I>yendo</I></B> following <B><I>u</I></B>
+</DL><BR>
+    in <I>RV</I>. In the case of (<I>c</I>), <B><I>yendo</I></B> must lie in <I>RV</I>, but the preceding
+    <B><I>u</I></B> can be outside it.
+<BR><BR>
+    In the case of (<I>a</I>), deletion is followed by removing the acute accent
+    (for example, <I>haciéndola</I> <TT>-&gt;</TT> <I>haciendo</I>).
+</DL>
+Step 1: Standard suffix removal
+<DL><DD>
+    Search for the longest among the following suffixes, and perform the
+    action indicated.
+<BR><BR>
+<DL>
+    <DT><B><I>anza  &nbsp;  anzas  &nbsp;  ico  &nbsp;  ica  &nbsp;  icos  &nbsp;  icas  &nbsp;  ismo  &nbsp;  ismos  &nbsp;  able  &nbsp;  ables  &nbsp;  ible  &nbsp;  ibles  &nbsp;  ista
+     &nbsp;  istas  &nbsp;  oso  &nbsp;  osa  &nbsp;  osos  &nbsp;  osas  &nbsp;  amiento  &nbsp;  amientos  &nbsp;  imiento  &nbsp;
+    imientos</I></B>
+        <DD>delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>adora  &nbsp;  ador  &nbsp;  ación  &nbsp;  adoras  &nbsp;  adores  &nbsp;  aciones  &nbsp;  ante  &nbsp;  antes  &nbsp;  ancia  &nbsp;  ancias</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>ic</I></B>, delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>logía  &nbsp;  logías</I></B>
+        <DD>replace with <B><I>log</I></B> if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>ución  &nbsp;  uciones</I></B>
+        <DD>replace with <B><I>u</I></B> if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>encia  &nbsp;  encias</I></B>
+        <DD>replace with <B><I>ente</I></B> if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>amente</I></B>
+        <DD>delete if in <I>R</I>1
+        <DD>if preceded by <B><I>iv</I></B>, delete if in <I>R</I>2 (and if further preceded by <B><I>at</I></B>,
+        delete if in <I>R</I>2), otherwise,
+        <DD>if preceded by <B><I>os</I></B>, <B><I>ic</I></B> or <B><I>ad</I></B>, delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>mente</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>ante</I></B>, <B><I>able</I></B> or <B><I>ible</I></B>, delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>idad  &nbsp;  idades</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>abil</I></B>, <B><I>ic</I></B> or <B><I>iv</I></B>, delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>iva  &nbsp;  ivo  &nbsp;  ivas  &nbsp;  ivos</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>at</I></B>, delete if in <I>R</I>2
+</DL>
+</DL>
+Do step 2<I>a</I> if no ending was removed by step 1.
+<BR><BR>
+Step 2<I>a</I>: Verb suffixes beginning <B><I>y</I></B>
+<DL><DD>
+    Search for the longest among the following suffixes in <I>RV</I>, and if found,
+    delete if preceded by <B><I>u</I></B>.
+<BR><BR><DL><DD>
+        <B><I>ya  &nbsp;  ye  &nbsp;  yan  &nbsp;  yen  &nbsp;  yeron  &nbsp;  yendo  &nbsp;  yo  &nbsp;  yó  &nbsp;  yas  &nbsp;  yes  &nbsp;  yais  &nbsp;
+        yamos</I></B>
+</DL><BR>
+    (Note that the preceding u need not be in <I>RV</I>.)
+</DL>
+Do Step 2<I>b</I> if step 2<I>a</I> was done, but failed to remove a suffix.
+<BR><BR>
+Step 2<I>b</I>: Other verb suffixes
+<DL><DD>
+    Search for the longest among the following suffixes in <I>RV</I>, and perform the
+    action indicated.
+<BR><BR>
+<DL>
+    <DT><B><I>en  &nbsp;  es  &nbsp;  éis  &nbsp;  emos</I></B>
+        <DD>delete, and if preceded by <B><I>gu</I></B> delete the <B><I>u</I></B> (the <B><I>gu</I></B> need not be in
+        <I>RV</I>)
+<BR><BR>
+    <DT><B><I>arían  &nbsp;  arías  &nbsp;  arán  &nbsp;  arás  &nbsp;  aríais  &nbsp;  aría  &nbsp;  aréis  &nbsp;  aríamos  &nbsp;  aremos
+     &nbsp;  ará  &nbsp;  aré
+     &nbsp;  erían  &nbsp;  erías  &nbsp;  erán  &nbsp;  erás  &nbsp;  eríais  &nbsp;  ería  &nbsp;  eréis  &nbsp;  eríamos  &nbsp;  eremos
+     &nbsp;  erá  &nbsp;  eré
+     &nbsp;  irían  &nbsp;  irías  &nbsp;  irán  &nbsp;  irás  &nbsp;  iríais  &nbsp;  iría  &nbsp;  iréis  &nbsp;  iríamos  &nbsp;  iremos
+     &nbsp;  irá  &nbsp;  iré
+     &nbsp;  aba  &nbsp;  ada  &nbsp;  ida  &nbsp;  ía  &nbsp;  ara  &nbsp;  iera  &nbsp;  ad  &nbsp;  ed  &nbsp;  id  &nbsp;  ase  &nbsp;  iese  &nbsp;  aste  &nbsp;  iste  &nbsp;  an  &nbsp;  aban  &nbsp;  ían
+     &nbsp;  aran  &nbsp;  ieran  &nbsp;  asen  &nbsp;  iesen  &nbsp;  aron  &nbsp;  ieron  &nbsp;  ado  &nbsp;  ido  &nbsp;  ando  &nbsp;  iendo  &nbsp;  ió  &nbsp;  ar  &nbsp;  er  &nbsp;  ir  &nbsp;  as
+     &nbsp;  abas  &nbsp;  adas  &nbsp;  idas  &nbsp;  ías  &nbsp;  aras  &nbsp;  ieras  &nbsp;  ases  &nbsp;  ieses  &nbsp;  ís  &nbsp;  áis  &nbsp;  abais  &nbsp;  íais
+     &nbsp;  arais  &nbsp;  ierais  &nbsp;    &nbsp;  aseis  &nbsp;  ieseis  &nbsp;  asteis  &nbsp;  isteis  &nbsp;  ados  &nbsp;  idos  &nbsp;  amos  &nbsp;  ábamos
+     &nbsp;  íamos  &nbsp;  imos  &nbsp;  áramos  &nbsp;  iéramos  &nbsp;  iésemos  &nbsp;  ásemos</I></B>
+        <DD>delete
+</DL>
+</DL>
+Always do step 3.
+<BR><BR>
+Step 3: residual suffix
+<DL><DD>
+    Search for the longest among the following suffixes in <I>RV</I>, and perform the
+    action indicated.
+<BR><BR>
+<DL>
+    <DT><B><I>os  &nbsp;  a  &nbsp;  o  &nbsp;  á  &nbsp;  í  &nbsp;  ó</I></B>
+        <DD>delete if in <I>RV</I>
+<BR><BR>
+    <DT><B><I>e  &nbsp;  é</I></B>
+        <DD>delete if in <I>RV</I>, and if preceded by <B><I>gu</I></B> with the <B><I>u</I></B> in <I>RV</I> delete the <B><I>u</I></B>
+</DL>
+</DL>
+And finally:
+<DL><DD>
+    Remove acute accents
+</DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR>&nbsp;<H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+routines (
+           postlude mark_regions
+           RV R1 R2
+           attached_pronoun
+           standard_suffix
+           y_verb_suffix
+           verb_suffix
+           residual_suffix
+)
+
+externals ( stem )
+
+integers ( pV p1 p2 )
+
+groupings ( v )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef a'   hex 'E1'  // a-acute
+stringdef e'   hex 'E9'  // e-acute
+stringdef i'   hex 'ED'  // i-acute
+stringdef o'   hex 'F3'  // o-acute
+stringdef u'   hex 'FA'  // u-acute
+stringdef u"   hex 'FC'  // u-diaeresis
+stringdef n~   hex 'F1'  // n-tilde
+
+define v 'aeiou{a'}{e'}{i'}{o'}{u'}{u"}'
+
+define mark_regions as (
+
+    $pV = limit
+    $p1 = limit
+    $p2 = limit  // defaults
+
+    do (
+        ( v (non-v gopast v) or (v gopast non-v) )
+        or
+        ( non-v (non-v gopast v) or (v next) )
+        setmark pV
+    )
+    do (
+        gopast v gopast non-v setmark p1
+        gopast v gopast non-v setmark p2
+    )
+)
+
+define postlude as repeat (
+    [substring] among(
+        '{a'}' (<- 'a')
+        '{e'}' (<- 'e')
+        '{i'}' (<- 'i')
+        '{o'}' (<- 'o')
+        '{u'}' (<- 'u')
+        // and possibly {u"}->u here, or in prelude
+        ''     (next)
+    ) //or next
+)
+
+backwardmode (
+
+    define RV as $pV <= cursor
+    define R1 as $p1 <= cursor
+    define R2 as $p2 <= cursor
+
+    define attached_pronoun as (
+        [substring] among(
+            'me' 'se'  'sela' 'selo' 'selas' 'selos' 'la' 'le' 'lo'
+            'las' 'les' 'los' 'nos'
+        )
+        substring RV among(
+            'i{e'}ndo' (] <- 'iendo')
+            '{a'}ndo'  (] <- 'ando')
+            '{a'}r'    (] <- 'ar')
+            '{e'}r'    (] <- 'er')
+            '{i'}r'    (] <- 'ir')
+            'ando'
+            'iendo'
+            'ar' 'er' 'ir'
+                       (delete)
+            'yendo'    ('u' delete)
+        )
+    )
+
+    define standard_suffix as (
+        [substring] among(
+
+            'anza' 'anzas'
+            'ico' 'ica' 'icos' 'icas'
+            'ismo' 'ismos'
+            'able' 'ables'
+            'ible' 'ibles'
+            'ista' 'istas'
+            'oso' 'osa' 'osos' 'osas'
+            'amiento' 'amientos'
+            'imiento' 'imientos'
+            (
+                R2 delete
+            )
+            'adora' 'ador' 'aci{o'}n'
+            'adoras' 'adores' 'aciones'
+            'ante' 'antes' 'ancia' 'ancias'// Note 1
+            (
+                R2 delete
+                try ( ['ic'] R2 delete )
+            )
+            'log{i'}a'
+            'log{i'}as'
+            (
+                R2 <- 'log'
+            )
+            'uci{o'}n' 'uciones'
+            (
+                R2 <- 'u'
+            )
+            'encia' 'encias'
+            (
+                R2 <- 'ente'
+            )
+            'amente'
+            (
+                R1 delete
+                try (
+                    [substring] R2 delete among(
+                        'iv' (['at'] R2 delete)
+                        'os'
+                        'ic'
+                        'ad'
+                    )
+                )
+            )
+            'mente'
+            (
+                R2 delete
+                try (
+                    [substring] among(
+                        'ante' // Note 1
+                        'able'
+                        'ible' (R2 delete)
+                    )
+                )
+            )
+            'idad'
+            'idades'
+            (
+                R2 delete
+                try (
+                    [substring] among(
+                        'abil'
+                        'ic'
+                        'iv'   (R2 delete)
+                    )
+                )
+            )
+            'iva' 'ivo'
+            'ivas' 'ivos'
+            (
+                R2 delete
+                try (
+                    ['at'] R2 delete // but not a further   ['ic'] R2 delete
+                )
+            )
+        )
+    )
+
+    define y_verb_suffix as (
+        setlimit tomark pV for ([substring]) among(
+            'ya' 'ye' 'yan' 'yen' 'yeron' 'yendo' 'yo' 'y{o'}'
+            'yas' 'yes' 'yais' 'yamos'
+                ('u' delete)
+        )
+    )
+
+    define verb_suffix as (
+        setlimit tomark pV for ([substring]) among(
+
+            'en' 'es' '{e'}is' 'emos'
+                (try ('u' test 'g') ] delete)
+
+            'ar{i'}an' 'ar{i'}as' 'ar{a'}n' 'ar{a'}s' 'ar{i'}ais'
+            'ar{i'}a' 'ar{e'}is' 'ar{i'}amos' 'aremos' 'ar{a'}'
+            'ar{e'}'
+            'er{i'}an' 'er{i'}as' 'er{a'}n' 'er{a'}s' 'er{i'}ais'
+            'er{i'}a' 'er{e'}is' 'er{i'}amos' 'eremos' 'er{a'}'
+            'er{e'}'
+            'ir{i'}an' 'ir{i'}as' 'ir{a'}n' 'ir{a'}s' 'ir{i'}ais'
+            'ir{i'}a' 'ir{e'}is' 'ir{i'}amos' 'iremos' 'ir{a'}'
+            'ir{e'}'
+
+            'aba' 'ada' 'ida' '{i'}a' 'ara' 'iera' 'ad' 'ed'
+            'id' 'ase' 'iese' 'aste' 'iste' 'an' 'aban' '{i'}an'
+            'aran' 'ieran' 'asen' 'iesen' 'aron' 'ieron' 'ado'
+            'ido' 'ando' 'iendo' 'i{o'}' 'ar' 'er' 'ir' 'as'
+            'abas' 'adas' 'idas' '{i'}as' 'aras' 'ieras' 'ases'
+            'ieses' '{i'}s' '{a'}is' 'abais' '{i'}ais' 'arais'
+            'ierais'  'aseis' 'ieseis' 'asteis' 'isteis' 'ados'
+            'idos' 'amos' '{a'}bamos' '{i'}amos' 'imos'
+            '{a'}ramos' 'i{e'}ramos' 'i{e'}semos' '{a'}semos'
+                (delete)
+        )
+    )
+
+    define residual_suffix as (
+        [substring] among(
+            'os'
+            'a' 'o' '{a'}' '{i'}' '{o'}'
+                ( RV delete )
+            'e' '{e'}'
+                ( RV delete try( ['u'] test 'g' RV delete ) )
+        )
+    )
+)
+
+define stem as (
+    do mark_regions
+    backwards (
+        do attached_pronoun
+        do ( standard_suffix or
+             y_verb_suffix or
+             verb_suffix
+           )
+        do residual_suffix
+    )
+    do postlude
+)
+
+/*
+    Note 1: additions of 15 Jun 2005
+*/
+</DL>
+</PRE>
+</TABLE>
+</BODY>
+</HTML>

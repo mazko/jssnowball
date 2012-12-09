@@ -1,0 +1,566 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>Italian stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Italian stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Italian vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent in two columns</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">    Italian stop word list</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="stem_MS_DOS_Latin_I.sbl">    The stemmer in Snowball &#x2014; MS DOS Latin I encodings</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../../texts/romance.html">
+                  Romance language stemmers</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of Italian vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+abbandonata<BR>
+abbandonate<BR>
+abbandonati<BR>
+abbandonato<BR>
+abbandonava<BR>
+abbandonerà<BR>
+abbandoneranno<BR>
+abbandonerò<BR>
+abbandono<BR>
+abbandonò<BR>
+abbaruffato<BR>
+abbassamento<BR>
+abbassando<BR>
+abbassandola<BR>
+abbassandole<BR>
+abbassar<BR>
+abbassare<BR>
+abbassarono<BR>
+abbassarsi<BR>
+abbassassero<BR>
+abbassato<BR>
+abbassava<BR>
+abbassi<BR>
+abbassò<BR>
+abbastanza<BR>
+abbatté<BR>
+abbattendo<BR>
+abbattere<BR>
+abbattersi<BR>
+abbattesse<BR>
+abbatteva<BR>
+abbattevamo<BR>
+abbattevano<BR>
+abbattimento<BR>
+abbattuta<BR>
+abbattuti<BR>
+abbattuto<BR>
+abbellita<BR>
+abbenché<BR>
+abbi<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+abbandon<BR>
+abbandon<BR>
+abbandon<BR>
+abbandon<BR>
+abbandon<BR>
+abbandon<BR>
+abbandon<BR>
+abbandon<BR>
+abband<BR>
+abbandon<BR>
+abbaruff<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbass<BR>
+abbast<BR>
+abbatt<BR>
+abbatt<BR>
+abbatt<BR>
+abbatt<BR>
+abbattess<BR>
+abbatt<BR>
+abbatt<BR>
+abbatt<BR>
+abbatt<BR>
+abbatt<BR>
+abbatt<BR>
+abbatt<BR>
+abbell<BR>
+abbenc<BR>
+abbi<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+pronto<BR>
+pronuncerà<BR>
+pronuncia<BR>
+pronunciamento<BR>
+pronunciare<BR>
+pronunciarsi<BR>
+pronunciata<BR>
+pronunciate<BR>
+pronunciato<BR>
+pronunzia<BR>
+pronunziano<BR>
+pronunziare<BR>
+pronunziarle<BR>
+pronunziato<BR>
+pronunzio<BR>
+pronunziò<BR>
+propaga<BR>
+propagamento<BR>
+propaganda<BR>
+propagare<BR>
+propagarla<BR>
+propagarsi<BR>
+propagasse<BR>
+propagata<BR>
+propagazione<BR>
+propaghino<BR>
+propalate<BR>
+propende<BR>
+propensi<BR>
+propensione<BR>
+propini<BR>
+propio<BR>
+propizio<BR>
+propone<BR>
+proponendo<BR>
+proponendosi<BR>
+proponenti<BR>
+proponeva<BR>
+proponevano<BR>
+proponga<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+pront<BR>
+pronunc<BR>
+pronunc<BR>
+pronunc<BR>
+pronunc<BR>
+pronunc<BR>
+pronunc<BR>
+pronunc<BR>
+pronunc<BR>
+pronunz<BR>
+pronunz<BR>
+pronunz<BR>
+pronunz<BR>
+pronunz<BR>
+pronunz<BR>
+pronunz<BR>
+propag<BR>
+propag<BR>
+propagand<BR>
+propag<BR>
+propag<BR>
+propag<BR>
+propag<BR>
+propag<BR>
+propag<BR>
+propaghin<BR>
+propal<BR>
+prop<BR>
+propens<BR>
+propension<BR>
+propin<BR>
+prop<BR>
+propiz<BR>
+propon<BR>
+propon<BR>
+propon<BR>
+proponent<BR>
+propon<BR>
+propon<BR>
+propong<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR>&nbsp;<H2>The stemming algorithm</H2>
+
+Italian can include the following accented forms:
+<DL><DD>
+    <B><I>á  &nbsp;  é  &nbsp;  í  &nbsp;  ó  &nbsp;  ú  &nbsp;  à  &nbsp;  è  &nbsp;  ì  &nbsp;  ò  &nbsp;  ù</I></B>
+</DL>
+
+First, replace all acute accents by grave accents. And, as in French, put <B><I>u</I></B> after
+<B><I>q</I></B>, and <B><I>u</I></B>, <B><I>i</I></B> between vowels into upper case.
+(See <A HREF="../../texts/vowelmarking.html"> note</A> on vowel marking.)
+
+The vowels are then
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  à  &nbsp;  è  &nbsp;  ì  &nbsp;  ò  &nbsp;  ù</I></B>
+</DL>
+<I>R</I>2
+(see the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2)
+and <I>RV</I> have the same definition as in the
+ <A HREF="../spanish/stemmer.html">Spanish stemmer</A>.
+<BR><BR>
+Always do steps 0 and 1.
+<BR><BR>
+Step 0: Attached pronoun
+<DL><DD>
+    Search for the longest among the following suffixes
+<BR><BR><DL><DD>
+        <B><I>ci  &nbsp;  gli  &nbsp;  la  &nbsp;  le  &nbsp;  li  &nbsp;  lo  &nbsp;  mi  &nbsp;  ne  &nbsp;  si  &nbsp;  ti  &nbsp;  vi
+         &nbsp;  sene  &nbsp;  gliela  &nbsp;  gliele  &nbsp;  glieli  &nbsp;  glielo  &nbsp;  gliene
+         &nbsp;  mela  &nbsp;  mele  &nbsp;  meli  &nbsp;  melo  &nbsp;  mene
+         &nbsp;  tela  &nbsp;  tele  &nbsp;  teli  &nbsp;  telo  &nbsp;  tene
+         &nbsp;  cela  &nbsp;  cele  &nbsp;  celi  &nbsp;  celo  &nbsp;  cene
+         &nbsp;  vela  &nbsp;  vele  &nbsp;  veli  &nbsp;  velo  &nbsp;  vene</I></B>
+</DL><BR>
+    following one of
+<BR><BR><DL><DD>
+        (<I>a</I>) <B><I>ando  &nbsp;  endo</I></B><BR>
+        (<I>b</I>) <B><I>ar  &nbsp;  er  &nbsp;  ir</I></B>
+</DL><BR>
+    in <I>RV</I>. In case of (<I>a</I>) the suffix is deleted, in case (<I>b</I>) it is replace
+    by <B><I>e</I></B> (<I>guardandogli</I> <TT>-&gt;</TT> <I>guardando</I>, <I>accomodarci</I> <TT>-&gt;</TT> <I>accomodare</I>)
+</DL>
+Step 1: Standard suffix removal
+<DL><DD>
+    Search for the longest among the following suffixes, and perform the
+    action indicated.
+<BR><BR>
+<DL>
+    <DT><B><I>anza  &nbsp;  anze  &nbsp;  ico  &nbsp;  ici  &nbsp;  ica  &nbsp;  ice  &nbsp;  iche  &nbsp;  ichi  &nbsp;  ismo  &nbsp;  ismi  &nbsp;  abile  &nbsp;  abili  &nbsp;  ibile  &nbsp;  ibili
+     &nbsp;  ista  &nbsp;  iste  &nbsp;  isti  &nbsp;  istà  &nbsp;  istè  &nbsp;  istì  &nbsp;  oso  &nbsp;  osi  &nbsp;  osa  &nbsp;  ose  &nbsp;  mente
+     &nbsp;  atrice  &nbsp;  atrici  &nbsp;  ante  &nbsp;  anti</I></B>
+        <DD>delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>azione  &nbsp;  azioni  &nbsp;  atore  &nbsp;  atori</I></B>
+        delete if in <I>R</I>2
+        <DD>if preceded by <B><I>ic</I></B>, delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>logia  &nbsp;  logie</I></B>
+        <DD>replace with <B><I>log</I></B> if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>uzione  &nbsp;  uzioni  &nbsp;  usione  &nbsp;  usioni</I></B>
+        <DD>replace with <B><I>u</I></B> if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>enza  &nbsp;  enze</I></B>
+        <DD>replace with <B><I>ente</I></B> if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>amento  &nbsp;  amenti  &nbsp;  imento  &nbsp;  imenti</I></B>
+        <DD>delete if in <I>RV</I>
+<BR><BR>
+    <DT><B><I>amente</I></B>
+        <DD>delete if in <I>R</I>1
+        <DD>if preceded by <B><I>iv</I></B>, delete if in <I>R</I>2 (and if further preceded by <B><I>at</I></B>,
+        delete if in <I>R</I>2), otherwise,
+        <DD>if preceded by <B><I>os</I></B>, <B><I>ic</I></B> or <B><I>abil</I></B>, delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>ità</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>abil</I></B>, <B><I>ic</I></B> or <B><I>iv</I></B>, delete if in <I>R</I>2
+<BR><BR>
+    <DT><B><I>ivo  &nbsp;  ivi  &nbsp;  iva  &nbsp;  ive</I></B>
+        <DD>delete if in <I>R</I>2
+        <DD>if preceded by <B><I>at</I></B>, delete if in <I>R</I>2 (and if further preceded by <B><I>ic</I></B>,
+        delete if in <I>R</I>2)
+</DL>
+</DL>
+Do step 2 if no ending was removed by step 1.
+<BR><BR>
+Step 2: Verb suffixes
+<DL><DD>
+    Search for the longest among the following suffixes in <I>RV</I>, and if found,
+    delete.
+<BR><BR><DL><DD>
+        <B><I>ammo  &nbsp;  ando  &nbsp;  ano  &nbsp;  are  &nbsp;  arono  &nbsp;
+        asse  &nbsp;  assero  &nbsp;  assi  &nbsp;  assimo  &nbsp;  ata  &nbsp;  ate  &nbsp;
+        ati  &nbsp;  ato  &nbsp;  ava  &nbsp;  avamo  &nbsp;  avano  &nbsp;  avate  &nbsp;  avi  &nbsp;  avo  &nbsp;  emmo
+         &nbsp;  enda  &nbsp;  ende  &nbsp;  endi  &nbsp;  endo  &nbsp;  erà  &nbsp;  erai  &nbsp;  eranno  &nbsp;  ere
+         &nbsp;  erebbe  &nbsp;  erebbero  &nbsp;  erei  &nbsp;  eremmo  &nbsp;  eremo  &nbsp;  ereste  &nbsp;
+        eresti  &nbsp;  erete  &nbsp;  erò  &nbsp;  erono  &nbsp;  essero  &nbsp;  ete  &nbsp;  eva  &nbsp;  evamo
+         &nbsp;  evano  &nbsp;  evate  &nbsp;  evi  &nbsp;  evo  &nbsp;  Yamo  &nbsp;  iamo  &nbsp;  immo  &nbsp;  irà
+         &nbsp;  irai  &nbsp;  iranno  &nbsp;  ire  &nbsp;  irebbe  &nbsp;  irebbero  &nbsp;  irei  &nbsp;  iremmo
+         &nbsp;  iremo  &nbsp;  ireste  &nbsp;  iresti  &nbsp;  irete  &nbsp;  irò  &nbsp;  irono  &nbsp;  isca  &nbsp;
+        iscano  &nbsp;  isce  &nbsp;  isci  &nbsp;  isco  &nbsp;  iscono  &nbsp;  issero  &nbsp;  ita  &nbsp;  ite
+         &nbsp;  iti  &nbsp;  ito  &nbsp;  iva  &nbsp;  ivamo  &nbsp;  ivano  &nbsp;  ivate  &nbsp;  ivi  &nbsp;  ivo  &nbsp;
+        ono  &nbsp;  uta  &nbsp;  ute  &nbsp;  uti  &nbsp;  uto  &nbsp;  ar  &nbsp;  ir</I></B>
+</DL><BR>
+Always do steps 3a and 3b.
+</DL>
+Step 3a
+<DL><DD>
+    Delete a final <B><I>a</I></B>, <B><I>e</I></B>, <B><I>i</I></B>, <B><I>o</I></B>, <B><I>à</I></B>, <B><I>è</I></B>, <B><I>ì</I></B> or <B><I>ò</I></B> if it is in <I>RV</I>, and a
+    preceding <B><I>i</I></B> if it is in <I>RV</I> (<I>crocchi</I> <TT>-&gt;</TT> <I>crocch</I>, <I>crocchio</I> <TT>-&gt;</TT> <I>crocch</I>)
+</DL>
+Step 3b
+<DL><DD>
+    Replace final <B><I>ch</I></B> (or <B><I>gh</I></B>) with <B><I>c</I></B> (or <B><I>g</I></B>) if in <I>RV</I> (<I>crocch</I> <TT>-&gt;</TT> <I>crocc</I>)
+</DL>
+Finally,
+<DL><DD>
+    turn <B><I>I</I></B> and <B><I>U</I></B> back into lower case
+</DL>
+
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR>&nbsp;<H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+
+routines (
+           prelude postlude mark_regions
+           RV R1 R2
+           attached_pronoun
+           standard_suffix
+           verb_suffix
+           vowel_suffix
+)
+
+externals ( stem )
+
+integers ( pV p1 p2 )
+
+groupings ( v AEIO CG )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef a'   hex 'E1'
+stringdef a`   hex 'E0'
+stringdef e'   hex 'E9'
+stringdef e`   hex 'E8'
+stringdef i'   hex 'ED'
+stringdef i`   hex 'EC'
+stringdef o'   hex 'F3'
+stringdef o`   hex 'F2'
+stringdef u'   hex 'FA'
+stringdef u`   hex 'F9'
+
+define v 'aeiou{a`}{e`}{i`}{o`}{u`}'
+
+define prelude as (
+    test repeat (
+        [substring] among(
+            '{a'}' (<- '{a`}')
+            '{e'}' (<- '{e`}')
+            '{i'}' (<- '{i`}')
+            '{o'}' (<- '{o`}')
+            '{u'}' (<- '{u`}')
+            'qu'   (<- 'qU')
+            ''     (next)
+        )
+    )
+    repeat goto (
+        v [ ('u' ] v <- 'U') or
+            ('i' ] v <- 'I')
+    )
+)
+
+define mark_regions as (
+
+    $pV = limit
+    $p1 = limit
+    $p2 = limit // defaults
+
+    do (
+        ( v (non-v gopast v) or (v gopast non-v) )
+        or
+        ( non-v (non-v gopast v) or (v next) )
+        setmark pV
+    )
+    do (
+        gopast v gopast non-v setmark p1
+        gopast v gopast non-v setmark p2
+    )
+)
+
+define postlude as repeat (
+
+    [substring] among(
+        'I'  (<- 'i')
+        'U'  (<- 'u')
+        ''   (next)
+    )
+
+)
+
+backwardmode (
+
+    define RV as $pV <= cursor
+    define R1 as $p1 <= cursor
+    define R2 as $p2 <= cursor
+
+    define attached_pronoun as (
+        [substring] among(
+            'ci' 'gli' 'la' 'le' 'li' 'lo'
+            'mi' 'ne' 'si'  'ti' 'vi'
+            // the compound forms are:
+            'sene' 'gliela' 'gliele' 'glieli' 'glielo' 'gliene'
+            'mela' 'mele' 'meli' 'melo' 'mene'
+            'tela' 'tele' 'teli' 'telo' 'tene'
+            'cela' 'cele' 'celi' 'celo' 'cene'
+            'vela' 'vele' 'veli' 'velo' 'vene'
+        )
+        among( (RV)
+            'ando' 'endo'   (delete)
+            'ar' 'er' 'ir'  (<- 'e')
+        )
+    )
+
+    define standard_suffix as (
+        [substring] among(
+
+            'anza' 'anze' 'ico' 'ici' 'ica' 'ice' 'iche' 'ichi' 'ismo'
+            'ismi' 'abile' 'abili' 'ibile' 'ibili' 'ista' 'iste' 'isti'
+            'ist{a`}' 'ist{e`}' 'ist{i`}' 'oso' 'osi' 'osa' 'ose' 'mente'
+            'atrice' 'atrici'
+            'ante' 'anti' // Note 1
+               ( R2 delete )
+            'azione' 'azioni' 'atore' 'atori'
+               ( R2 delete
+                 try ( ['ic'] R2 delete )
+               )
+            'logia' 'logie'
+               ( R2 <- 'log' )
+            'uzione' 'uzioni' 'usione' 'usioni'
+               ( R2 <- 'u' )
+            'enza' 'enze'
+               ( R2 <- 'ente' )
+            'amento' 'amenti' 'imento' 'imenti'
+               ( RV delete )
+            'amente' (
+                R1 delete
+                try (
+                    [substring] R2 delete among(
+                        'iv' ( ['at'] R2 delete )
+                        'os' 'ic' 'abil'
+                    )
+                )
+            )
+            'it{a`}' (
+                R2 delete
+                try (
+                    [substring] among(
+                        'abil' 'ic' 'iv' (R2 delete)
+                    )
+                )
+            )
+            'ivo' 'ivi' 'iva' 'ive' (
+                R2 delete
+                try ( ['at'] R2 delete ['ic'] R2 delete )
+            )
+        )
+    )
+
+    define verb_suffix as setlimit tomark pV for (
+        [substring] among(
+            'ammo' 'ando' 'ano' 'are' 'arono' 'asse' 'assero' 'assi'
+            'assimo' 'ata' 'ate' 'ati' 'ato' 'ava' 'avamo' 'avano' 'avate'
+            'avi' 'avo' 'emmo' 'enda' 'ende' 'endi' 'endo' 'er{a`}' 'erai'
+            'eranno' 'ere' 'erebbe' 'erebbero' 'erei' 'eremmo' 'eremo'
+            'ereste' 'eresti' 'erete' 'er{o`}' 'erono' 'essero' 'ete'
+            'eva' 'evamo' 'evano' 'evate' 'evi' 'evo' 'Yamo' 'iamo' 'immo'
+            'ir{a`}' 'irai' 'iranno' 'ire' 'irebbe' 'irebbero' 'irei'
+            'iremmo' 'iremo' 'ireste' 'iresti' 'irete' 'ir{o`}' 'irono'
+            'isca' 'iscano' 'isce' 'isci' 'isco' 'iscono' 'issero' 'ita'
+            'ite' 'iti' 'ito' 'iva' 'ivamo' 'ivano' 'ivate' 'ivi' 'ivo'
+            'ono' 'uta' 'ute' 'uti' 'uto'
+
+            'ar' 'ir' // but 'er' is problematical
+                (delete)
+        )
+    )
+
+    define AEIO 'aeio{a`}{e`}{i`}{o`}'
+    define CG 'cg'
+
+    define vowel_suffix as (
+        try (
+            [AEIO] RV delete
+            ['i'] RV delete
+        )
+        try (
+            ['h'] CG RV delete
+        )
+    )
+)
+
+define stem as (
+    do prelude
+    do mark_regions
+    backwards (
+        do attached_pronoun
+        do (standard_suffix or verb_suffix)
+        do vowel_suffix
+    )
+    do postlude
+)
+
+/*
+    Note 1: additions of 15 Jun 2005
+*/
+
+</DL>
+</PRE>
+</TABLE>
+</BODY>
+</HTML>

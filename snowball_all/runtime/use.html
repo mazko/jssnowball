@@ -1,0 +1,295 @@
+
+<HTML>
+<HEAD>
+<TITLE>Using Snowball</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Using Snowball</H1>
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links to resources</H2>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF=".."> Snowball main page</A>
+<TR><TD><A HREF="../compiler/snowman.html">     Snowball manual</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+
+
+<BR>&nbsp;<H2>Compiling and running Snowball</H2>
+
+When you download Snowball, it already has in place a make file that you
+can call to build it. But in any case, Snowball has a very simple
+structure, comprising the traditional tokeniser, syntax analyser and code
+generator modules, with two extra modules for space management and an
+internal merge sort, and a small driver module, all sharing a common header
+file.  If you put these sources into a directory &nbsp;<TT>compiler/</TT>, you can compile
+Snowball at once (Linux or Unix) with
+<BR><PRE>
+    gcc -O -o Snowball compiler/*.c
+</PRE>
+Snowball can then be called up with the following syntax,
+<BR><PRE>
+    F1 [-o[utput] F2]
+       [-s[yntax]]
+       [-w[idechars]]  [-u[tf8]]
+       [-j[ava]]  [-n[ame] C]
+       [-ep[refix] S1]  [-vp[refix] S2]
+       [-i[nclude] D]
+       [-r[untime] P]
+</PRE>
+For example,
+<BR><PRE>
+    ./Snowball danish/stem.sbl -o q/danish
+    ./Snowball danish/stem.sbl -syntax
+    ./Snowball danish/stem.sbl -output q/danish -ep danish_
+</PRE>
+The first argument, &nbsp;<TT>F1</TT>, is the name of the Snowball file to be compiled. If
+the &nbsp;<TT>-java</TT>&nbsp; option is absent, it
+produces
+two outputs, an ANSI C module in &nbsp;<TT>F2.c</TT>&nbsp; and a corresponding header file in &nbsp;<TT>F2.h</TT>.
+If option &nbsp;<TT>-java</TT>&nbsp; is present, Java output is produced in &nbsp;<TT>F2.java</TT>.
+
+<BR><BR>
+
+The &nbsp;<TT>-widechars</TT>, &nbsp;<TT>-utf8</TT>, &nbsp;<TT>-eprefix</TT>&nbsp; and &nbsp;<TT>-vprefix</TT>&nbsp; options belong with ANSI C
+generation; the &nbsp;<TT>-name</TT>&nbsp; option with Java generation.
+
+&nbsp;<H4>ANSI C generation</H4>
+
+In the absence of the &nbsp;<TT>-eprefix</TT>&nbsp; and &nbsp;<TT>-vprefix</TT>&nbsp; options, the list of
+declared externals in the Snowball program, for example,
+<BR><PRE>
+    externals ( stem_1 stem_2 moderate )
+</PRE>
+gives rise to a header file containing,
+<BR><PRE>
+    extern struct SN_env * create_env(void);
+    extern void close_env(struct SN_env * z);
+
+    extern int moderate(struct SN_env * z);
+    extern int stem_2(struct SN_env * z);
+    extern int stem_1(struct SN_env * z);
+</PRE>
+If &nbsp;<TT>-eprefix</TT>&nbsp; is used, its string, &nbsp;<TT>S1</TT>, is prefixed to each external
+name, for example
+<BR><PRE>
+    -eprefix Khotanese_
+</PRE>
+would give rise to the header file,
+<BR><PRE>
+    extern struct SN_env * Khotanese_create_env(void);
+    extern void Khotanese_close_env(struct SN_env * z);
+
+    extern int Khotanese_moderate(struct SN_env * z);
+    extern int Khotanese_stem_2(struct SN_env * z);
+    extern int Khotanese_stem_1(struct SN_env * z);
+</PRE>
+If &nbsp;<TT>-vprefix</TT>&nbsp; is used, all Snowball strings, integers and booleans give
+rise to a &nbsp;<TT>#define</TT>&nbsp; line in the header file. For example
+<BR><PRE>
+    -eprefix Khotanese_ -vprefix Khotanese_variable
+</PRE>
+would give rise the header file,
+<BR><PRE>
+    extern struct SN_env * Khotanese_create_env(void);
+    extern void Khotanese_close_env(struct SN_env * z);
+
+    #define Khotanese_variable_ch (S[0])
+    #define Khotanese_variable_Y_found (B[0])
+    #define Khotanese_variable_p2 (I[1])
+    #define Khotanese_variable_p1 (I[0])
+    extern int Khotanese_stem(struct SN_env * z);
+</PRE>
+
+The &nbsp;<TT>-widechars</TT>&nbsp; option affects interpretation of Snowball <I>hex</I> and
+<I>decimal</I> strings, as in
+<BR><PRE>
+    stringdef m hex 'H1 H2 ...'
+    stringdef m decimal 'D1 D2 ...'
+</PRE>
+where &nbsp;<TT>H1</TT>, &nbsp;<TT>H2</TT>&nbsp; ... are hex numbers and &nbsp;<TT>D1</TT>, &nbsp;<TT>D2</TT>&nbsp; ... are decimal
+numbers. Without the &nbsp;<TT>-widechars</TT>&nbsp; option it is an error for these numbers
+to exceed 255. With the &nbsp;<TT>-widechars</TT>&nbsp; option it is only an error if they
+exceed 65535. So by default one byte characters are assumed, but
+<TT>-widechars</TT>&nbsp; makes the assumptions that characters are two bytes. Note
+that (<I>a</I>) the output from Snowball is the same in both cases, and (<I>b</I>)
+the &nbsp;<TT>-java</TT>&nbsp; option automatically sets the &nbsp;<TT>-widechars</TT>&nbsp; option.
+Within the API header file &nbsp;<TT>api.h</TT>, &nbsp;<TT>symbol</TT>&nbsp; is given a typedef of
+<TT>unsigned char</TT>,
+<BR><PRE>
+        typedef unsigned char symbol;
+</PRE>
+&#x2014; and a sequence of characters representing a word to be stemmed is then
+held in a &nbsp;<TT>symbol</TT>&nbsp; array. To switch to a 16 bit representation of characters,
+just replace &nbsp;<TT>char</TT>&nbsp; by &nbsp;<TT>short</TT>&nbsp; here:
+<BR><PRE>
+        typedef unsigned short symbol;
+</PRE>
+
+The &nbsp;<TT>-utf8</TT>&nbsp; option is an alternative to &nbsp;<TT>-widechars</TT>. Again, it allows
+characters in the range 0 to 65535 in &nbsp;<TT>stringdef</TT>s, but these characters
+are then encoded as 2 or 3 byte characters in the UTF-8 encoding scheme.
+The ANSI C program output by Snowball is similarly adjusted to handle
+characters that can occupy multiple bytes. (See section 12 of the
+Snowball manual.)
+
+<BR><BR>
+
+The &nbsp;<TT>-runtime</TT>&nbsp;  option is used to prepend a path to any &nbsp;<TT>#include</TT>
+lines in the generated code, and is useful when the runtime header files (i.e.
+those files in the runtime directory in the standard distribution) are not
+in the same location as the generated source files. It is used when
+building the libstemmer library, and may be useful for other projects.
+
+&nbsp;<H4>Java generation</H4>
+
+The &nbsp;<TT>-java</TT>&nbsp; option automatically sets the &nbsp;<TT>-widechars</TT>&nbsp; option.
+
+<BR><BR>
+
+To run Java, download the
+<A HREF="../dist/libstemmer_java.tgz">tarball</A>,
+which will unpack into an
+appropriate directory structure.
+
+&nbsp;<H4>Other options</H4>
+
+
+If &nbsp;<TT>-syntax</TT>&nbsp; is used the other options are ignored, and the syntax tree
+of the Snowball program is directed to &nbsp;<TT>stdout</TT>. This can be a handy way
+of checking that you have got the bracketing right in the program you have
+written.
+<BR><BR>
+Any number of &nbsp;<TT>-include</TT>&nbsp; options may be present, for example,
+<BR><PRE>
+    ./Snowball testfile -output test -ep danish_  \
+               -include /home/martin/Snowball/codesets  \
+               -include extras
+</PRE>
+Each &nbsp;<TT>-include</TT>&nbsp; is followed by a directory name. With a chain of
+directories &nbsp;<TT>D1</TT>, &nbsp;<TT>D2</TT>&nbsp; ... &nbsp;<TT>Dn</TT>, a Snowball &nbsp;<TT>get</TT>&nbsp; directive,
+<BR><PRE>
+    get 'F'
+</PRE>
+causes &nbsp;<TT>F</TT>&nbsp; to be searched for in the successive locations,
+<BR><PRE>
+    F
+    D1/F
+    D2/F
+    ...
+    Dn/F
+</PRE>
+&#x2014; that is, the current directory, followed in turn by directories &nbsp;<TT>D1</TT>&nbsp; to
+<TT>Dn</TT>.
+
+<BR>&nbsp;<H2>The Snowball API</H2>
+
+To access Snowball from C, include the header &nbsp;<TT>api.h</TT>, and any headers
+generated from the Snowball scripts you wish to use. &nbsp;<TT>api.h</TT>&nbsp; declares
+<BR><PRE>
+    struct SN_env { ... };
+    extern void SN_set_current(struct SN_env * z, int size, char * s);
+</PRE>
+Continuing the previous example, you set up an environment to call the
+resources of the Khotanese module with
+<BR><PRE>
+    struct SN_env * z;
+    z = Khotanese_create_env();
+</PRE>
+Snowball has the concept of a &#8216;current string&#8217;.
+This can be set up by,
+<BR><PRE>
+    SN_set_current(z, i, b);
+</PRE>
+This defines the current string as the &nbsp;<TT>i</TT>&nbsp; bytes of data starting at
+address &nbsp;<TT>b</TT>. The externals can then be called,
+<BR><PRE>
+    Khotanese_moderate(z);
+    ...
+    Khotanese_stem_1(z);
+</PRE>
+They give a 1 or 0 result, corresponding to the <B><I>t</I></B> or <B><I>f</I></B> result of
+the Snowball routine.
+<BR><BR>
+And later,
+<BR><PRE>
+    Khotanese_close_env(z);
+</PRE>
+To release the space raised by z back to the system. You can do this for a
+number of Snowball modules at the same time: you will need a separate
+<TT>struct SN_env * z;</TT>&nbsp; for each module.
+
+The current string is given by the &nbsp;<TT>z->l</TT>&nbsp; bytes of data starting at &nbsp;<TT>z->p</TT>.
+The string is not zero-terminated, but you can zero terminate it yourself with
+<BR><PRE>
+    z->p[z->l] = 0;
+</PRE>
+(There is always room for this last zero byte.) For example,
+<BR><PRE>
+    SN_set_current(z, strlen(s), s);
+    Khotanese_stem_1(z);
+    z->p[z->l] = 0;
+    printf("Khotanese-1 stems '%s' to '%s'\n", s, z->p);
+</PRE>
+The values of the other variables can be accessed via the &nbsp;<TT>#define</TT>
+settings that result from the &nbsp;<TT>-vprefix</TT>&nbsp; option, although this should not
+usually be necessary:
+<BR><PRE>
+    printf("p1 is %d\n", z->Khotanese_variable_p1);
+</PRE>
+The stemming scripts on this Web site use Snowball very simply.
+<TT>-vprefix</TT>&nbsp; is left unset, and &nbsp;<TT>-eprefix</TT>&nbsp; is set to the name of the
+script (usually the language the script is for). All the programs are
+tested through a common <A HREF="driver.c">driver</A> program.
+
+<BR>&nbsp;<H2>Debugging</H2>
+
+In the rare event that your Snowball script does not run perfectly the first time:
+<BR><BR>
+Remember that the option &nbsp;<TT>-syntax</TT>&nbsp; prints out the syntax tree. A question
+mark can be included in Snowball as a command, and it will generate a call
+<TT>debug(...)</TT>. The defined &nbsp;<TT>debug</TT>&nbsp; in &nbsp;<TT>runtime/utilities.c</TT>&nbsp; (usually
+commented out) can then be used. It causes the
+current string to sent to &nbsp;<TT>stdout</TT>, with square brackets marking the
+slice and vertical bar the position of <B><I>c</I></B>. Curly brackets mark the
+end-limits of the string, which may be less than the whole string because
+of the action of &nbsp;<TT>setlimit</TT>.
+<BR><BR>
+At present there is no way of reporting the value of an integer or boolean.
+<BR><BR>
+If desperate, you can put debugging lines into the generated C program. This is not so
+hard, since running comments show the correspondence with the Snowball source.
+<BR><BR>
+<BR>&nbsp;<H2>Compiler bugs</H2>
+
+There must be a few compiler bugs in such a young language. If you hit one, try to
+capture it in a small script before notifying us.
+
+<BR>&nbsp;<H2>Known problems in Snowball</H2>
+
+The main one is that it is possible to &#8216;pull the rug from under your own feet&#8217; in
+constructions like this:
+<BR><PRE>
+    [ do something ]
+    do something else
+    ( C1 delete C2 ) or ( C3 )
+</PRE>
+Suppose &nbsp;<TT>C1</TT>&nbsp; gives <B><I>t</I></B>, the delete removes the slice established on the first
+line, and &nbsp;<TT>C2</TT>&nbsp; gives <B><I>f</I></B>, so C3 is done with <B><I>c</I></B> set back to the value it had
+before &nbsp;<TT>C1</TT>&nbsp; was obeyed &#x2014; but this old value does not take account of the byte shift
+caused by the delete. This problem was foreseen from the beginning when designing
+Snowball, and recognised as a minor issue because it is an unnatural thing to want to
+do. (<TT>C3</TT>&nbsp; should not be an alternative to something which has deletion as an
+occasional side-effect.) It may be addressed in the future.
+<BR><BR>
+
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

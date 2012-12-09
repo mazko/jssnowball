@@ -1,0 +1,201 @@
+
+<HTML>
+<HEAD>
+
+<TITLE>An Object Pascal codegenerator for Snowball</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>An Object Pascal codegenerator for Snowball</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stemming.zip">    The contributed zip file</A>
+</TABLE></DL>
+
+<BR><BR>
+
+Here is the original correspondence,
+
+
+<BR><BR>FROM <B>Wout van Wezel &lt;wout@vanwezel.com></B>
+<BR>TO <B>martin.porter@grapeshot.co.uk</B>
+    <BR>ON <B>Mon Jan 24 21:44:23 2005</B>
+
+<BR><BR><B><I>Snowball extension</I></B>
+<DL><DD><PRE>
+
+ Dear Mr. Porter,
+
+ Somebody extended Snowball for me to create Pascal stemmers. I wanted the
+ stemming algorithms in Pascal so they can be compiled in my information
+ retrieval system (http://www.collectionconnection.nl) which is created in
+ Delphi. I would not mind sharing the extensions, especially given the nature
+ of the Snowball project. If you are interested, please let me know, and I
+ will send you the sources. Everything seems to be working fine, but
+ unfortunately I won't be able to maintain the Pascal-extension code when the
+ core Snowball program changes since my knowledge of C is approximately zero.
+ Here are the changes the developer made:
+
+ "In order to support Delphi files generation I've added file
+ generator_delphi.c (in compiler directory). Also modified:
+ 1) header.h: added output_delphi and make_delphi fields to struct options.
+ Also added forward declarations to Delphi's generator functions;
+ 2) driver.c: modified in order to support new command line option "-d" and
+ call Delphi generator if its specified;
+
+ Modified GNUmakefile at the root of the snowball tree in order to add
+ generator_delphi.c into the compilation process.
+
+ Folder Delphi added. It contains 3 files:
+ 1) SnowballProgram.pas - base class for all generated stemmers;
+ 2) Test.bpr - template for the sample projects;
+ 3) Generate.pl - Perl script that generate all sample stemmers.
+
+ File algorithms/finnish/stem.sbl modified. There was two grouping: v and V. I
+ rename V to V2 because Delphi Language is case-insensitive."
+
+ I appologize for emailing you directly, but offering the source code on the
+ mailing list could result in parallel versions instead of a single CVS
+ version and I didn't think that would be good either.
+
+ Best regards,
+ Wout van Wezel
+
+
+</PRE></DL>
+
+
+<BR><BR>FROM <B>martin.porter@grapeshot.co.uk (Martin Porter)</B>
+<BR>TO <B>Wout van Wezel <wout@vanwezel.com></B>
+    <BR>ON <B>Mon Jan 24 21:54:15 2005</B>
+<BR>COPIED TO richard@tartarus.org
+
+<BR><BR><B><I>Re: Snowball extension</I></B>
+<DL><DD><PRE>
+
+
+ Wout,
+
+ Thank you for this email. I am very busy with a number of other things at the
+ moment, but hope to send you a sensible reply in a few days. Meanwhile I'm
+ copying your email to Richard Boulton, who is equally involved with the
+ Snowball work.
+
+ Martin
+
+</PRE></DL>
+
+
+<BR><BR>FROM <B>martin.porter@grapeshot.co.uk (Martin Porter)</B>
+<BR>TO <B>Wout van Wezel &lt;wout@vanwezel.com></B>
+    <BR>ON <B>Tue Jan 25 08:49:07 2005</B>
+<BR>COPIED TO richard@tartarus.org
+
+<BR><BR><B><I>Re: Snowball extension</I></B>
+<DL><DD><PRE>
+
+
+ Wout,
+
+ I think it would be a shame to lose the work you have done, but at the moment
+ I'm not sure about the best way to make it publicly available from the Snowball
+ site. I will talk the matter over with Richard Boulton. Could I suggest that,
+ despite your misgivings, it should be announced on Snowball discuss? We then
+ get a record on the site that Pascal versions of the stemmers do exist.
+
+ Maintenance is of course the main issue here. On
+ http://www.tartarus.org/~martin/PorterStemmer I have about 14 versions of the
+ Porter stemmer in various languages, only four of which I wrote myself.
+ Inevitably I get queries about versions of the stemmer written in programming
+ languages I am not familiar with, and they are difficult to answer, especially
+ when contact with the author has been lost.
+
+ We would need to assess the code. For example,
+
+ >File algorithms/finnish/stem.sbl modified. There was two grouping: v and V. I
+ >rename V to V2 because Delphi Language is case-insensitive."
+
+ This is not a good solution, since it constrains the writing of Snowball
+ scripts. The name translation should reflect case. There are various ways of
+ doing this, for example,
+
+ stemmer -> stemmer_lllllll
+ Stemmer -> stemmer_ullllll
+ STEMMER -> stemmer_uuuuuuu
+
+ where the pattern of u's an l's shows the upper/lower case usage of the
+ original name.
+
+ Martin
+
+</PRE></DL>
+
+
+<BR><BR>FROM <B>Wout van Wezel &lt;wout@vanwezel.com></B>
+<BR>TO <B>Martin Porter &lt;martin.porter@grapeshot.co.uk></B>
+    <BR>ON <B>Tue Jan 25 10:44:36 2005</B>
+<BR>COPIED TO <richard@tartarus.org>
+
+<BR><BR><B><I>Re: Snowball extension</I></B>
+<DL><DD><PRE>
+
+ Dear Martin/Richard,
+
+ I've attached the files I got from the developer. The changed sources are in
+ the Snowball tree. The developer has explained in 'readme.doc' what he did.
+ Be aware that I don't have an understanding of the Snowball or C language
+ myself. If you think it would be usefull for a more general audience, I can
+ ask the developer to work on the 'case' problem.
+
+ ps, I don't mind a message on the discussion list. Also, I would be happy to
+ send the Pascal stemmers or the adapted Snowball program to people from the
+ list that think they could use it.
+
+ Best regards,
+ Wout
+
+ Attachment: stemming.zip
+
+</PRE></DL>
+
+
+<BR><BR>FROM <B>martin.porter@grapeshot.co.uk (Martin Porter)</B>
+<BR>TO <B>Wout van Wezel &lt;wout@vanwezel.com></B>
+    <BR>ON <B>Wed Apr 20 21:37:42 2005</B>
+<BR>COPIED TO snowball-discuss@lists.tartarus.org
+
+<BR><BR><B><I>Pascal codegenerator for Snowball</I></B>
+<DL><DD><PRE>
+
+
+ Wout,
+
+ I have only recently looked through the the large tgz file you sent me in
+ January. Here are some initial thoughts,
+
+ The work of your student was done to high standard, and the delivered system,
+ with software enxtensions and documentation, is very nice. The only real slip
+ is that the upper/lower case disctinction of Snowball  names was not preserved
+ in the generated Pascal code. But I have altered the finnish stemmer so that V
+ and v are called V2 and V1 now, so you won't have to create a separate version.
+
+ I have not yet talked to Richard Boulton about this, but I think we should keep
+ the tgz file on the Snowball site with a note about its purpose, but I don't
+ think it is worth incorporating the Pascal codegenerator into the main Snowball
+ system, since it is unlikely there would be a large demand for Pascal versions
+ of the stemmers.
+
+ There is of course a danger that as Snowball extends, use of the Pascal
+ codegenerator will become increasingly difficult, but I am beginning to think
+ that Snowball is now fairly fixed, so that should not be a problem.
+
+ Martin
+
+</PRE></DL>
+
+</TABLE>
+</BODY>
+</HTML>

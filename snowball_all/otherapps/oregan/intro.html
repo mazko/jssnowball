@@ -1,0 +1,507 @@
+
+<HTML>
+<HEAD>
+
+<TITLE>Stemmers for Irish Gaelic and Czech</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Stemmers for Irish Gaelic and Czech</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../..">Snowball main page</A>
+<TR><TD><A HREF="oregan.tgz">       &nbsp;<TT>oregan.tgz</TT>, Tar-gzipped file of resources</A>
+<TR><TD><A HREF="irish.sbl">        irish stemmer</A>
+<TR><TD><A HREF="tolower_irish.sbl">lower case script</A>
+<TR><TD><A HREF="stopwords.txt">    &#x2014; and stopwords</A>
+<BR><BR>
+<TR><TD><A HREF="czech-do.sbl">     Czech stemmer</A>
+
+</TABLE></DL>
+
+<BR><BR>
+
+In March 2012 we received a stemmer for Irish Gaelic from Jimmy O&#8217;Regan
+(joregan-at-gmail.com),
+together with a snowball implementation of the Czech stemmer of Ljiljana
+Dolamic.
+
+<BR><BR>
+
+Here is his original note,
+
+
+<DL><DD><PRE>
+
+Attached is a basic stemmer for Irish (and basic stopword list).
+
+One thing that should be taken into account with Irish is the initial
+mutation (n-eclipsis and h-prothesis), which causes problems with the
+usual toupper and tolower. A snowball version would look something
+like this:
+
+define tolower_irish as (
+ [substring] among (
+   'nA' (<- 'n-a')
+   'nE' (<- 'n-e')
+   'nI' (<- 'n-i')
+   'nO' (<- 'n-o')
+   'nU' (<- 'n-u')
+   'nÁ' (<- 'n-á')
+   'nÉ' (<- 'n-é')
+   'nÍ' (<- 'n-í')
+   'nÓ' (<- 'n-ó')
+   'nÚ' (<- 'n-ú')
+
+   'tA' (<- 't-a')
+   'tE' (<- 't-e')
+   'tI' (<- 't-i')
+   'tO' (<- 't-o')
+   'tU' (<- 't-u')
+   'tÁ' (<- 't-á')
+   'tÉ' (<- 't-é')
+   'tÍ' (<- 't-í')
+   'tÓ' (<- 't-ó')
+   'tÚ' (<- 't-ú')
+ )
+)
+
+
+
+I've also attached my implementation of the Dolamic stemmer for Czech.
+
+They can be distributed under the BSD licence, if you're willing to host them.
+
+</PRE></DL>
+Here is Jimmy&#8217;s Irish stemmer in Snowball,
+<BR><BR>
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+<BR><PRE>
+<DL><DD>
+routines (
+  R1 R2 RV
+  initial_morph
+  mark_regions
+  noun_sfx
+  deriv
+  verb_sfx
+)
+
+externals ( stem )
+
+integers ( pV p1 p2 )
+
+groupings ( v )
+
+stringescapes {}
+
+/* Latin 1 */
+
+stringdef a'   hex 'E1'  // a-acute
+stringdef e'   hex 'E9'  // e-acute
+stringdef i'   hex 'ED'  // i-acute
+stringdef o'   hex 'F3'  // o-acute
+stringdef u'   hex 'FA'  // u-acute
+
+define v 'aeiou{a'}{e'}{i'}{o'}{u'}'
+
+define mark_regions as (
+
+    $pV = limit
+    $p1 = limit
+    $p2 = limit  // defaults
+
+    do (
+        gopast v setmark pV
+    )
+    do (
+        gopast v gopast non-v setmark p1
+        gopast v gopast non-v setmark p2
+    )
+)
+
+define initial_morph as (
+  [substring] among (
+    'h-' 'n-' 't-' //nAthair -> n-athair, but alone are problematic
+    (delete)
+
+    // verbs
+    'd{'}'
+    (delete)
+    'd{'}fh'
+    (<- 'f')
+    // other contractions
+    'm{'}' 'b{'}'
+    (delete)
+
+    'sh'
+    (<- 's')
+
+    'mb'
+    (<- 'b')
+    'gc'
+    (<- 'c')
+    'nd'
+    (<- 'd')
+    'bhf'
+    (<- 'f')
+    'ng'
+    (<- 'g')
+    'bp'
+    (<- 'p')
+    'ts'
+    (<- 's')
+    'dt'
+    (<- 't')
+
+    // Lenition
+    'bh'
+    (<- 'b')
+    'ch'
+    (<- 'c')
+    'dh'
+    (<- 'd')
+    'fh'
+    (<- 'f')
+    'gh'
+    (<- 'g')
+    'mh'
+    (<- 'm')
+    'ph'
+    (<- 'p')
+    'th'
+    (<- 't')
+  )
+)
+
+backwardmode (
+
+  define RV as $pV <= cursor
+  define R1 as $p1 <= cursor
+  define R2 as $p2 <= cursor
+
+  define noun_sfx as (
+    [substring] among (
+      'amh' 'eamh' 'abh' 'eabh'
+      'aibh' 'ibh' 'aimh' 'imh'
+      'a{i'}ocht' '{i'}ocht' 'a{i'}ochta' '{i'}ochta'
+      (R1 delete)
+      'ire' 'ir{i'}' 'aire' 'air{i'}'
+      (R2 delete)
+    )
+  )
+  define deriv as (
+    [substring] among (
+      'acht' 'eacht' 'ach' 'each' 'eacht{u'}il' 'eachta' 'acht{u'}il' 'achta'
+      (R2 delete)  //siopadóireacht -> siopadóir but not poblacht -> pobl
+      'arcacht' 'arcachta{i'}' 'arcachta'
+      (<- 'arc') // monarcacht -> monarc
+      'gineach' 'gineas' 'ginis'
+      (<- 'gin')
+      'grafa{i'}och' 'grafa{i'}ocht' 'grafa{i'}ochta' 'grafa{i'}ochta{i'}'
+      (<- 'graf')
+      'paite' 'patach' 'pataigh' 'patacha'
+      (<- 'paite')
+      '{o'}ideach' '{o'}ideacha' '{o'}idigh'
+      (<- '{o'}id')
+    )
+  )
+  define verb_sfx as (
+    [substring] among (
+      'imid' 'aimid' '{i'}mid' 'a{i'}mid'
+      'faidh' 'fidh'
+      (RV delete)
+      'ain'
+      'eadh' 'adh'
+      '{a'}il'
+      'tear' 'tar'
+      (R1 delete)
+    )
+  )
+)
+
+define stem as (
+  do initial_morph
+  do mark_regions
+  backwards (
+    do noun_sfx
+    do deriv
+    do verb_sfx
+  )
+)
+</DL>
+</PRE>
+</TR>
+
+<TR><TD>
+<BR><BR>
+And here is his implementation of Dolamic&#8217;s Czech stemmer,
+<BR><BR>
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+<BR><PRE>
+<DL><DD>
+routines (
+  RV R1
+  palatalise
+  mark_regions
+  do_possessive
+  do_case
+  do_comparative
+  do_diminutive
+  do_augmentative
+  do_derivational
+  do_deriv_single
+  do_aggressive
+)
+
+externals ( stem )
+
+integers ( pV p1 )
+
+groupings ( v )
+
+stringescapes {}
+
+/* Latin 2 */
+
+stringdef a' hex 'E1'
+stringdef c^ hex 'E8'
+stringdef d^ hex 'EF'
+stringdef e' hex 'E9'
+stringdef e^ hex 'EC'
+stringdef i' hex 'ED'
+stringdef n^ hex 'F2'
+stringdef o' hex 'F3'
+stringdef r^ hex 'F8'
+stringdef s^ hex 'B9'
+stringdef t^ hex 'BB'
+stringdef u' hex 'FA'
+stringdef u* hex 'F9'
+stringdef y' hex 'FD'
+stringdef z^ hex 'BE'
+
+define v 'aeiouy{a'}{e^}{e'}{i'}{o'}{u'}{u*}{y'}'
+
+define mark_regions as (
+
+    $pV = limit
+    $p1 = limit
+
+    do (
+        gopast non-v setmark pV
+        gopast non-v gopast v setmark p1
+    )
+)
+
+backwardmode (
+
+  define RV as $pV <= cursor
+  define R1 as $p1 <= cursor
+
+  define palatalise as (
+    [substring] RV among (
+      'ci' 'ce' '{c^}i' '{c^}'
+      (<- 'k')
+      'zi' 'ze' '{z^}i' '{z^}e'
+      (<- 'h')
+      '{c^}t{e^}' '{c^}ti' '{c^}t{e'}'
+      (<- 'ck')
+      '{s^}t{e^}' '{s^}ti' '{s^}t{e'}'
+      (<- 'sk')
+    )
+  )
+
+  define do_possessive as (
+    [substring] RV among (
+      'ov' '{u*}v'
+      (delete)
+      'in'
+      (
+        delete
+        try palatalise
+      )
+    )
+  )
+
+  define do_case as (
+    [substring] among (
+      'atech'
+      '{e^}tem' 'at{u*}m'
+      '{a'}ch' '{y'}ch' 'ov{e'}' '{y'}mi'
+      'ata' 'aty' 'ama' 'ami' 'ovi'
+      'at' '{a'}m' 'os' 'us' '{y'}m' 'mi' 'ou'
+      'u' 'y' '{u*}' 'a' 'o' '{a'}' '{e'}' '{y'}'
+      (delete)
+      'ech' 'ich' '{i'}ch'
+      '{e'}ho' '{e^}mi' '{e'}mu' '{e^}te' '{e^}ti' '{i'}ho' '{i'}mi'
+      'emi' 'iho' 'imu'
+      '{e'}m' '{i'}m' 'es'
+      'e' 'i' '{i'}' '{e^}'
+      (
+        delete
+        try palatalise
+      )
+      'em'
+      (
+        <- 'e'
+        try palatalise
+      )
+    )
+  )
+
+  define do_derivational as (
+    [substring] R1 among (
+      'obinec'
+      'ovisk' 'ovstv' 'ovi{s^}t' 'ovn{i'}k'
+      '{a'}sek' 'loun' 'nost' 'teln' 'ovec' 'ov{i'}k' 'ovtv' 'ovin' '{s^}tin'
+      '{a'}rn' 'och' 'ost' 'ovn' 'oun' 'out' 'ou{s^}' 'u{s^}k'
+      'kyn' '{c^}an' 'k{a'}{r^}' 'n{e'}{r^}' 'n{i'}k' 'ctv' 'stv'
+      '{a'}{c^}' 'a{c^}' '{a'}n' 'an' '{a'}{r^}' 'as'
+      'ob' 'ot' 'ov' 'o{n^}' 'ul' 'yn'
+      '{c^}k' '{c^}n' 'dl' 'nk' 'tv' 'tk' 'vk'
+      (delete)
+      'ion{a'}{r^}'
+      'inec' 'itel'
+      'i{a'}n' 'ist' 'isk' 'i{s^}k' 'itb'
+      'ic' 'in' 'it' 'iv'
+      (
+        <- 'i'
+        palatalise
+      )
+      'enic' 'ec' 'en'
+      (
+        <- 'e'
+        palatalise
+      )
+      '{e'}{r^}'
+      (
+        <- '{e'}'
+        palatalise
+      )
+      '{e^}n'
+      (
+        <- '{e^}'
+        palatalise
+      )
+      '{i'}rn'
+      '{i'}{r^}' '{i'}n'
+      (
+        <- '{i'}'
+        palatalise
+      )
+    )
+  )
+  define do_deriv_single as (
+    [substring] among (
+      'c' '{c^}' 'k' 'l' 'n' 't'
+      (delete)
+    )
+  )
+
+
+  define do_augmentative as (
+    [substring] among (
+      'ajzn' '{a'}k'
+      (delete)
+      'izn' 'isk'
+      (
+        <- 'i'
+        palatalise
+      )
+    )
+  )
+
+  define do_diminutive as (
+    [substring] among (
+      'ou{s^}ek' '{a'}{c^}ek' 'a{c^}ek' 'o{c^}ek' 'u{c^}ek'
+      'anek' 'onek' 'unek' '{a'}nek'
+      'e{c^}k' '{e'}{c^}k' 'i{c^}k' '{i'}{c^}k' 'enk' '{e'}nk' 'ink' '{i'}nk'
+      '{a'}{c^}k' 'a{c^}k' 'o{c^}k' 'u{c^}k' 'ank' 'onk' 'unk'
+      '{a'}tk' '{a'}nk' 'u{s^}k'
+      'k'
+      (delete)
+      'e{c^}ek' 'enek' 'ek'
+      (
+        <- 'e'
+        palatalise
+      )
+      '{e'}{c^}ek' '{e'}k'
+      (
+        <- '{e'}'
+        palatalise
+      )
+      'i{c^}ek' 'inek' 'ik'
+      (
+        <- 'i'
+        palatalise
+      )
+      '{i'}{c^}ek' '{i'}k'
+      (
+        <- '{i'}'
+        palatalise
+      )
+      '{a'}k'
+       (<- '{a'}')
+      'ak'
+       (<- 'a')
+      'ok'
+       (<- 'o')
+      'uk'
+       (<- 'u')
+    )
+  )
+
+  define do_comparative as (
+    [substring] among (
+      '{e^}j{s^}'
+      (
+        <- '{e^}'
+        palatalise
+      )
+      'ej{s^}'
+      (
+        <- 'e'
+        palatalise
+      )
+    )
+  )
+
+  define do_aggressive as (
+    do do_comparative
+    do do_diminutive
+    do do_augmentative
+    do_derivational or do_deriv_single
+  )
+)
+
+define stem as (
+  do mark_regions
+  backwards (
+    do_case
+    do_possessive
+    // light and aggressive are the same to this point
+    // comment next line for light stemmer
+    do_aggressive
+  )
+)
+
+// Ljiljana Dolamic and Jacques Savoy. 2009.
+// Indexing and stemming approaches for the Czech language.
+// Inf. Process. Manage. 45, 6 (November 2009), 714-720.
+// http://members.unine.ch/jacques.savoy/clef/CzechStemmerLight.txt
+// http://members.unine.ch/jacques.savoy/clef/CzechStemmerAgressive.txt
+</DL>
+</PRE>
+<BR>
+</TR>
+
+</TABLE>
+<BR><BR>
+</BODY>
+</HTML>

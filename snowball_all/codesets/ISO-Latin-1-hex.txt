@@ -1,0 +1,92 @@
+
+
+/* special characters (ISO Latin I) */
+
+/* The hex 80 - FF code page is arranged as follows,
+
+
+      x0  x1  x2  x3  x4  x5  x6  x7  x8  x9  xA  xB  xC  xD  xE  xF
+    +---------------------------------------------------------------
+ 8x | .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+    |
+ 9x | .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+    |
+ Ax | .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+    |
+ Bx | .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+    |
+ Cx | A`  A'  A^  A~  A"  Ao  AE  C,  E`  E'  E^  E"  I`  I'  I^  I"
+    |
+ Dx | D/  N~  O`  O'  O^  O~  O"  .   O/  U`  U'  U^  U"  Y'  TH  ss
+    |
+ Ex | a`  a'  a^  a~  a"  ao  ae  c,  e`  e'  e^  e"  i`  i'  i^  i"
+    |
+ Fx | d/  n~  o`  o'  o^  o~  o"  .   o/  u`  u'  u^  u"  y'  th  y"
+
+*/
+
+stringdef A`   hex 'C0'
+stringdef A'   hex 'C1'
+stringdef A^   hex 'C2'
+stringdef A~   hex 'C3'
+stringdef A"   hex 'C4'
+stringdef Ao   hex 'C5'
+stringdef AE   hex 'C6'
+stringdef C,   hex 'C7'
+stringdef E`   hex 'C8'
+stringdef E'   hex 'C9'
+stringdef E^   hex 'CA'
+stringdef E"   hex 'CB'
+stringdef I`   hex 'CC'
+stringdef I'   hex 'CD'
+stringdef I^   hex 'CE'
+stringdef I"   hex 'CF'
+stringdef D/   hex 'D0'
+stringdef N~   hex 'D1'
+stringdef O`   hex 'D2'
+stringdef O'   hex 'D3'
+stringdef O^   hex 'D4'
+stringdef O~   hex 'D5'
+stringdef O"   hex 'D6'
+
+stringdef O/   hex 'D8'
+stringdef U`   hex 'D9'
+stringdef U'   hex 'DA'
+stringdef U^   hex 'DB'
+stringdef U"   hex 'DC'
+stringdef Y'   hex 'DD'
+stringdef TH   hex 'DE'
+stringdef ss   hex 'DF'
+stringdef a`   hex 'E0'
+stringdef a'   hex 'E1'
+stringdef a^   hex 'E2'
+stringdef a~   hex 'E3'
+stringdef a"   hex 'E4'
+stringdef ao   hex 'E5'
+stringdef ae   hex 'E6'
+stringdef c,   hex 'E7'
+stringdef e`   hex 'E8'
+stringdef e'   hex 'E9'
+stringdef e^   hex 'EA'
+stringdef e"   hex 'EB'
+stringdef i`   hex 'EC'
+stringdef i'   hex 'ED'
+stringdef i^   hex 'EE'
+stringdef i"   hex 'EF'
+stringdef d/   hex 'F0'
+stringdef n~   hex 'F1'
+stringdef o`   hex 'F2'
+stringdef o'   hex 'F3'
+stringdef o^   hex 'F4'
+stringdef o~   hex 'F5'
+stringdef o"   hex 'F6'
+
+stringdef o/   hex 'F8'
+stringdef u`   hex 'F9'
+stringdef u'   hex 'FA'
+stringdef u^   hex 'FB'
+stringdef u"   hex 'FC'
+stringdef y'   hex 'FD'
+stringdef th   hex 'FE'
+stringdef y"   hex 'FF'
+

@@ -1,0 +1,589 @@
+
+<HTML>
+<HEAD>
+
+<TITLE>The Lovins stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>The Lovins stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<BR><BR>
+<TR><TD><A HREF="festschrift.html"> (in more depth)</A>
+<BR><BR>
+<TR><TD><A HREF="http://www.cs.waikato.ac.nz/~eibe/stemmers/index.html">
+An &#8216;unofficial&#8217; home page of the Lovins stemming algorithm</A>
+</TABLE></DL>
+
+<BR><BR>
+
+
+<TR><TD>
+
+The first ever published stemming algorithm was: Lovins JB (1968) Development of
+a stemming algorithm. Mechanical Translation and Computational Linguistics,
+11: 22-31. Julie Beth Lovins&#8217; paper was remarkable for the early date at which
+it was done, and for its seminal influence on later work in
+this area.
+
+<BR><BR>
+
+The design of the algorithm was much influenced by the technical vocabulary
+with which Lovins found herself working (subject term keywords attached to
+documents in the materials science and engineering field). The subject term
+list may also have been slightly limiting in that certain common endings
+are not represented (<B><I>ements</I></B> and <B><I>ents</I></B> for example, corresponding to
+the singular forms <B><I>ement</I></B> and <B><I>ent</I></B>), and also in that the algorithm's
+treatment of short words, or words with short stems, can be rather
+destructive.
+
+<BR><BR>
+
+The Lovins algorithm is noticeably bigger than the Porter algorithm,
+because of its very extensive endings list. But in one way that is used to
+advantage: it is faster. It has effectively traded space for time, and with
+its large suffix set it needs just two major steps to remove a suffix,
+compared with the eight of the Porter algorithm.
+
+<BR><BR>
+
+The Lovins stemmer has 294 <I>endings</I>, 29 <I>conditions</I> and 35
+<I>transformation rules</I>. Each ending is associated with one of the
+conditions. In the first step the longest ending is found which satisfies
+its associated condition, and is removed. In the second step the 35 rules
+are applied to transform the ending. The second step is done whether or not
+an ending is removed in the first step.
+
+<BR><BR>
+
+For example, <I>nationally</I> has the ending <B><I>ationally</I></B>, with associated
+condition, B, &#8216;minimum stem length = 3&#8217;. Since removing <B><I>ationally</I></B>
+would leave a stem of length 1 this is rejected. But it also has ending
+<B><I>ionally</I></B> with associated condition A. Condition A is &#8216;no restriction on
+stem length&#8217;, so <B><I>ionally</I></B> is removed, leaving <B><I>nat</I></B>.
+
+<BR><BR>
+
+The transformation rules handle features like letter undoubling (<I>sitting</I>
+<TT>-&gt;</TT> <I>sitt</I> <TT>-&gt;</TT> <I>sit</I>), irregular plurals (<I>matrix</I> and <I>matrices</I>),
+and English morphological oddities ultimately caused by the behaviour of
+Latin verbs of the second conjugation (<I>assume</I> / <I>assumption</I>,
+<I>commit</I> / <I>commission</I> etc). Although they are described as being
+applied in turn, they can be broken into two stages, rule 1 being done in
+stage 1, and either zero or one of rules 2 to 35 being done in stage 2.
+
+<BR><BR>
+
+Here is the list of endings as given in Appendix A of Lovins&#8217; paper. They
+are grouped by length, from 11 characters down to 1. Each ending is
+followed by its condition code.
+
+<BR><BR>
+
+<TR><TD BGCOLOR="silver">
+<BR><BR>
+&nbsp;<H4>Appendix A. The list of endings</H4>
+<DL><DD><DL><DD><TABLE CELLPADDING=0>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .11. </TD></TR>
+<TR><TD><TD></TD><TD>    alistically B </TD><TD></TD><TD> arizability A </TD><TD></TD><TD> izationally B </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .10. </TD></TR>
+<TR><TD><TD></TD><TD>   antialness A  </TD><TD></TD><TD> arisations A  </TD><TD></TD><TD> arizations A  </TD><TD></TD><TD> entialness A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .09. </TD></TR>
+<TR><TD><TD></TD><TD>    allically C </TD><TD></TD><TD> antaneous A </TD><TD></TD><TD> antiality A </TD><TD></TD><TD> arisation A </TD></TR>
+<TR><TD><TD></TD><TD>    arization A </TD><TD></TD><TD> ationally B </TD><TD></TD><TD> ativeness A </TD><TD></TD><TD> eableness E </TD></TR>
+<TR><TD><TD></TD><TD>    entations A </TD><TD></TD><TD> entiality A </TD><TD></TD><TD> entialize A </TD><TD></TD><TD> entiation A </TD></TR>
+<TR><TD><TD></TD><TD>    ionalness A </TD><TD></TD><TD> istically A </TD><TD></TD><TD> itousness A </TD><TD></TD><TD> izability A </TD></TR>
+<TR><TD><TD></TD><TD>    izational A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .08. </TD></TR>
+<TR><TD><TD></TD><TD>     ableness A  </TD><TD></TD><TD> arizable A  </TD><TD></TD><TD> entation A  </TD><TD></TD><TD> entially A </TD></TR>
+<TR><TD><TD></TD><TD>     eousness A  </TD><TD></TD><TD> ibleness A  </TD><TD></TD><TD> icalness A  </TD><TD></TD><TD> ionalism A </TD></TR>
+<TR><TD><TD></TD><TD>     ionality A  </TD><TD></TD><TD> ionalize A  </TD><TD></TD><TD> iousness A  </TD><TD></TD><TD> izations A </TD></TR>
+<TR><TD><TD></TD><TD>     lessness A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .07. </TD></TR>
+<TR><TD><TD></TD><TD>    ability A   </TD><TD></TD><TD> aically A   </TD><TD></TD><TD> alistic B   </TD><TD></TD><TD> alities A </TD></TR>
+<TR><TD><TD></TD><TD>    ariness E   </TD><TD></TD><TD> aristic A   </TD><TD></TD><TD> arizing A   </TD><TD></TD><TD> ateness A </TD></TR>
+<TR><TD><TD></TD><TD>    atingly A   </TD><TD></TD><TD> ational B   </TD><TD></TD><TD> atively A   </TD><TD></TD><TD> ativism A </TD></TR>
+<TR><TD><TD></TD><TD>    elihood E   </TD><TD></TD><TD> encible A   </TD><TD></TD><TD> entally A   </TD><TD></TD><TD> entials A </TD></TR>
+<TR><TD><TD></TD><TD>    entiate A   </TD><TD></TD><TD> entness A   </TD><TD></TD><TD> fulness A   </TD><TD></TD><TD> ibility A </TD></TR>
+<TR><TD><TD></TD><TD>    icalism A   </TD><TD></TD><TD> icalist A   </TD><TD></TD><TD> icality A   </TD><TD></TD><TD> icalize A </TD></TR>
+<TR><TD><TD></TD><TD>    ication G   </TD><TD></TD><TD> icianry A   </TD><TD></TD><TD> ination A   </TD><TD></TD><TD> ingness A </TD></TR>
+<TR><TD><TD></TD><TD>    ionally A   </TD><TD></TD><TD> isation A   </TD><TD></TD><TD> ishness A   </TD><TD></TD><TD> istical A </TD></TR>
+<TR><TD><TD></TD><TD>    iteness A   </TD><TD></TD><TD> iveness A   </TD><TD></TD><TD> ivistic A   </TD><TD></TD><TD> ivities A </TD></TR>
+<TR><TD><TD></TD><TD>    ization F   </TD><TD></TD><TD> izement A   </TD><TD></TD><TD> oidally A   </TD><TD></TD><TD> ousness A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .06. </TD></TR>
+<TR><TD><TD></TD><TD>     aceous A  </TD><TD></TD><TD> acious B  </TD><TD></TD><TD> action G  </TD><TD></TD><TD> alness A </TD></TR>
+<TR><TD><TD></TD><TD>     ancial A  </TD><TD></TD><TD> ancies A  </TD><TD></TD><TD> ancing B  </TD><TD></TD><TD> ariser A </TD></TR>
+<TR><TD><TD></TD><TD>     arized A  </TD><TD></TD><TD> arizer A  </TD><TD></TD><TD> atable A  </TD><TD></TD><TD> ations B </TD></TR>
+<TR><TD><TD></TD><TD>     atives A  </TD><TD></TD><TD> eature Z  </TD><TD></TD><TD> efully A  </TD><TD></TD><TD> encies A </TD></TR>
+<TR><TD><TD></TD><TD>     encing A  </TD><TD></TD><TD> ential A  </TD><TD></TD><TD> enting C  </TD><TD></TD><TD> entist A </TD></TR>
+<TR><TD><TD></TD><TD>     eously A  </TD><TD></TD><TD> ialist A  </TD><TD></TD><TD> iality A  </TD><TD></TD><TD> ialize A </TD></TR>
+<TR><TD><TD></TD><TD>     ically A  </TD><TD></TD><TD> icance A  </TD><TD></TD><TD> icians A  </TD><TD></TD><TD> icists A </TD></TR>
+<TR><TD><TD></TD><TD>     ifully A  </TD><TD></TD><TD> ionals A  </TD><TD></TD><TD> ionate D  </TD><TD></TD><TD> ioning A </TD></TR>
+<TR><TD><TD></TD><TD>     ionist A  </TD><TD></TD><TD> iously A  </TD><TD></TD><TD> istics A  </TD><TD></TD><TD> izable E </TD></TR>
+<TR><TD><TD></TD><TD>     lessly A  </TD><TD></TD><TD> nesses A  </TD><TD></TD><TD> oidism A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .05. </TD></TR>
+<TR><TD><TD></TD><TD>      acies A   </TD><TD></TD><TD> acity A   </TD><TD></TD><TD> aging B   </TD><TD></TD><TD> aical A </TD></TR>
+<TR><TD><TD></TD><TD>      alist A   </TD><TD></TD><TD> alism B   </TD><TD></TD><TD> ality A   </TD><TD></TD><TD> alize A </TD></TR>
+<TR><TD><TD></TD><TD>      allic BB  </TD><TD></TD><TD> anced B   </TD><TD></TD><TD> ances B   </TD><TD></TD><TD> antic C </TD></TR>
+<TR><TD><TD></TD><TD>      arial A   </TD><TD></TD><TD> aries A   </TD><TD></TD><TD> arily A   </TD><TD></TD><TD> arity B </TD></TR>
+<TR><TD><TD></TD><TD>      arize A   </TD><TD></TD><TD> aroid A   </TD><TD></TD><TD> ately A   </TD><TD></TD><TD> ating I </TD></TR>
+<TR><TD><TD></TD><TD>      ation B   </TD><TD></TD><TD> ative A   </TD><TD></TD><TD> ators A   </TD><TD></TD><TD> atory A </TD></TR>
+<TR><TD><TD></TD><TD>      ature E   </TD><TD></TD><TD> early Y   </TD><TD></TD><TD> ehood A   </TD><TD></TD><TD> eless A </TD></TR>
+<TR><TD><TD></TD><TD>      elity A   </TD><TD></TD><TD> ement A   </TD><TD></TD><TD> enced A   </TD><TD></TD><TD> ences A </TD></TR>
+<TR><TD><TD></TD><TD>      eness E   </TD><TD></TD><TD> ening E   </TD><TD></TD><TD> ental A   </TD><TD></TD><TD> ented C </TD></TR>
+<TR><TD><TD></TD><TD>      ently A   </TD><TD></TD><TD> fully A   </TD><TD></TD><TD> ially A   </TD><TD></TD><TD> icant A </TD></TR>
+<TR><TD><TD></TD><TD>      ician A   </TD><TD></TD><TD> icide A   </TD><TD></TD><TD> icism A   </TD><TD></TD><TD> icist A </TD></TR>
+<TR><TD><TD></TD><TD>      icity A   </TD><TD></TD><TD> idine I   </TD><TD></TD><TD> iedly A   </TD><TD></TD><TD> ihood A </TD></TR>
+<TR><TD><TD></TD><TD>      inate A   </TD><TD></TD><TD> iness A   </TD><TD></TD><TD> ingly B   </TD><TD></TD><TD> inism J </TD></TR>
+<TR><TD><TD></TD><TD>      inity CC  </TD><TD></TD><TD> ional A   </TD><TD></TD><TD> ioned A   </TD><TD></TD><TD> ished A </TD></TR>
+<TR><TD><TD></TD><TD>      istic A   </TD><TD></TD><TD> ities A   </TD><TD></TD><TD> itous A   </TD><TD></TD><TD> ively A </TD></TR>
+<TR><TD><TD></TD><TD>      ivity A   </TD><TD></TD><TD> izers F   </TD><TD></TD><TD> izing F   </TD><TD></TD><TD> oidal A </TD></TR>
+<TR><TD><TD></TD><TD>      oides A   </TD><TD></TD><TD> otide A   </TD><TD></TD><TD> ously A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .04. </TD></TR>
+<TR><TD><TD></TD><TD>     able A    </TD><TD></TD><TD> ably A    </TD><TD></TD><TD> ages B    </TD><TD></TD><TD> ally B </TD></TR>
+<TR><TD><TD></TD><TD>     ance B    </TD><TD></TD><TD> ancy B    </TD><TD></TD><TD> ants B    </TD><TD></TD><TD> aric A </TD></TR>
+<TR><TD><TD></TD><TD>     arly K    </TD><TD></TD><TD> ated I    </TD><TD></TD><TD> ates A    </TD><TD></TD><TD> atic B </TD></TR>
+<TR><TD><TD></TD><TD>     ator A    </TD><TD></TD><TD> ealy Y    </TD><TD></TD><TD> edly E    </TD><TD></TD><TD> eful A </TD></TR>
+<TR><TD><TD></TD><TD>     eity A    </TD><TD></TD><TD> ence A    </TD><TD></TD><TD> ency A    </TD><TD></TD><TD> ened E </TD></TR>
+<TR><TD><TD></TD><TD>     enly E    </TD><TD></TD><TD> eous A    </TD><TD></TD><TD> hood A    </TD><TD></TD><TD> ials A </TD></TR>
+<TR><TD><TD></TD><TD>     ians A    </TD><TD></TD><TD> ible A    </TD><TD></TD><TD> ibly A    </TD><TD></TD><TD> ical A </TD></TR>
+<TR><TD><TD></TD><TD>     ides L    </TD><TD></TD><TD> iers A    </TD><TD></TD><TD> iful A    </TD><TD></TD><TD> ines M </TD></TR>
+<TR><TD><TD></TD><TD>     ings N    </TD><TD></TD><TD> ions B    </TD><TD></TD><TD> ious A    </TD><TD></TD><TD> isms B </TD></TR>
+<TR><TD><TD></TD><TD>     ists A    </TD><TD></TD><TD> itic H    </TD><TD></TD><TD> ized F    </TD><TD></TD><TD> izer F </TD></TR>
+<TR><TD><TD></TD><TD>     less A    </TD><TD></TD><TD> lily A    </TD><TD></TD><TD> ness A    </TD><TD></TD><TD> ogen A </TD></TR>
+<TR><TD><TD></TD><TD>     ward A    </TD><TD></TD><TD> wise A    </TD><TD></TD><TD> ying B    </TD><TD></TD><TD> yish A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .03. </TD></TR>
+<TR><TD><TD></TD><TD>      acy A   </TD><TD></TD><TD> age B   </TD><TD></TD><TD> aic A   </TD><TD></TD><TD> als BB </TD></TR>
+<TR><TD><TD></TD><TD>      ant B   </TD><TD></TD><TD> ars O   </TD><TD></TD><TD> ary F   </TD><TD></TD><TD> ata A  </TD></TR>
+<TR><TD><TD></TD><TD>      ate A   </TD><TD></TD><TD> eal Y   </TD><TD></TD><TD> ear Y   </TD><TD></TD><TD> ely E  </TD></TR>
+<TR><TD><TD></TD><TD>      ene E   </TD><TD></TD><TD> ent C   </TD><TD></TD><TD> ery E   </TD><TD></TD><TD> ese A  </TD></TR>
+<TR><TD><TD></TD><TD>      ful A   </TD><TD></TD><TD> ial A   </TD><TD></TD><TD> ian A   </TD><TD></TD><TD> ics A  </TD></TR>
+<TR><TD><TD></TD><TD>      ide L   </TD><TD></TD><TD> ied A   </TD><TD></TD><TD> ier A   </TD><TD></TD><TD> ies P  </TD></TR>
+<TR><TD><TD></TD><TD>      ily A   </TD><TD></TD><TD> ine M   </TD><TD></TD><TD> ing N   </TD><TD></TD><TD> ion Q  </TD></TR>
+<TR><TD><TD></TD><TD>      ish C   </TD><TD></TD><TD> ism B   </TD><TD></TD><TD> ist A   </TD><TD></TD><TD> ite AA </TD></TR>
+<TR><TD><TD></TD><TD>      ity A   </TD><TD></TD><TD> ium A   </TD><TD></TD><TD> ive A   </TD><TD></TD><TD> ize F  </TD></TR>
+<TR><TD><TD></TD><TD>      oid A   </TD><TD></TD><TD> one R   </TD><TD></TD><TD> ous A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .02. </TD></TR>
+<TR><TD><TD></TD><TD>       ae A    </TD><TD></TD><TD> al BB   </TD><TD></TD><TD> ar X    </TD><TD></TD><TD> as B </TD></TR>
+<TR><TD><TD></TD><TD>       ed E    </TD><TD></TD><TD> en F    </TD><TD></TD><TD> es E    </TD><TD></TD><TD> ia A </TD></TR>
+<TR><TD><TD></TD><TD>       ic A    </TD><TD></TD><TD> is A    </TD><TD></TD><TD> ly B    </TD><TD></TD><TD> on S </TD></TR>
+<TR><TD><TD></TD><TD>       or T    </TD><TD></TD><TD> um U    </TD><TD></TD><TD> us V    </TD><TD></TD><TD> yl R </TD></TR>
+<TR><TD><TD></TD><TD>       s' A    </TD><TD></TD><TD> 's A </TD></TR>
+<TR><TD></TR>
+<TR><TD><TD></TD><TD> .01. </TD></TR>
+<TR><TD><TD></TD><TD>      a A    </TD><TD></TD><TD> e A     </TD><TD></TD><TD> i A     </TD><TD></TD><TD> o A </TD></TR>
+<TR><TD><TD></TD><TD>      s W    </TD><TD></TD><TD> y B </TD></TR>
+</TABLE></DL></DL>
+<BR><BR>
+</TR>
+
+<TR><TD>
+<BR><BR>
+
+Here are the 29 conditions, called A to Z, AA, BB and CC (* stands for any letter):
+
+<BR><BR>
+</TR>
+
+
+<TR><TD BGCOLOR="silver">
+<BR><BR>
+&nbsp;<H4>Appendix B. Codes for context-sensitive rules associated with
+certain endings</H4>
+<DL><DD>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><TD></TD><TD>A </TD><TD></TD><TD>  No restrictions on stem </TD></TR>
+<TR><TD><TD></TD><TD>B </TD><TD></TD><TD>  Minimum stem length = 3 </TD></TR>
+<TR><TD><TD></TD><TD>C </TD><TD></TD><TD>  Minimum stem length = 4 </TD></TR>
+<TR><TD><TD></TD><TD>D </TD><TD></TD><TD>  Minimum stem length = 5 </TD></TR>
+<TR><TD><TD></TD><TD>E </TD><TD></TD><TD>  Do not remove ending after <I>e</I> </TD></TR>
+<TR><TD><TD></TD><TD>F </TD><TD></TD><TD>  Minimum stem length = 3 and do not remove ending after <I>e</I> </TD></TR>
+<TR><TD><TD></TD><TD>G </TD><TD></TD><TD>  Minimum stem length = 3 and remove ending only after <I>f</I> </TD></TR>
+<TR><TD><TD></TD><TD>H </TD><TD></TD><TD>  Remove ending only after <I>t</I> or <I>ll</I> </TD></TR>
+<TR><TD><TD></TD><TD>I </TD><TD></TD><TD>  Do not remove ending after <I>o</I> or <I>e</I> </TD></TR>
+<TR><TD><TD></TD><TD>J </TD><TD></TD><TD>  Do not remove ending after <I>a</I> or <I>e</I> </TD></TR>
+<TR><TD><TD></TD><TD>K </TD><TD></TD><TD>  Minimum stem length = 3 and remove ending only after <I>l, i</I> or <I>u*e</I> </TD></TR>
+<TR><TD><TD></TD><TD>L </TD><TD></TD><TD>  Do not remove ending after <I>u, x</I> or <I>s</I>, unless <I>s</I> follows <I>o</I> </TD></TR>
+<TR><TD><TD></TD><TD>M </TD><TD></TD><TD>  Do not remove ending after <I>a, c, e</I> or <I>m</I> </TD></TR>
+<TR><TD><TD></TD><TD>N </TD><TD></TD><TD>  Minimum stem length = 4 after <I>s**</I>, elsewhere = 3 </TD></TR>
+<TR><TD><TD></TD><TD>O </TD><TD></TD><TD>  Remove ending only after <I>l</I> or <I>i</I> </TD></TR>
+<TR><TD><TD></TD><TD>P </TD><TD></TD><TD>  Do not remove ending after <I>c</I> </TD></TR>
+<TR><TD><TD></TD><TD>Q </TD><TD></TD><TD>  Minimum stem length = 3 and do not remove ending after <I>l</I> or <I>n</I> </TD></TR>
+<TR><TD><TD></TD><TD>R </TD><TD></TD><TD>  Remove ending only after <I>n</I> or <I>r</I> </TD></TR>
+<TR><TD><TD></TD><TD>S </TD><TD></TD><TD>  Remove ending only after <I>dr</I> or <I>t</I>, unless <I>t</I> follows <I>t</I> </TD></TR>
+<TR><TD><TD></TD><TD>T </TD><TD></TD><TD>  Remove ending only after <I>s</I> or <I>t</I>, unless <I>t</I> follows <I>o</I> </TD></TR>
+<TR><TD><TD></TD><TD>U </TD><TD></TD><TD>  Remove ending only after <I>l, m, n</I> or <I>r</I> </TD></TR>
+<TR><TD><TD></TD><TD>V </TD><TD></TD><TD>  Remove ending only after <I>c</I> </TD></TR>
+<TR><TD><TD></TD><TD>W </TD><TD></TD><TD>  Do not remove ending after <I>s</I> or <I>u</I> </TD></TR>
+<TR><TD><TD></TD><TD>X </TD><TD></TD><TD>  Remove ending only after <I>l, i</I> or <I>u*e</I> </TD></TR>
+<TR><TD><TD></TD><TD>Y </TD><TD></TD><TD>  Remove ending only after <I>in</I> </TD></TR>
+<TR><TD><TD></TD><TD>Z </TD><TD></TD><TD>  Do not remove ending after <I>f</I> </TD></TR>
+<TR><TD><TD></TD><TD>AA </TD><TD></TD><TD> Remove ending only after <I>d, f, ph, th, l, er, or, es</I> or <I>t</I> </TD></TR>
+<TR><TD><TD></TD><TD>BB </TD><TD></TD><TD> Minimum stem length = 3 and do not remove ending after <I>met</I> or <I>ryst</I> </TD></TR>
+<TR><TD><TD></TD><TD>CC </TD><TD></TD><TD> Remove ending only after <I>l</I> </TD></TR>
+</TABLE></DL>
+</DL>
+</TR>
+
+<TR><TD>
+<BR><BR>
+There is an implicit assumption in each condition, A included, that the minimum
+stem length is 2.
+
+<BR><BR>
+
+Finally, here are the 35 transformation rules.
+
+<TR><TD>
+</TR>
+
+
+<TR><TD BGCOLOR="silver">
+<BR><BR>
+&nbsp;<H4>Appendix C. Transformation rules used in recoding stem terminations</H4>
+<DL><DD>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><TD></TD><TD> 1  &nbsp;  &nbsp;  &nbsp;  </TD><TD></TD><TD> remove one of double <I>b, d, g, l, m, n, p, r, s, t</I> </TD></TR>
+<TR><TD><TD></TD><TD> 2  </TD><TD></TD><TD>      iev   &nbsp;  <TT>-&gt;</TT>  &nbsp;  ief </TD></TR>
+<TR><TD><TD></TD><TD> 3  </TD><TD></TD><TD>      uct   &nbsp;  <TT>-&gt;</TT>  &nbsp;  uc </TD></TR>
+<TR><TD><TD></TD><TD> 4  </TD><TD></TD><TD>      umpt  &nbsp;  <TT>-&gt;</TT>  &nbsp;  um </TD></TR>
+<TR><TD><TD></TD><TD> 5  </TD><TD></TD><TD>      rpt   &nbsp;  <TT>-&gt;</TT>  &nbsp;  rb </TD></TR>
+<TR><TD><TD></TD><TD> 6  </TD><TD></TD><TD>      urs   &nbsp;  <TT>-&gt;</TT>  &nbsp;  ur </TD></TR>
+<TR><TD><TD></TD><TD> 7  </TD><TD></TD><TD>      istr  &nbsp;  <TT>-&gt;</TT>  &nbsp;  ister </TD></TR>
+<TR><TD><TD></TD><TD> 7a </TD><TD></TD><TD>     metr  &nbsp;  <TT>-&gt;</TT>  &nbsp;  meter </TD></TR>
+<TR><TD><TD></TD><TD> 8  </TD><TD></TD><TD>      olv   &nbsp;  <TT>-&gt;</TT>  &nbsp;  olut </TD></TR>
+<TR><TD><TD></TD><TD> 9  </TD><TD></TD><TD>      ul    &nbsp;  <TT>-&gt;</TT>  &nbsp;  l except following <I>a, o, i</I> </TD></TR>
+<TR><TD><TD></TD><TD> 10 </TD><TD></TD><TD>     bex   &nbsp;  <TT>-&gt;</TT>  &nbsp;  bic </TD></TR>
+<TR><TD><TD></TD><TD> 11 </TD><TD></TD><TD>     dex   &nbsp;  <TT>-&gt;</TT>  &nbsp;  dic </TD></TR>
+<TR><TD><TD></TD><TD> 12 </TD><TD></TD><TD>     pex   &nbsp;  <TT>-&gt;</TT>  &nbsp;  pic </TD></TR>
+<TR><TD><TD></TD><TD> 13 </TD><TD></TD><TD>     tex   &nbsp;  <TT>-&gt;</TT>  &nbsp;  tic </TD></TR>
+<TR><TD><TD></TD><TD> 14 </TD><TD></TD><TD>     ax    &nbsp;  <TT>-&gt;</TT>  &nbsp;  ac </TD></TR>
+<TR><TD><TD></TD><TD> 15 </TD><TD></TD><TD>     ex    &nbsp;  <TT>-&gt;</TT>  &nbsp;  ec </TD></TR>
+<TR><TD><TD></TD><TD> 16 </TD><TD></TD><TD>     ix    &nbsp;  <TT>-&gt;</TT>  &nbsp;  ic </TD></TR>
+<TR><TD><TD></TD><TD> 17 </TD><TD></TD><TD>     lux   &nbsp;  <TT>-&gt;</TT>  &nbsp;  luc </TD></TR>
+<TR><TD><TD></TD><TD> 18 </TD><TD></TD><TD>     uad   &nbsp;  <TT>-&gt;</TT>  &nbsp;  uas </TD></TR>
+<TR><TD><TD></TD><TD> 19 </TD><TD></TD><TD>     vad   &nbsp;  <TT>-&gt;</TT>  &nbsp;  vas </TD></TR>
+<TR><TD><TD></TD><TD> 20 </TD><TD></TD><TD>     cid   &nbsp;  <TT>-&gt;</TT>  &nbsp;  cis </TD></TR>
+<TR><TD><TD></TD><TD> 21 </TD><TD></TD><TD>     lid   &nbsp;  <TT>-&gt;</TT>  &nbsp;  lis </TD></TR>
+<TR><TD><TD></TD><TD> 22 </TD><TD></TD><TD>     erid  &nbsp;  <TT>-&gt;</TT>  &nbsp;  eris </TD></TR>
+<TR><TD><TD></TD><TD> 23 </TD><TD></TD><TD>     pand  &nbsp;  <TT>-&gt;</TT>  &nbsp;  pans </TD></TR>
+<TR><TD><TD></TD><TD> 24 </TD><TD></TD><TD>     end   &nbsp;  <TT>-&gt;</TT>  &nbsp;  ens except following <I>s</I> </TD></TR>
+<TR><TD><TD></TD><TD> 25 </TD><TD></TD><TD>     ond   &nbsp;  <TT>-&gt;</TT>  &nbsp;  ons </TD></TR>
+<TR><TD><TD></TD><TD> 26 </TD><TD></TD><TD>     lud   &nbsp;  <TT>-&gt;</TT>  &nbsp;  lus </TD></TR>
+<TR><TD><TD></TD><TD> 27 </TD><TD></TD><TD>     rud   &nbsp;  <TT>-&gt;</TT>  &nbsp;  rus </TD></TR>
+<TR><TD><TD></TD><TD> 28 </TD><TD></TD><TD>     her   &nbsp;  <TT>-&gt;</TT>  &nbsp;  hes except following <I>p, t</I> </TD></TR>
+<TR><TD><TD></TD><TD> 29 </TD><TD></TD><TD>     mit   &nbsp;  <TT>-&gt;</TT>  &nbsp;  mis </TD></TR>
+<TR><TD><TD></TD><TD> 30 </TD><TD></TD><TD>     ent   &nbsp;  <TT>-&gt;</TT>  &nbsp;  ens except following <I>m</I> </TD></TR>
+<TR><TD><TD></TD><TD> 31 </TD><TD></TD><TD>     ert   &nbsp;  <TT>-&gt;</TT>  &nbsp;  ers </TD></TR>
+<TR><TD><TD></TD><TD> 32 </TD><TD></TD><TD>     et    &nbsp;  <TT>-&gt;</TT>  &nbsp;  es except following <I>n</I> </TD></TR>
+<TR><TD><TD></TD><TD> 33 </TD><TD></TD><TD>     yt    &nbsp;  <TT>-&gt;</TT>  &nbsp;  ys </TD></TR>
+<TR><TD><TD></TD><TD> 34 </TD><TD></TD><TD>     yz    &nbsp;  <TT>-&gt;</TT>  &nbsp;  ys </TD></TR>
+</TABLE></DL>
+</DL>
+</TR>
+
+<TR><TD>
+
+(Rule 30 as given here corrects a typographical error in the published
+paper of 1968.)
+
+<BR><BR>
+
+The following examples show the intentions behind these rules.
+
+<BR><BR>
+
+<DL><DD>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><TD></TD><TD>   1  &nbsp;  &nbsp;  &nbsp;  </TD><TD></TD><TD> rubb[ing] -> rub, embedd[ed] -> embed etc </TD></TR>
+<TR><TD><TD></TD><TD>   2  </TD><TD></TD><TD> believ[e] <TT>-&gt;</TT> belief </TD></TR>
+<TR><TD><TD></TD><TD>   3  </TD><TD></TD><TD> induct[ion] <TT>-&gt;</TT> induc[e] </TD></TR>
+<TR><TD><TD></TD><TD>   4  </TD><TD></TD><TD> consumpt[ion] <TT>-&gt;</TT> consum[e] </TD></TR>
+<TR><TD><TD></TD><TD>   5  </TD><TD></TD><TD> absorpt[ion] <TT>-&gt;</TT> absorb </TD></TR>
+<TR><TD><TD></TD><TD>   6  </TD><TD></TD><TD> recurs[ive] <TT>-&gt;</TT> recur </TD></TR>
+<TR><TD><TD></TD><TD>   7  </TD><TD></TD><TD> administr[ate] <TT>-&gt;</TT> administ[er] </TD></TR>
+<TR><TD><TD></TD><TD>   7a </TD><TD></TD><TD> parametr[ic] <TT>-&gt;</TT> paramet[er] </TD></TR>
+<TR><TD><TD></TD><TD>   8  </TD><TD></TD><TD> dissolv[ed] <TT>-&gt;</TT> dissolut[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   9  </TD><TD></TD><TD> angul[ar] <TT>-&gt;</TT> angl[e] </TD></TR>
+<TR><TD><TD></TD><TD>   10 </TD><TD></TD><TD> vibex <TT>-&gt;</TT> vibic[es] </TD></TR>
+<TR><TD><TD></TD><TD>   11 </TD><TD></TD><TD> index <TT>-&gt;</TT> indic[es] </TD></TR>
+<TR><TD><TD></TD><TD>   12 </TD><TD></TD><TD> apex <TT>-&gt;</TT> apic[es] </TD></TR>
+<TR><TD><TD></TD><TD>   13 </TD><TD></TD><TD> cortex <TT>-&gt;</TT> cortic[al] </TD></TR>
+<TR><TD><TD></TD><TD>   14 </TD><TD></TD><TD> anthrax <TT>-&gt;</TT> anthrac[ite] </TD></TR>
+<TR><TD><TD></TD><TD>   15 </TD><TD></TD><TD> ? </TD></TR>
+<TR><TD><TD></TD><TD>   16 </TD><TD></TD><TD> matrix <TT>-&gt;</TT> matric[es] </TD></TR>
+<TR><TD><TD></TD><TD>   17 </TD><TD></TD><TD> ? </TD></TR>
+<TR><TD><TD></TD><TD>   18 </TD><TD></TD><TD> persuad[e] <TT>-&gt;</TT> persuas[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   19 </TD><TD></TD><TD> evad[e] <TT>-&gt;</TT> evas[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   20 </TD><TD></TD><TD> decid[e] <TT>-&gt;</TT> decis[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   21 </TD><TD></TD><TD> elid[e] <TT>-&gt;</TT> elis[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   22 </TD><TD></TD><TD> derid[e] <TT>-&gt;</TT> deris[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   23 </TD><TD></TD><TD> expand <TT>-&gt;</TT> expans[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   24 </TD><TD></TD><TD> defend <TT>-&gt;</TT> defens[ive] </TD></TR>
+<TR><TD><TD></TD><TD>   25 </TD><TD></TD><TD> respond <TT>-&gt;</TT> respons[ive] </TD></TR>
+<TR><TD><TD></TD><TD>   26 </TD><TD></TD><TD> collud[e] <TT>-&gt;</TT> collus[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   27 </TD><TD></TD><TD> obtrud[e] <TT>-&gt;</TT> obtrus[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   28 </TD><TD></TD><TD> adher[e] <TT>-&gt;</TT> adhes[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   29 </TD><TD></TD><TD> remit <TT>-&gt;</TT> remis[s][ion] </TD></TR>
+<TR><TD><TD></TD><TD>   30 </TD><TD></TD><TD> extent <TT>-&gt;</TT> extens[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   31 </TD><TD></TD><TD> convert[ed] <TT>-&gt;</TT> convers[ion] </TD></TR>
+<TR><TD><TD></TD><TD>   32 </TD><TD></TD><TD> parenthet[ic] <TT>-&gt;</TT> parenthes[is] </TD></TR>
+<TR><TD><TD></TD><TD>   33 </TD><TD></TD><TD> analyt[ic] <TT>-&gt;</TT> analys[is] </TD></TR>
+<TR><TD><TD></TD><TD>   34 </TD><TD></TD><TD> analyz[ed] <TT>-&gt;</TT> analys[ed] </TD></TR>
+</TABLE></DL>
+</DL>
+
+</TR>
+
+<TR><TD>
+
+&nbsp;<H4>The Lovins algorithm in Snowball</H4>
+
+And here is the Lovins algorithm in Snowball. The natural representation
+of the Lovins endings, conditions and rules in Snowball, is, I believe, a
+vindication of the appropriateness of Snowball for stemming work. Once the
+tables had been established, getting the Snowball version running was the
+work of a few minutes.
+
+<BR><BR>
+
+</TR>
+
+
+<TR><TD BGCOLOR="lightblue">
+
+<DL><DD>
+<BR><PRE>
+
+stringescapes {}
+
+routines (
+   A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA BB CC
+
+   endings
+
+   undouble respell
+)
+
+externals ( stem )
+
+backwardmode (
+
+  /* Lovins' conditions A, B ... CC, as given in her Appendix B, where
+     a test for a two letter prefix ('test hop 2') is implicitly
+     assumed. Note that 'e' next 'u' corresponds to her u*e because
+     Snowball is scanning backwards. */
+
+  define A  as ( hop 2 )
+  define B  as ( hop 3 )
+  define C  as ( hop 4 )
+  define D  as ( hop 5 )
+  define E  as ( test hop 2 not 'e' )
+  define F  as ( test hop 3 not 'e' )
+  define G  as ( test hop 3 'f' )
+  define H  as ( test hop 2 't' or 'll' )
+  define I  as ( test hop 2 not 'o' not 'e' )
+  define J  as ( test hop 2 not 'a' not 'e' )
+  define K  as ( test hop 3 'l' or 'i' or ('e' next 'u') )
+  define L  as ( test hop 2 not 'u' not 'x' not ('s' not 'o') )
+  define M  as ( test hop 2 not 'a' not 'c' not 'e' not 'm' )
+  define N  as ( test hop 3 ( hop 2 not 's' or hop 2 ) )
+  define O  as ( test hop 2 'l' or 'i' )
+  define P  as ( test hop 2 not 'c' )
+  define Q  as ( test hop 2 test hop 3 not 'l' not 'n' )
+  define R  as ( test hop 2 'n' or 'r' )
+  define S  as ( test hop 2 'dr' or ('t' not 't') )
+  define T  as ( test hop 2 's' or ('t' not 'o') )
+  define U  as ( test hop 2 'l' or 'm' or 'n' or 'r' )
+  define V  as ( test hop 2 'c' )
+  define W  as ( test hop 2 not 's' not 'u' )
+  define X  as ( test hop 2 'l' or 'i' or ('e' next 'u') )
+  define Y  as ( test hop 2 'in' )
+  define Z  as ( test hop 2 not 'f' )
+  define AA as ( test hop 2 among ( 'd' 'f' 'ph' 'th' 'l' 'er' 'or'
+                                    'es' 't' ) )
+  define BB as ( test hop 3 not 'met' not 'ryst' )
+  define CC as ( test hop 2 'l' )
+
+
+  /* The system of endings, as given in Appendix A. */
+
+  define endings as (
+    [substring] among(
+    'alistically' B 'arizability' A 'izationally' B
+
+     'antialness' A  'arisations' A  'arizations' A  'entialness' A
+
+      'allically' C   'antaneous' A   'antiality' A   'arisation' A
+      'arization' A   'ationally' B   'ativeness' A   'eableness' E
+      'entations' A   'entiality' A   'entialize' A   'entiation' A
+      'ionalness' A   'istically' A   'itousness' A   'izability' A
+      'izational' A
+
+       'ableness' A    'arizable' A    'entation' A    'entially' A
+       'eousness' A    'ibleness' A    'icalness' A    'ionalism' A
+       'ionality' A    'ionalize' A    'iousness' A    'izations' A
+       'lessness' A
+
+        'ability' A     'aically' A     'alistic' B     'alities' A
+        'ariness' E     'aristic' A     'arizing' A     'ateness' A
+        'atingly' A     'ational' B     'atively' A     'ativism' A
+        'elihood' E     'encible' A     'entally' A     'entials' A
+        'entiate' A     'entness' A     'fulness' A     'ibility' A
+        'icalism' A     'icalist' A     'icality' A     'icalize' A
+        'ication' G     'icianry' A     'ination' A     'ingness' A
+        'ionally' A     'isation' A     'ishness' A     'istical' A
+        'iteness' A     'iveness' A     'ivistic' A     'ivities' A
+        'ization' F     'izement' A     'oidally' A     'ousness' A
+
+         'aceous' A      'acious' B      'action' G      'alness' A
+         'ancial' A      'ancies' A      'ancing' B      'ariser' A
+         'arized' A      'arizer' A      'atable' A      'ations' B
+         'atives' A      'eature' Z      'efully' A      'encies' A
+         'encing' A      'ential' A      'enting' C      'entist' A
+         'eously' A      'ialist' A      'iality' A      'ialize' A
+         'ically' A      'icance' A      'icians' A      'icists' A
+         'ifully' A      'ionals' A      'ionate' D      'ioning' A
+         'ionist' A      'iously' A      'istics' A      'izable' E
+         'lessly' A      'nesses' A      'oidism' A
+
+          'acies' A       'acity' A       'aging' B       'aical' A
+          'alist' A       'alism' B       'ality' A       'alize' A
+          'allic'BB       'anced' B       'ances' B       'antic' C
+          'arial' A       'aries' A       'arily' A       'arity' B
+          'arize' A       'aroid' A       'ately' A       'ating' I
+          'ation' B       'ative' A       'ators' A       'atory' A
+          'ature' E       'early' Y       'ehood' A       'eless' A
+          'elity' A       'ement' A       'enced' A       'ences' A
+          'eness' E       'ening' E       'ental' A       'ented' C
+          'ently' A       'fully' A       'ially' A       'icant' A
+          'ician' A       'icide' A       'icism' A       'icist' A
+          'icity' A       'idine' I       'iedly' A       'ihood' A
+          'inate' A       'iness' A       'ingly' B       'inism' J
+          'inity'CC       'ional' A       'ioned' A       'ished' A
+          'istic' A       'ities' A       'itous' A       'ively' A
+          'ivity' A       'izers' F       'izing' F       'oidal' A
+          'oides' A       'otide' A       'ously' A
+
+           'able' A        'ably' A        'ages' B        'ally' B
+           'ance' B        'ancy' B        'ants' B        'aric' A
+           'arly' K        'ated' I        'ates' A        'atic' B
+           'ator' A        'ealy' Y        'edly' E        'eful' A
+           'eity' A        'ence' A        'ency' A        'ened' E
+           'enly' E        'eous' A        'hood' A        'ials' A
+           'ians' A        'ible' A        'ibly' A        'ical' A
+           'ides' L        'iers' A        'iful' A        'ines' M
+           'ings' N        'ions' B        'ious' A        'isms' B
+           'ists' A        'itic' H        'ized' F        'izer' F
+           'less' A        'lily' A        'ness' A        'ogen' A
+           'ward' A        'wise' A        'ying' B        'yish' A
+
+            'acy' A         'age' B         'aic' A         'als'BB
+            'ant' B         'ars' O         'ary' F         'ata' A
+            'ate' A         'eal' Y         'ear' Y         'ely' E
+            'ene' E         'ent' C         'ery' E         'ese' A
+            'ful' A         'ial' A         'ian' A         'ics' A
+            'ide' L         'ied' A         'ier' A         'ies' P
+            'ily' A         'ine' M         'ing' N         'ion' Q
+            'ish' C         'ism' B         'ist' A         'ite'AA
+            'ity' A         'ium' A         'ive' A         'ize' F
+            'oid' A         'one' R         'ous' A
+
+             'ae' A          'al'BB          'ar' X          'as' B
+             'ed' E          'en' F          'es' E          'ia' A
+             'ic' A          'is' A          'ly' B          'on' S
+             'or' T          'um' U          'us' V          'yl' R
+           '{'}s' A        's{'}' A
+
+              'a' A           'e' A           'i' A           'o' A
+              's' W           'y' B
+
+        (delete)
+    )
+  )
+
+  /* Undoubling is rule 1 of appendix C. */
+
+  define undouble as (
+    test substring among ('bb' 'dd' 'gg' 'll' 'mm' 'nn' 'pp' 'rr' 'ss'
+                          'tt')
+    [next] delete
+  )
+
+  /* The other appendix C rules can be done together. */
+
+  define respell as (
+    [substring] among (
+      'iev'  (<-'ief')
+      'uct'  (<-'uc')
+      'umpt' (<-'um')
+      'rpt'  (<-'rb')
+      'urs'  (<-'ur')
+      'istr' (<-'ister')
+      'metr' (<-'meter')
+      'olv'  (<-'olut')
+      'ul'   (not 'a' not 'i' not 'o' <-'l')
+      'bex'  (<-'bic')
+      'dex'  (<-'dic')
+      'pex'  (<-'pic')
+      'tex'  (<-'tic')
+      'ax'   (<-'ac')
+      'ex'   (<-'ec')
+      'ix'   (<-'ic')
+      'lux'  (<-'luc')
+      'uad'  (<-'uas')
+      'vad'  (<-'vas')
+      'cid'  (<-'cis')
+      'lid'  (<-'lis')
+      'erid' (<-'eris')
+      'pand' (<-'pans')
+      'end'  (not 's' <-'ens')
+      'ond'  (<-'ons')
+      'lud'  (<-'lus')
+      'rud'  (<-'rus')
+      'her'  (not 'p' not 't' <-'hes')
+      'mit'  (<-'mis')
+      'ent'  (not 'm' <-'ens')
+        /* 'ent' was 'end' in the 1968 paper - a typo. */
+      'ert'  (<-'ers')
+      'et'   (not 'n' <-'es')
+      'yt'   (<-'ys')
+      'yz'   (<-'ys')
+    )
+  )
+)
+
+define stem as (
+
+  backwards (
+    do endings
+    do undouble
+    do respell
+  )
+)
+
+</PRE>
+</DL>
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

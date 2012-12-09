@@ -1,0 +1,270 @@
+
+<HTML>
+<HEAD>
+
+<TITLE>The Schinke Latin stemming algorithm</TITLE></HEAD>
+
+<!--
+
+I think there is no source for this with the usual html markup. If there is,
+I've altered "latin.tgz" to "schinke.tgz" near the end.
+
+-->
+
+
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>The Schinke Latin stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="schinke.tgz">zip file</A>
+</TABLE></DL>
+
+<BR><BR>
+
+
+
+
+
+
+(A note by Martin Porter.)
+<P>
+The Schinke Latin stemming algorithm is described in,
+<P>
+<BLOCKQUOTE>
+    Schinke R, Greengrass M, Robertson AM and Willett P (1996) A stemming algorithm for Latin text
+    databases. <I>Journal of Documentation</I>, <B>52</B>: 172-187.
+</BLOCKQUOTE>
+
+It has the feature that it stems each word to two forms, noun and verb. For example,
+<PRE>
+                NOUN        VERB
+                ----        ----
+    aquila      aquil       aquila
+    portat      portat      porta
+    portis      port        por
+</PRE>
+
+Here (slightly reformatted) are the rules of the stemmer,
+
+<BLOCKQUOTE>
+<PRE>
+1. (start)
+
+2.  Convert all occurrences of the letters 'j' or 'v' to 'i' or 'u',
+    respectively.
+
+3.  If the word ends in '-que' then
+        if the word is on the list shown in Figure 4, then
+            write the original word to both the noun-based and verb-based
+            stem dictionaries and go to 8.
+        else remove '-que'
+
+    [Figure 4 was
+
+        atque quoque neque itaque absque apsque abusque adaeque adusque denique
+        deque susque oblique peraeque plenisque quandoque quisque quaeque
+        cuiusque cuique quemque quamque quaque quique quorumque quarumque
+        quibusque quosque quasque quotusquisque quousque ubique undique usque
+        uterque utique utroque utribique torque coque concoque contorque
+        detorque decoque excoque extorque obtorque optorque retorque recoque
+        attorque incoque intorque praetorque]
+
+4.  Match the end of the word against the suffix list show in Figure 6(a),
+    removing the longest matching suffix, (if any).
+
+    [Figure 6(a) was
+
+        -ibus -ius  -ae   -am   -as   -em   -es   -ia
+        -is   -nt   -os   -ud   -um   -us   -a    -e
+        -i    -o    -u]
+
+5.  If the resulting stem contains at least two characters then write this stem
+    to the noun-based stem dictionary.
+
+6.  Match the end of the word against the suffix list show in Figure 6(b),
+    identifying the longest matching suffix, (if any).
+
+    [Figure 6(b) was
+
+    -iuntur-beris -erunt -untur -iunt  -mini  -ntur  -stis
+    -bor   -ero   -mur   -mus   -ris   -sti   -tis   -tur
+    -unt   -bo    -ns    -nt    -ri    -m     -r     -s
+    -t]
+
+    If any of the following suffixes are found then convert them as shown:
+
+        '-iuntur', '-erunt', '-untur', '-iunt', and '-unt', to '-i';
+        '-beris', '-bor', and '-bo' to '-bi';
+        '-ero' to '-eri'
+
+    else remove the suffix in the normal way.
+
+7.  If the resulting stem contains at least two characters then write this stem
+    to the verb-based stem dictionary.
+
+8.  (end)
+</PRE>
+</BLOCKQUOTE>
+
+Unfortunately I was not able to make the rules match the examples given, which
+led to the following email correspondence,
+
+<BR><BR>FROM <B>Martin Porter</B>
+<BR>TO <B>Peter Willett</B>
+    <BR>ON <B>Mon Sep 10 15:11:51 2001</B>
+
+<BR><BR><B><I>Re: Stemming algorithms</I></B>
+<DL><DD><PRE>
+
+ > ... I'm no longer working in the IR area,
+ >spending all of my time on computational chemistry/drug discovery
+ >research but I guess that Mark Sanderson would be interested in
+ >Snowball - do you mind if I pass your email onto him?
+
+ Peter,
+
+ Well, actually, I do have a question, if you can cast your mind back. I've
+ implemented the Latin Stemmer in Snowball (see below: you'll have to guess the
+ semantics, but I'm sure you'll agree the syntax looks nice), and find that Fig
+ 5 of the 1996 Schinke paper doesn't correpond to the algorithm of fig 7, but to
+ the algorithm with the extra rules concerning -ba-, -bi-, -sse- mentioned on
+ page 182. Which is the "correct" algorithm - with or without those rules? If
+ with, what is the exact criterion for their removal? A bigger problem is why
+ the -nt is not removed from 'Apparebunt', given -nt as an ending in 6(a). Is
+ -nt a misprint?
+
+ Sorry to bother you with this, but the paper says you are the one "to whom all
+ correpondence should be addressed" :-)
+
+ Martin
+
+
+
+ Here is your algorithm in Snowball. The generated code will do about 1 million
+ Latin word in 5 seconds:
+
+ -------
+
+
+ strings ( noun_form  verb_form )
+
+ routines (
+
+    map_letters
+    que_word
+ )
+
+ externals ( stem )
+
+ define map_letters as (
+
+     do repeat ( goto ( ['j'] ) <- 'i' )
+     do repeat ( goto ( ['v'] ) <- 'u' )
+ )
+
+ backwardmode (
+
+     define que_word as (
+
+         ['que'] (
+             among (
+                 'at' 'quo' 'ne' 'ita' 'abs' 'aps' 'abus' 'adae' 'adus'
+                 'deni' 'de' 'sus' 'obli' 'perae' 'plenis' 'quando' 'quis'
+                 'quae' 'cuius' 'cui' 'quem' 'quam' 'qua' 'qui'
+                 'quorum' 'quarum' 'quibus' 'quos' 'quas' 'quotusquis'
+                 'quous' 'ubi' 'undi' 'us' 'uter' 'uti' 'utro' 'utribi'
+                 'tor' 'co' 'conco' 'contor' 'detor' 'deco' 'exco' 'extor'
+                 'obtor' 'optor' 'retor' 'reco' 'attor' 'inco' 'intor'
+                 'praetor'
+             ) atlimit ]
+             => noun_form
+             => verb_form
+         ) or fail(delete)
+     )
+ )
+
+ define stem as (
+
+     map_letters
+
+     backwards (
+         que_word or (
+             => noun_form
+             => verb_form
+
+             $noun_form backwards try (
+                 [substring] hop 2
+                 among (
+                     'ibus' 'ius' 'ae' 'am' 'as' 'em' 'es' 'ia' 'is' 'nt'
+                     'os' 'ud' 'um' 'us' 'a' 'e' 'i' 'o' 'u'
+                         (delete)
+                 )
+             )
+
+             $verb_form backwards try (
+                 [substring] hop 2
+                 among (
+                     'iuntur' 'erunt' 'untur' 'iunt' 'unt'
+                          (<-'i')
+                     'beris' 'bor' 'bo'
+                          (<-'bi')
+                     'ero'
+                          (<-'eri')
+                     'mini' 'ntur' 'stis' 'mur' 'mus' 'ris' 'sti' 'tis'
+                     'tur' 'ns' 'nt' 'ri' 'm' 'r' 's' 't'
+                          (delete)
+                 )
+             )
+         )
+     )
+
+     /* the stemmed words are left in noun-form and verb-form, and can
+        be picked up as C strings at z->S[0] and z->S[1] through the API. */
+ )
+
+</PRE></DL>
+
+<BR><BR>FROM <B>Peter Willett</B>
+<BR>TO <B>Martin Porter</B>
+    <BR>ON <B>Mon Sep 10 20:25:24 2001</B>
+
+<BR><BR><B><I>Re: Stemming algorithms</I></B>
+<DL><DD><PRE>
+
+ Martin
+
+ Sorry - I just cannot answer.  Robertson has retired to Dorset while
+ Schinke is now in - I think - Canada
+
+ Peter
+
+</PRE></DL>
+
+<BR><BR>
+
+
+
+Following this, I was unable to contact Schinke, and so the problems have
+remained unresolved.
+<P>
+
+The linked <A HREF="schinke.tgz">zip file</A> contains the stemmer,
+generated C version, and sample data.
+(The stemmer differes slightly from the version in the email above in that
+it assembles the noun- and verb-forms of the stem in a single string with
+space separation.)
+<TT>voc.txt</TT> is a sample vocabulary, and <TT>joined.txt</TT> the vocabulary
+joined with the two stemmed forms as three column output.
+
+<BR><BR><BR><BR>
+
+
+</TABLE>
+</BODY>
+</HTML>
+

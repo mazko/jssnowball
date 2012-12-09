@@ -1,0 +1,398 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>Swedish stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Swedish stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Swedish vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent in two columns</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">     Swedish stop word list</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="stem_MS_DOS_Latin_I.sbl">    The stemmer in Snowball &#x2014; MS DOS Latin I encodings</A>
+</TABLE></DL>
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../../texts/scandinavian.html">
+                  Scandinavian language stemmers</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of Swedish vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+jakt<BR>
+jaktbössa<BR>
+jakten<BR>
+jakthund<BR>
+jaktkarl<BR>
+jaktkarlar<BR>
+jaktkarlarne<BR>
+jaktkarlens<BR>
+jaktlöjtnant<BR>
+jaktlöjtnanten<BR>
+jaktlöjtnantens<BR>
+jalusi<BR>
+jalusien<BR>
+jalusier<BR>
+jalusierna<BR>
+jamaika<BR>
+jamat<BR>
+jamrande<BR>
+jamt<BR>
+jande<BR>
+januari<BR>
+japanska<BR>
+jaquette<BR>
+jaquettekappa<BR>
+jargong<BR>
+jasmin<BR>
+jasminen<BR>
+jasminer<BR>
+jasminhäck<BR>
+jaspis<BR>
+jaså<BR>
+javäl<BR>
+jazzvindens<BR>
+jcrn<BR>
+jcsus<BR>
+je<BR>
+jemföra<BR>
+jemföras<BR>
+jemförelse<BR>
+jemförelser<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+jakt<BR>
+jaktböss<BR>
+jakt<BR>
+jakthund<BR>
+jaktkarl<BR>
+jaktkarl<BR>
+jaktkarl<BR>
+jaktkarl<BR>
+jaktlöjtnant<BR>
+jaktlöjtnant<BR>
+jaktlöjtnant<BR>
+jalusi<BR>
+jalusi<BR>
+jalusi<BR>
+jalusi<BR>
+jamaik<BR>
+jam<BR>
+jamr<BR>
+jamt<BR>
+jand<BR>
+januari<BR>
+japansk<BR>
+jaquet<BR>
+jaquettekapp<BR>
+jargong<BR>
+jasmin<BR>
+jasmin<BR>
+jasmin<BR>
+jasminhäck<BR>
+jaspis<BR>
+jaså<BR>
+javäl<BR>
+jazzvind<BR>
+jcrn<BR>
+jcsus<BR>
+je<BR>
+jemför<BR>
+jemför<BR>
+jemför<BR>
+jemför<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+klo<BR>
+kloaken<BR>
+klock<BR>
+klocka<BR>
+klockan<BR>
+klockans<BR>
+klockare<BR>
+klockaren<BR>
+klockarens<BR>
+klockarfar<BR>
+klockarn<BR>
+klockarsonen<BR>
+klockas<BR>
+klockkedjan<BR>
+klocklikt<BR>
+klockor<BR>
+klockorna<BR>
+klockornas<BR>
+klockors<BR>
+klockringning<BR>
+kloekornas<BR>
+klok<BR>
+kloka<BR>
+klokare<BR>
+klokast<BR>
+klokaste<BR>
+kloke<BR>
+klokhet<BR>
+klokheten<BR>
+klokt<BR>
+kloliknande<BR>
+klor<BR>
+klorna<BR>
+kloroform<BR>
+kloster<BR>
+klostergården<BR>
+klosterlik<BR>
+klot<BR>
+klotb<BR>
+klotrund<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+klo<BR>
+kloak<BR>
+klock<BR>
+klock<BR>
+klockan<BR>
+klockan<BR>
+klock<BR>
+klock<BR>
+klock<BR>
+klockarf<BR>
+klockarn<BR>
+klockarson<BR>
+klock<BR>
+klockkedjan<BR>
+klocklik<BR>
+klock<BR>
+klock<BR>
+klock<BR>
+klockor<BR>
+klockringning<BR>
+kloek<BR>
+klok<BR>
+klok<BR>
+klok<BR>
+klok<BR>
+klok<BR>
+klok<BR>
+klok<BR>
+klok<BR>
+klokt<BR>
+klolikn<BR>
+klor<BR>
+klorn<BR>
+kloroform<BR>
+klost<BR>
+klostergård<BR>
+klosterlik<BR>
+klot<BR>
+klotb<BR>
+klotrund<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR>&nbsp;<H2>The stemming algorithm</H2>
+
+
+The Swedish alphabet includes the following additional letters,
+<DL><DD>
+    <B><I>ä  &nbsp;  å  &nbsp;  ö</I></B>
+</DL>
+
+
+The following letters are vowels:
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  y  &nbsp;  ä  &nbsp;  å  &nbsp;  ö</I></B>
+</DL>
+<I>R</I>2 is not used: <I>R</I>1 is defined in the same way as in the
+<A HREF="../german/stemmer.html">German stemmer</A>.
+(See the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2.)
+<BR><BR>
+
+Define a valid <B><I>s</I></B>-ending as one of
+<DL><DD>
+<B><I>b</I></B>  &nbsp;  <B><I>c</I></B>  &nbsp;  <B><I>d</I></B>  &nbsp;  <B><I>f</I></B>  &nbsp;  <B><I>g</I></B>  &nbsp;  <B><I>h</I></B>  &nbsp;  <B><I>j</I></B>  &nbsp;  <B><I>k</I></B>  &nbsp;
+<B><I>l</I></B>  &nbsp;  <B><I>m</I></B>  &nbsp;  <B><I>n</I></B>  &nbsp;  <B><I>o</I></B>  &nbsp;  <B><I>p</I></B>  &nbsp;  <B><I>r</I></B>  &nbsp;  <B><I>t</I></B>  &nbsp;  <B><I>v</I></B>  &nbsp;
+<B><I>y</I></B>
+</DL>
+Do each of steps 1, 2 and 3.
+<BR><BR>
+Step 1:
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and
+    perform the action indicated.
+<BR><BR><DL>
+        <DT>(<I>a</I>)
+            <B><I>a  &nbsp;  arna  &nbsp;  erna  &nbsp;  heterna  &nbsp;  orna  &nbsp;  ad  &nbsp;  e  &nbsp;  ade  &nbsp;
+            ande  &nbsp;  arne  &nbsp;  are  &nbsp;  aste  &nbsp;  en  &nbsp;  anden  &nbsp;  aren  &nbsp;  heten  &nbsp;
+            ern  &nbsp;  ar  &nbsp;  er  &nbsp;  heter  &nbsp;  or  &nbsp;  as  &nbsp;  arnas  &nbsp;  ernas  &nbsp;
+            ornas  &nbsp;  es  &nbsp;  ades  &nbsp;  andes  &nbsp;  ens  &nbsp;  arens  &nbsp;  hetens  &nbsp;  erns
+             &nbsp;  at  &nbsp;  andet  &nbsp;  het  &nbsp;  ast</I></B>
+                <DD>delete
+<BR><BR>
+        <DT>(<I>b</I>)
+            <B><I>s</I></B>
+                <DD>delete if preceded by a valid <B><I>s</I></B>-ending
+</DL>
+<BR>
+    (Of course the letter of the valid <B><I>s</I></B>-ending is
+    not necessarily in <I>R</I>1)
+</DL>
+Step 2:
+<DL><DD>
+    Search for one of the following suffixes in <I>R</I>1, and if found
+    delete the last letter.
+<BR><BR><DL><DD>
+        <B><I>dd  &nbsp;  gd  &nbsp;  nn  &nbsp;  dt  &nbsp;  gt  &nbsp;  kt  &nbsp;  tt</I></B>
+</DL>
+<BR>
+    (For example, <I>friskt</I> <TT>-&gt;</TT> <I>frisk</I>, <I>fröknarnn</I> <TT>-&gt;</TT> <I>fröknarn</I>)
+</DL>
+
+Step 3:
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and
+    perform the action indicated.
+<BR><BR>
+<DL>
+    <DT><B><I>lig  &nbsp;  ig  &nbsp;  els</I></B>
+        <DD>delete
+<BR><BR>
+    <DT><B><I>löst</I></B>
+        <DD>replace with <B><I>lös</I></B>
+<BR><BR>
+    <DT><B><I>fullt</I></B>
+        <DD>replace with <B><I>full</I></B>
+</DL>
+</DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR>&nbsp;<H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+routines (
+           mark_regions
+           main_suffix
+           consonant_pair
+           other_suffix
+)
+
+externals ( stem )
+
+integers ( p1 x )
+
+groupings ( v s_ending )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef a"   hex 'E4'
+stringdef ao   hex 'E5'
+stringdef o"   hex 'F6'
+
+define v 'aeiouy{a"}{ao}{o"}'
+
+define s_ending  'bcdfghjklmnoprtvy'
+
+define mark_regions as (
+
+    $p1 = limit
+    test ( hop 3 setmark x )
+    goto v gopast non-v  setmark p1
+    try ( $p1 < x  $p1 = x )
+)
+
+backwardmode (
+
+    define main_suffix as (
+        setlimit tomark p1 for ([substring])
+        among(
+
+            'a' 'arna' 'erna' 'heterna' 'orna' 'ad' 'e' 'ade' 'ande' 'arne'
+            'are' 'aste' 'en' 'anden' 'aren' 'heten' 'ern' 'ar' 'er' 'heter'
+            'or' 'as' 'arnas' 'ernas' 'ornas' 'es' 'ades' 'andes' 'ens' 'arens'
+            'hetens' 'erns' 'at' 'andet' 'het' 'ast'
+                (delete)
+            's'
+                (s_ending delete)
+        )
+    )
+
+    define consonant_pair as setlimit tomark p1 for (
+        among('dd' 'gd' 'nn' 'dt' 'gt' 'kt' 'tt')
+        and ([next] delete)
+    )
+
+    define other_suffix as setlimit tomark p1 for (
+        [substring] among(
+            'lig' 'ig' 'els' (delete)
+            'l{o"}st'        (<-'l{o"}s')
+            'fullt'          (<-'full')
+        )
+    )
+)
+
+define stem as (
+
+    do mark_regions
+    backwards (
+        do main_suffix
+        do consonant_pair
+        do other_suffix
+    )
+)
+</DL>
+</PRE>
+</TABLE>
+</BODY>
+</HTML>

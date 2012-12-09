@@ -1,0 +1,76 @@
+
+<HTML>
+<HEAD>
+<TITLE>Stemming algorithms for various European languages</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Stemming algorithms for various European languages</H1>
+
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links to resources</H2>
+<DL>
+<DD><A HREF=".."> Snowball main page</A>
+    <DD><A HREF="../algorithms/porter/stemmer.html">English (porter)</A>
+    <DD><A HREF="../algorithms/english/stemmer.html">English (porter2)</A>
+    <DD><A HREF="../texts/romance.html">Romance stemmers:</A>
+    <DL>
+        <DD><A HREF="../algorithms/french/stemmer.html">French</A>
+        <DD><A HREF="../algorithms/spanish/stemmer.html">Spanish</A>
+        <DD><A HREF="../algorithms/portuguese/stemmer.html">Portuguese</A>
+        <DD><A HREF="../algorithms/italian/stemmer.html">Italian</A>
+    </DL>
+    <DD><A HREF="../texts/germanic.html">Germanic stemmers</A>
+    <DL>
+        <DD><A HREF="../algorithms/german/stemmer.html">German</A>
+        <DD><A HREF="../algorithms/dutch/stemmer.html">Dutch</A>
+    </DL>
+    <DD><A HREF="../texts/scandinavian.html">Scandinavian stemmers</A>
+    <DL>
+        <DD><A HREF="../algorithms/swedish/stemmer.html">Swedish</A>
+        <DD><A HREF="../algorithms/norwegian/stemmer.html">Norwegian</A>
+        <DD><A HREF="../algorithms/danish/stemmer.html">Danish</A>
+    </DL>
+    <DD><A HREF="../algorithms/russian/stemmer.html">Russian</A>
+    <DD><A HREF="../algorithms/finnish/stemmer.html">Finnish</A>
+</DL>
+</TR>
+
+
+<TR><TD>
+<BR><BR>
+
+We present stemming algorithms, and Snowball stemmers, for English, for Russian,
+for the Romance languages French, Spanish, Portuguese and Italian, for
+German and Dutch, for Swedish, Norwegian (bokm&aring;l dialect)
+and Danish, and for Finnish.
+<BR><BR>
+Note that by <I>i</I>-suffix we mean inflexional suffix, and by <I>d</I>-suffix,
+derivational suffix <A HREF="glossary.html">(*)</A>.
+<BR><BR>
+There are two English stemmers, the original Porter stemmer,
+and an improved stemmer which has been called Porter2. Read the accounts of them to
+learn a bit more about using Snowball.
+<BR><BR>
+
+The early
+<A HREF="../algorithms/lovins/stemmer.html">Lovins stemmer</A>
+for English is also available. And we also have
+Snowball stemmers
+for the Schinke/Willett Latin algorithm, and the Kraaij/Pohlmann Dutch
+algorithm. Let us know if you would like to see them.
+<BR><BR>
+Each formal algorithm should be compared with the corresponding Snowball program.
+<BR><BR>
+Surprisingly, among the Indo-European languages <A HREF="glossary.html">(*)</A>, the French stemmer turns out to be the most complicated, whereas
+the Russian stemmer, despite its large number of suffixes, is very simple. In
+fact it is interesting that English, with its minimal use of <I>i</I>-suffixes,
+has such a complex stemmer. This is partly due to the delicate nature of
+<I>i</I>-suffix removal (undoubling the <B><I>p</I></B> after removing <B><I>ing</I></B> from <I>hopping</I> etc),
+and partly to the wealth of forms of <I>d</I>-suffixes, deriving as they do from
+the mixed Romance and Germanic ancestry of the language.
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

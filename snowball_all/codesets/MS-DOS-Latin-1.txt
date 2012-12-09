@@ -1,0 +1,89 @@
+
+
+/* special characters (MS-DOS Latin I) */
+
+/* The hex 80 - FF code page is arranged as follows,
+
+
+      x0  x1  x2  x3  x4  x5  x6  x7  x8  x9  xA  xB  xC  xD  xE  xF
+    +---------------------------------------------------------------
+ 8x | C,  u"  e'  a^  a"  a`  ao  c,  e^  e"  e`  i"  i^  i`  A"  Ao
+    |
+ 9x | E'  ae  AE  o^  o"  o`  u^  u`  y"  O"  U"  o/  .   O/  .   .
+    |
+ Ax | a'  i'  o'  u'  n~  N~  .   .   .   .   .   .   .   .   .   .
+    |
+ Bx | .   .   .   .   .   A'  A^  A`  .   .   .   .   .   .   .   .
+    |
+ Cx | .   .   .   .   .   .   a~  A~  .   .   .   .   .   .   .   .
+    |
+ Dx | d/  D/  E^  E"  E`  .   I'  I^  I"  .   .   .   .   .   I`  .
+    |
+ Ex | O'  ss  O^  O`  o~  O~  .   th  TH  U'  U^  U`  y'  Y'  .   .
+    |
+ Fx | .   .   .   .   .   .   .   .   .   .   .   .   .   .   .   .
+
+*/
+
+stringdef A"   hex '8E'
+stringdef A'   hex 'B5'
+stringdef A^   hex 'B6'
+stringdef A`   hex 'B7'
+stringdef A~   hex 'C7'
+stringdef a"   hex '84'
+stringdef a'   hex 'A0'
+stringdef a^   hex '83'
+stringdef a`   hex '85'
+stringdef a~   hex 'C6'
+stringdef AE   hex '92'
+stringdef ae   hex '91'
+stringdef Ao   hex '8F'
+stringdef ao   hex '86'
+stringdef C,   hex '80'
+stringdef c,   hex '87'
+stringdef D/   hex 'D1'
+stringdef d/   hex 'D0'
+stringdef E"   hex 'D3'
+stringdef E'   hex '90'
+stringdef E^   hex 'D2'
+stringdef E`   hex 'D4'
+stringdef e"   hex '89'
+stringdef e'   hex '82'
+stringdef e^   hex '88'
+stringdef e`   hex '8A'
+stringdef I"   hex 'D8'
+stringdef I'   hex 'D6'
+stringdef I^   hex 'D7'
+stringdef I`   hex 'DE'
+stringdef i"   hex '8B'
+stringdef i'   hex 'A1'
+stringdef i^   hex '8C'
+stringdef i`   hex '8D'
+stringdef N~   hex 'A5'
+stringdef n~   hex 'A4'
+stringdef O"   hex '99'
+stringdef O'   hex 'E0'
+stringdef O^   hex 'E2'
+stringdef O`   hex 'E3'
+stringdef O~   hex 'E5'
+stringdef o"   hex '94'
+stringdef o'   hex 'A2'
+stringdef o^   hex '93'
+stringdef o`   hex '95'
+stringdef o~   hex 'E4'
+stringdef O/   hex '9D'
+stringdef o/   hex '9B'
+stringdef ss   hex 'E1'
+stringdef TH   hex 'E8'
+stringdef th   hex 'E7'
+stringdef U"   hex '9A'
+stringdef U'   hex 'E9'
+stringdef U^   hex 'EA'
+stringdef U`   hex 'EB'
+stringdef u"   hex '81'
+stringdef u'   hex 'A3'
+stringdef u^   hex '96'
+stringdef u`   hex '97'
+stringdef Y'   hex 'ED'
+stringdef y"   hex '98'
+stringdef y'   hex 'EC'

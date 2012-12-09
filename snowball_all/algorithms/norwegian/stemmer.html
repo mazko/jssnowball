@@ -1,0 +1,398 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>Norwegian stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Norwegian stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Norwegian vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent in two columns</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">     Norwegian stop word list</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="stem_MS_DOS_Latin_I.sbl">    The stemmer in Snowball &#x2014; MS DOS Latin I encodings</A>
+</TABLE></DL>
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../../texts/scandinavian.html">
+                  Scandinavian language stemmers</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of Norwegian vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+havnedistrikt<BR>
+havnedistriktene<BR>
+havnedistrikter<BR>
+havnedistriktet<BR>
+havnedistriktets<BR>
+havnedrift<BR>
+havnedriften<BR>
+havneeffektivitet<BR>
+havneeier<BR>
+havneeiere<BR>
+havneenheter<BR>
+havneforbund<BR>
+havneforbundets<BR>
+havneformål<BR>
+havneforvaltningen<BR>
+havnefunksjonene<BR>
+havnefunksjoner<BR>
+havnefylkene<BR>
+havnefylker<BR>
+havnehagen<BR>
+havneinfrastrukturen<BR>
+havneinnretningene<BR>
+havneinnretninger<BR>
+havneinteresser<BR>
+havnekapasitet<BR>
+havnekassa<BR>
+havnekasse<BR>
+havnekassemidler<BR>
+havnekassen<BR>
+havnekassene<BR>
+havnekassens<BR>
+havnelokalisering<BR>
+havneloven<BR>
+havnelovens<BR>
+havneløsning<BR>
+havneløsningene<BR>
+havneløsninger<BR>
+havnemessig<BR>
+havnemyndighetene<BR>
+havnemyndigheter<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+havnedistrikt<BR>
+havnedistrikt<BR>
+havnedistrikt<BR>
+havnedistrikt<BR>
+havnedistrikt<BR>
+havnedrift<BR>
+havnedrift<BR>
+havneeffektivit<BR>
+havneei<BR>
+havneeier<BR>
+havneen<BR>
+havneforbund<BR>
+havneforbund<BR>
+havneformål<BR>
+havneforvaltning<BR>
+havnefunksjon<BR>
+havnefunksjon<BR>
+havnefylk<BR>
+havnefylk<BR>
+havnehag<BR>
+havneinfrastruktur<BR>
+havneinnretning<BR>
+havneinnretning<BR>
+havneinteress<BR>
+havnekapasit<BR>
+havnekass<BR>
+havnekass<BR>
+havnekassemidl<BR>
+havnekass<BR>
+havnekass<BR>
+havnekass<BR>
+havnelokalisering<BR>
+havn<BR>
+havn<BR>
+havneløsning<BR>
+havneløsning<BR>
+havneløsning<BR>
+havnemess<BR>
+havnemynd<BR>
+havnemynd<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+opning<BR>
+opninga<BR>
+opningsbalanse<BR>
+opningsbalansen<BR>
+opp<BR>
+oppad<BR>
+opparbeide<BR>
+opparbeidede<BR>
+opparbeidelse<BR>
+opparbeider<BR>
+opparbeides<BR>
+opparbeidet<BR>
+opparbeiding<BR>
+oppattbygging<BR>
+oppbevarer<BR>
+oppbevaring<BR>
+oppblåst<BR>
+oppblåste<BR>
+oppbrente<BR>
+oppbygd<BR>
+oppbygde<BR>
+oppbygget<BR>
+oppbygging<BR>
+oppbygginga<BR>
+oppbyggingen<BR>
+oppdage<BR>
+oppdager<BR>
+oppdaterte<BR>
+oppdeling<BR>
+oppdelingen<BR>
+oppdelt<BR>
+oppdrag<BR>
+oppdraget<BR>
+oppdragsavtale<BR>
+oppdragsgivere<BR>
+oppdragstakaren<BR>
+oppe<BR>
+oppebærer<BR>
+oppfarende<BR>
+oppfatning<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+opning<BR>
+opning<BR>
+opningsbalans<BR>
+opningsbalans<BR>
+opp<BR>
+oppad<BR>
+opparbeid<BR>
+opparbeid<BR>
+opparbeid<BR>
+opparbeid<BR>
+opparbeid<BR>
+opparbeid<BR>
+opparbeiding<BR>
+oppattbygging<BR>
+oppbevar<BR>
+oppbevaring<BR>
+oppblåst<BR>
+oppblåst<BR>
+oppbrent<BR>
+oppbygd<BR>
+oppbygd<BR>
+oppbygg<BR>
+oppbygging<BR>
+oppbygging<BR>
+oppbygging<BR>
+oppdag<BR>
+oppdag<BR>
+oppdater<BR>
+oppdeling<BR>
+oppdeling<BR>
+oppdelt<BR>
+oppdrag<BR>
+oppdrag<BR>
+oppdragsavtal<BR>
+oppdragsgiver<BR>
+oppdragstakar<BR>
+opp<BR>
+oppebær<BR>
+oppfar<BR>
+oppfatning<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR>&nbsp;<H2>The stemming algorithm</H2>
+
+
+The Norwegian alphabet includes the following additional letters,
+<DL><DD>
+    <B><I>æ  &nbsp;  å  &nbsp;  ø</I></B>
+</DL>
+
+
+The following letters are vowels:
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  y  &nbsp;  æ  &nbsp;  å  &nbsp;  ø</I></B>
+</DL>
+<I>R</I>2 is not used: <I>R</I>1 is defined in the same way as in the
+<A HREF="../german/stemmer.html">German stemmer</A>.
+(See the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2.)
+<BR><BR>
+Define a valid <B><I>s</I></B>-ending as one of
+<DL><DD>
+<B><I>b</I></B>  &nbsp;  <B><I>c</I></B>  &nbsp;  <B><I>d</I></B>  &nbsp;  <B><I>f</I></B>  &nbsp;  <B><I>g</I></B>  &nbsp;  <B><I>h</I></B>  &nbsp;  <B><I>j</I></B>  &nbsp;
+<B><I>l</I></B>  &nbsp;  <B><I>m</I></B>  &nbsp;  <B><I>n</I></B>  &nbsp;  <B><I>o</I></B>  &nbsp;  <B><I>p</I></B>  &nbsp;  <B><I>r</I></B>  &nbsp;  <B><I>t</I></B>  &nbsp;  <B><I>v</I></B>  &nbsp;
+<B><I>y</I></B>  &nbsp;  <B><I>z</I></B>,
+<BR> or <B><I>k</I></B> not preceded by a vowel.
+</DL>
+Do each of steps 1, 2 and 3.
+<BR><BR>
+Step 1:
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and
+    perform the action indicated.
+<BR><BR><DL>
+        <DT>(<I>a</I>)
+            <B><I>a  &nbsp;  e  &nbsp;  ede  &nbsp;  ande  &nbsp;  ende  &nbsp;  ane  &nbsp;  ene  &nbsp;  hetene  &nbsp;  en
+             &nbsp;  heten  &nbsp;  ar  &nbsp;  er  &nbsp;  heter  &nbsp;  as  &nbsp;  es  &nbsp;  edes  &nbsp;  endes  &nbsp;
+            enes  &nbsp;  hetenes  &nbsp;  ens  &nbsp;  hetens  &nbsp;  ers  &nbsp;  ets  &nbsp;  et  &nbsp;  het  &nbsp;
+            ast</I></B>
+                <DD>delete
+<BR><BR>
+        <DT>(<I>b</I>)
+            <B><I>s</I></B>
+                <DD>delete if preceded by a valid <B><I>s</I></B>-ending
+<BR><BR>
+        <DT>(<I>c</I>)
+            <B><I>erte  &nbsp;  ert</I></B>
+                <DD>replace with <B><I>er</I></B>
+</DL>
+<BR>
+    (Of course the letter of the valid <B><I>s</I></B>-ending is
+    not necessarily in <I>R</I>1)
+</DL>
+Step 2:
+<DL><DD>
+    If the word ends <B><I>dt</I></B> or <B><I>vt</I></B> in <I>R</I>1, delete the <B><I>t</I></B>.
+<BR><BR>
+    (For example, <I>meldt</I> <TT>-&gt;</TT> <I>meld</I>, <I>operativt</I> <TT>-&gt;</TT> <I>operativ</I>)
+</DL>
+Step 3:
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and if found,
+    delete.
+<BR><BR>
+<DL><DD>
+    <B><I>leg  &nbsp;  eleg  &nbsp;  ig  &nbsp;  eig  &nbsp;  lig  &nbsp;  elig  &nbsp;  els
+     &nbsp;  lov  &nbsp;  elov  &nbsp;  slov  &nbsp;   hetslov</I></B>
+</DL>
+</DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR>&nbsp;<H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+routines (
+           mark_regions
+           main_suffix
+           consonant_pair
+           other_suffix
+)
+
+externals ( stem )
+
+integers ( p1 x )
+
+groupings ( v s_ending )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef ae   hex 'E6'
+stringdef ao   hex 'E5'
+stringdef o/   hex 'F8'
+
+define v 'aeiouy{ae}{ao}{o/}'
+
+define s_ending  'bcdfghjlmnoprtvyz'
+
+define mark_regions as (
+
+    $p1 = limit
+
+    test ( hop 3 setmark x )
+    goto v  gopast non-v  setmark p1
+    try ( $p1 < x  $p1 = x )
+)
+
+backwardmode (
+
+    define main_suffix as (
+        setlimit tomark p1 for ([substring])
+        among(
+
+            'a' 'e' 'ede' 'ande' 'ende' 'ane' 'ene' 'hetene' 'en' 'heten' 'ar'
+            'er' 'heter' 'as' 'es' 'edes' 'endes' 'enes' 'hetenes' 'ens'
+            'hetens' 'ers' 'ets' 'et' 'het' 'ast'
+                (delete)
+            's'
+                (s_ending or ('k' non-v) delete)
+            'erte' 'ert'
+                (<-'er')
+        )
+    )
+
+    define consonant_pair as (
+        test (
+            setlimit tomark p1 for ([substring])
+            among(
+                'dt' 'vt'
+            )
+        )
+        next] delete
+    )
+
+    define other_suffix as (
+        setlimit tomark p1 for ([substring])
+        among(
+            'leg' 'eleg' 'ig' 'eig' 'lig' 'elig' 'els' 'lov' 'elov' 'slov'
+            'hetslov'
+                (delete)
+        )
+    )
+)
+
+define stem as (
+
+    do mark_regions
+    backwards (
+        do main_suffix
+        do consonant_pair
+        do other_suffix
+    )
+)
+</DL>
+</PRE>
+</TABLE>
+</BODY>
+</HTML>

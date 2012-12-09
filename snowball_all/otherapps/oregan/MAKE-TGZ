@@ -1,0 +1,12 @@
+
+
+
+cd ..
+
+tar cvfz oregan/oregan.tgz \
+         oregan/czech-do.sbl \
+         oregan/irish.sbl \
+         oregan/stopwords.txt \
+         oregan/tolower_irish.sbl
+
+cd oregan

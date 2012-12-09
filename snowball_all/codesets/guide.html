@@ -1,0 +1,108 @@
+
+<HTML>
+<HEAD>
+<TITLE>Character codes</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+
+<TR><TD>
+<BR><BR>
+<H1>Character codes</H1>
+<BR><BR>
+</TR>
+
+
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links</H2>
+<DL>
+<DT><A HREF=".."> Snowball main page</A>
+<BR><BR>
+<DT>Snowball header files for
+    <DD><A HREF="ISO-Latin-1-hex.txt"> ISO Latin 1 (hex form)</A>
+    <DD><A HREF="ISO-Latin-1.txt"> ISO Latin 1 (decimal form)</A>
+    <DD><A HREF="MS-DOS-Latin-1.txt"> MS-DOS Latin 1</A>
+
+</DL>
+</TR>
+
+<TR><TD>
+<BR><BR>
+
+The Snowball scripts on this site define the codings of accented letters and
+other non-ASCII forms in a series of explicit declarations. For example, the
+German stemmer includes the lines
+<BR><PRE>
+    /* special characters (in ISO Latin I) */
+
+    stringdef a"   hex 'E4'
+    stringdef o"   hex 'F6'
+    stringdef u"   hex 'FC'
+    stringdef ss   hex 'DF'
+
+</PRE>
+In the ISO Latin I code set, hex E4, F6, FC and DF are the numeric values
+of characters <B><I>&auml;</I></B>, <B><I>&ouml;</I></B>, <B><I>&uuml;</I></B> and <B><I>&szlig;</I></B> respectively. These codings
+in the stemmer scripts then correspond to the codings used in the sample
+data.
+
+<BR><BR>
+
+For a more general approach, you may wish to replace the set of &nbsp;<TT>stringdef</TT>s
+by a &nbsp;<TT>get</TT>&nbsp; directive of the form,
+<BR><PRE>
+    get 'ISO-Latin-1'
+</PRE>
+possibly compiling with an &nbsp;<TT>-include</TT>&nbsp; option that declares the
+directory where this and other files are held,
+<BR><PRE>
+    Snowball gstem.sbl -o gstem ... -include /home/shazzer/snowball/codesets
+</PRE>
+
+Appropriate code sets for ISO Latin I and MS-DOS Latin I are provided via the links
+above, and others will be added on demand or if submitted to us.
+
+<BR><BR>
+
+For Russian, two sets of &nbsp;<TT>stringdef</TT>s are given in the script &#x2014; KOI8-R,
+and (commented out) Unicode. For the other stemmers currently on offer the
+Unicode placings correspond to the ISO-Latin I placings, so no extra headers
+for Unicode need, at present, be given.
+
+<BR><BR>
+
+If you wish to describe other Latin-alphabet based codesets for use in
+Snowball headers, you should adhere to the following conventions:
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> <I>accent</I> <TD></TD><TD> <I>ASCII form</I> <TD></TD><TD> <I>example</I>
+<TR><TD> acute  <TD></TD><TD> single quote <TD></TD><TD> &nbsp;<TT>e'</TT>
+<TR><TD> grave  <TD></TD><TD> grave <TD></TD><TD> &nbsp;<TT>a`</TT>
+<TR><TD> umlaut <TD></TD><TD> double quote <TD></TD><TD> &nbsp;<TT>u"</TT>
+<TR><TD> circumflex  <TD></TD><TD> circumflex <TD></TD><TD> &nbsp;<TT>i^</TT>
+<TR><TD> cedilla  <TD></TD><TD> comma <TD></TD><TD> &nbsp;<TT>c,</TT>
+<TR><TD> tilde  <TD></TD><TD> tilde <TD></TD><TD> &nbsp;<TT>n~</TT>
+<TR><TD> ring  <TD></TD><TD> letter o <TD></TD><TD> &nbsp;<TT>ao</TT>
+<TR><TD> line through  <TD></TD><TD> solidus <TD></TD><TD> &nbsp;<TT>o/</TT>
+</TABLE></DL>
+
+And, should they ever arise, use &nbsp;<TT>b</TT>&nbsp; for breve (as in Rumanian), &nbsp;<TT>l</TT>
+and &nbsp;<TT>r</TT>&nbsp; for left and right hook (as in Polish), &nbsp;<TT>q</TT>&nbsp; for double acute
+(as in Hungarian) and &nbsp;<TT>v</TT>&nbsp; for hacek (as in Czech).
+
+<BR><BR>
+
+The &#8216;line-through&#8217; accent covers a numbers of miscellaneous cases: the
+Scandinavian &nbsp;<TT>o/</TT>, Icelandic &nbsp;<TT>d/</TT>&nbsp; and Polish &nbsp;<TT>l/</TT>.
+
+<BR><BR>
+
+Use &nbsp;<TT>ae</TT>&nbsp; and &nbsp;<TT>ss</TT>&nbsp; for <B><I>&aelig;</I></B> ligature and the German
+<B><I>&szlig;</I></B>, with
+upper case forms &nbsp;<TT>AE</TT>&nbsp; and &nbsp;<TT>SS</TT>. Use &nbsp;<TT>th</TT>&nbsp; for Icelandic thorn.
+
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

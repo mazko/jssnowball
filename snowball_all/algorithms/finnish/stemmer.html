@@ -1,0 +1,610 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>Finnish stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>The Finnish stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Finnish vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">    A stop word list</A>
+</TABLE></DL>
+
+
+
+
+<BR><BR>
+
+
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of vocabulary, with the stemmed forms that will
+be generated with the algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+edeltäjien<BR>
+edeltäjiensä<BR>
+edeltäjiinsä<BR>
+edeltäjistään<BR>
+edeltäjiä<BR>
+edeltäjiään<BR>
+edeltäjä<BR>
+edeltäjälleen<BR>
+edeltäjän<BR>
+edeltäjäni<BR>
+edeltäjänsä<BR>
+edeltäjänä<BR>
+edeltäjässä<BR>
+edeltäjästä<BR>
+edeltäjästään<BR>
+edeltäjät<BR>
+edeltäjää<BR>
+edeltäjään<BR>
+edeltäjäänsä<BR>
+edeltäneelle<BR>
+edeltäneellä<BR>
+edeltäneeltä<BR>
+edeltäneen<BR>
+edeltäneenä<BR>
+edeltäneeseen<BR>
+edeltäneessä<BR>
+edeltäneestä<BR>
+edeltäneet<BR>
+edeltäneiden<BR>
+edeltäneissä<BR>
+edeltäneitä<BR>
+edeltänyt<BR>
+edeltänyttä<BR>
+edeltävien<BR>
+edeltäviin<BR>
+edeltävinä<BR>
+edeltävissä<BR>
+edeltävä<BR>
+edeltävälle<BR>
+edeltävällä<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+edeltäj<BR>
+edeltäjie<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäjiä<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltäj<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltän<BR>
+edeltäny<BR>
+edeltänyt<BR>
+edeltäv<BR>
+edeltäv<BR>
+edeltäv<BR>
+edeltäv<BR>
+edeltäv<BR>
+edeltäv<BR>
+edeltäv<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+innostu<BR>
+innostua<BR>
+innostuessaan<BR>
+innostui<BR>
+innostuimme<BR>
+innostuin<BR>
+innostuisi<BR>
+innostuisivat<BR>
+innostuivat<BR>
+innostukseen<BR>
+innostuksella<BR>
+innostuksen<BR>
+innostuksensa<BR>
+innostuksessa<BR>
+innostuksessaan<BR>
+innostuksesta<BR>
+innostuksissaan<BR>
+innostumaan<BR>
+innostuminen<BR>
+innostun<BR>
+innostuneelle<BR>
+innostuneempia<BR>
+innostuneen<BR>
+innostuneena<BR>
+innostuneesta<BR>
+innostuneesti<BR>
+innostuneet<BR>
+innostuneiden<BR>
+innostuneiksi<BR>
+innostunein<BR>
+innostuneina<BR>
+innostuneissa<BR>
+innostuneisuus<BR>
+innostuneita<BR>
+innostunut<BR>
+innostunutta<BR>
+innostus<BR>
+innostusta<BR>
+innostustaan<BR>
+innostutaan<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+innostu<BR>
+innostu<BR>
+innostue<BR>
+innostui<BR>
+innostui<BR>
+innostu<BR>
+innostui<BR>
+innostuisiv<BR>
+innostuiv<BR>
+innostuks<BR>
+innostuks<BR>
+innostuks<BR>
+innostuks<BR>
+innostuks<BR>
+innostuks<BR>
+innostuks<BR>
+innostuks<BR>
+innostum<BR>
+innostumin<BR>
+innostu<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostun<BR>
+innostuneisuus<BR>
+innostun<BR>
+innostunu<BR>
+innostunut<BR>
+innostus<BR>
+innostu<BR>
+innostu<BR>
+innostu<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+
+
+
+
+
+
+Finnish is not an Indo-European language, but belongs to the Finno-Ugric
+group, which again belongs to the Uralic group <A HREF="../../texts/glossary.html">(*)</A>. Distinctions between
+<I>a</I>-, <I>i</I>- and <I>d</I>-suffixes can be made in Finnish, but they are much
+less sharply separated than in an Indo-European language. The system of
+endings is extremely elaborate, but strictly defined, and applies equally to
+all nominals, that is, to nouns, adjectives and pronouns. Verb endings have a
+close similarity to nominal endings, which again makes Finnish very different
+from any Indo-European language.
+
+<BR><BR>
+
+More problematical than the endings themselves is the change that can be
+effected in a stem as a result of taking a particular ending. A stem typically
+has two forms, <I>strong</I> and <I>weak</I>, where one class of ending follows the
+strong form and the complementary class the weak. Normalising strong and weak
+forms after ending removal is not generally possible, although the common case
+where strong and weak forms only differ in the single or double form of a
+final consonant can be dealt with.
+
+<BR><BR>
+
+
+
+Finnish includes the following accented forms,
+<DL><DD>
+    <B><I>ä  &nbsp;  ö</I></B>
+</DL>
+The following letters are vowels:
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  y  &nbsp;  ä  &nbsp;  ö</I></B>
+</DL>
+<I>R</I>1 and
+<I>R</I>2 are then defined in the usual way
+(see the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2).
+<BR><BR>
+
+Do each of steps 1, 2, 3, 4, 5 and 6.
+<BR><BR>
+
+
+Step 1: particles etc
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and perform the
+    action indicated
+<BR><BR>
+<DL>
+    <DT>(<I>a</I>) <B><I>kin  &nbsp;  kaan  &nbsp;  kään  &nbsp;  ko  &nbsp;  kö  &nbsp;  han  &nbsp;  hän  &nbsp;  pa  &nbsp;  pä</I></B>
+        <DD>delete if preceded by <B><I>n</I></B>, <B><I>t</I></B> or a vowel
+    <DT>(<I>b</I>) <B><I>sti</I></B>
+        <DD>delete if in <I>R</I>2
+</DL>
+</DL>
+
+(Of course, the <B><I>n</I></B>, <B><I>t</I></B> or vowel of 1(<I>a</I>) need not be in <I>R</I>1: only
+the suffix removed must be in <I>R</I>1. And similarly below.
+
+<BR><BR>
+Step 2: possessives
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and perform the
+    action indicated
+<BR><BR>
+<DL>
+    <DT><B><I>si</I></B>
+        <DD>delete if not preceded by <B><I>k</I></B>
+    <DT><B><I>ni</I></B>
+        <DD>delete
+        <DD>if preceded by <B><I>kse</I></B>, replace with <B><I>ksi</I></B>
+    <DT><B><I>nsa  &nbsp;  nsä  &nbsp;  mme  &nbsp;  nne</I></B>
+        <DD>delete
+    <DT><B><I>an</I></B>
+        <DD>delete if preceded by one of  &nbsp; <B><I>ta  &nbsp;  ssa  &nbsp;  sta  &nbsp;  lla  &nbsp;  lta  &nbsp;  na</I></B>
+    <DT><B><I>än</I></B>
+        <DD>delete if preceded by one of  &nbsp; <B><I>tä  &nbsp;  ssä  &nbsp;  stä  &nbsp;  llä  &nbsp;  ltä  &nbsp;  nä</I></B>
+    <DT><B><I>en</I></B>
+        <DD>delete if preceded by one of  &nbsp; <B><I>lle  &nbsp;  ine</I></B>
+</DL>
+</DL>
+
+The remaining steps require a few definitions.
+<BR><BR>
+Define a <I>v</I> (vowel) as one of  &nbsp; <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  y  &nbsp;  ä  &nbsp;  ö</I></B>.
+<BR>
+Define a <I>V</I> (restricted vowel) as one of  &nbsp; <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  ä  &nbsp;  ö</I></B>.
+<BR>
+So <I>V</I><B><I>i</I></B> means a <I>V</I> followed by letter <B><I>i</I></B>.
+<BR>
+Define <I>LV</I> (long vowel) as one of  &nbsp; <B><I>aa  &nbsp;  ee  &nbsp;  ii  &nbsp;  oo  &nbsp;  uu  &nbsp;  ää  &nbsp;  öö</I></B>.
+<BR>
+Define a <I>c</I> (consonant) as a character other than a <I>v</I>.
+<BR>
+So <I>cv</I> means a <I>c</I> followed by a <I>v</I>.
+
+<BR><BR>
+Step 3: cases
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and perform the
+    action indicated
+<BR><BR>
+<DL>
+    <DT><B><I>h</I></B><I>X</I><B><I>n</I></B>  &nbsp;  preceded by <I>X</I>, where <I>X</I> is a <I>V</I> other than <B><I>u</I></B> (<B><I>a/han</I></B>, <B><I>e/hen</I></B> etc)
+    <DT><B><I>siin  &nbsp;  den  &nbsp;  tten</I></B>  &nbsp;  preceded by <I>V</I><B><I>i</I></B>
+    <DT><B><I>seen</I></B>  &nbsp;  preceded by <I>LV</I>
+    <DT><B><I>a  &nbsp;  ä</I></B>  &nbsp;  preceded by <I>cv</I>
+    <DT><B><I>tta  &nbsp;  ttä</I></B>  &nbsp;  preceded by <B><I>e</I></B>
+    <DT><B><I>ta  &nbsp;  tä  &nbsp;  ssa  &nbsp;  ssä  &nbsp;  sta  &nbsp;  stä  &nbsp;  lla  &nbsp;  llä  &nbsp;  lta  &nbsp;  ltä  &nbsp;  lle  &nbsp;  na  &nbsp;  nä  &nbsp;  ksi  &nbsp;  ine</I></B>
+        <DD>delete
+    <DT><B><I>n</I></B>
+        <DD>delete, and if preceded by <I>LV</I> or <B><I>ie</I></B>, delete the last vowel
+</DL>
+</DL>
+
+So <I>aarteisiin</I> <TT>-&gt;</TT> <I>aartei</I>, the longest matching suffix being <B><I>siin</I></B>,
+preceded as it is by <I>V</I><B><I>i</I></B>. But <I>adressiin</I> <TT>-&gt;</TT> <I>adressi</I>. The longest
+matching suffix is not <B><I>siin</I></B>, because there is no preceding <I>V</I><B><I>i</I></B>, but <B><I>n</I></B>,
+and then the last vowel of the preceding <I>LV</I> is removed.
+
+<BR><BR>
+
+Step 4: other endings
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>2, and perform the
+    action indicated
+<BR><BR>
+<DL>
+    <DT><B><I>mpi  &nbsp;  mpa  &nbsp;  mpä  &nbsp;  mmi  &nbsp;  mma  &nbsp;  mmä</I></B>
+        <DD>delete if not preceded by <B><I>po</I></B>
+    <DT><B><I>impi  &nbsp;  impa  &nbsp;  impä  &nbsp;  immi  &nbsp;  imma  &nbsp;  immä  &nbsp;  eja  &nbsp;  ejä</I></B>
+        <DD>delete
+</DL>
+</DL>
+
+Step 5: plurals
+
+<DL><DD>
+If an ending was removed in step 3, delete a final <B><I>i</I></B> or <B><I>j</I></B> if in <I>R</I>1;
+otherwise, if an ending was not removed in step 3, delete a final <B><I>t</I></B> in
+<I>R</I>1 if it follows a vowel, and, if a <B><I>t</I></B> is removed, delete a final <B><I>mma</I></B> or
+<B><I>imma</I></B> in <I>R</I>2, unless the <B><I>mma</I></B> is preceded by <B><I>po</I></B>.
+</DL>
+
+Step 6: tidying up
+<DL><DD>
+Do in turn steps (<I>a</I>), (<I>b</I>), (<I>c</I>), (<I>d</I>), restricting all tests to the region
+<I>R</I>1.
+<BR><BR>
+<I>a</I>) If <I>R</I>1 ends <I>LV</I> delete the last letter<BR>
+<I>b</I>) If <I>R</I>1 ends <I>cX</I>, <I>c</I> a consonant and <I>X</I> one of  &nbsp; <B><I>a  &nbsp;  ä  &nbsp;  e  &nbsp;  i</I></B>, delete the last
+letter<BR>
+<I>c</I>) If <I>R</I>1 ends <B><I>oj</I></B> or <B><I>uj</I></B> delete the last letter<BR>
+<I>d</I>) If <I>R</I>1 ends <B><I>jo</I></B> delete the last letter
+<BR><BR>
+Do step (<I>e</I>), which is not restricted to <I>R</I>1.
+<BR><BR>
+<I>e</I>) If the word ends with a double consonant followed by zero or more vowels,
+remove the last consonant (so <I>eläkk</I> <TT>-&gt;</TT> <I>eläk</I>, <I>aatonaatto</I> <TT>-&gt;</TT>
+<I>aatonaato</I>)
+</DL>
+
+
+
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+<BR>&nbsp;<H2>The full algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+
+/* Finnish stemmer.
+
+   Numbers in square brackets refer to the sections in
+   Fred Karlsson, Finnish: An Essential Grammar. Routledge, 1999
+   ISBN 0-415-20705-3
+
+*/
+
+routines (
+           mark_regions
+           R2
+           particle_etc possessive
+           LONG VI
+           case_ending
+           i_plural
+           t_plural
+           other_endings
+           tidy
+)
+
+externals ( stem )
+
+integers ( p1 p2 )
+strings ( x )
+booleans ( ending_removed )
+groupings ( AEI V1 V2 particle_end )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef a"   hex 'E4'
+stringdef o"   hex 'F6'
+
+define AEI 'a{a"}ei'
+define V1 'aeiouy{a"}{o"}'
+define V2 'aeiou{a"}{o"}'
+define particle_end V1 + 'nt'
+
+define mark_regions as (
+
+    $p1 = limit
+    $p2 = limit
+
+    goto V1  gopast non-V1  setmark p1
+    goto V1  gopast non-V1  setmark p2
+)
+
+backwardmode (
+
+    define R2 as $p2 <= cursor
+
+    define particle_etc as (
+        setlimit tomark p1 for ([substring])
+        among(
+            'kin'
+            'kaan' 'k{a"}{a"}n'
+            'ko'   'k{o"}'
+            'han'  'h{a"}n'
+            'pa'   'p{a"}'    // Particles [91]
+                (particle_end)
+            'sti'             // Adverb [87]
+                (R2)
+        )
+        delete
+    )
+    define possessive as (    // [36]
+        setlimit tomark p1 for ([substring])
+        among(
+            'si'
+                (not 'k' delete)  // take 'ksi' as the Comitative case
+            'ni'
+                (delete ['kse'] <- 'ksi') // kseni = ksi + ni
+            'nsa' 'ns{a"}'
+            'mme'
+            'nne'
+                (delete)
+            /* Now for Vn possessives after case endings: [36] */
+            'an'
+                (among('ta' 'ssa' 'sta' 'lla' 'lta' 'na') delete)
+            '{a"}n'
+                (among('t{a"}' 'ss{a"}' 'st{a"}'
+                       'll{a"}' 'lt{a"}' 'n{a"}') delete)
+            'en'
+                (among('lle' 'ine') delete)
+        )
+    )
+
+    define LONG as
+        among('aa' 'ee' 'ii' 'oo' 'uu' '{a"}{a"}' '{o"}{o"}')
+
+    define VI as ('i' V2)
+
+    define case_ending as (
+        setlimit tomark p1 for ([substring])
+        among(
+            'han'    ('a')          //-.
+            'hen'    ('e')          // |
+            'hin'    ('i')          // |
+            'hon'    ('o')          // |
+            'h{a"}n' ('{a"}')       // Illative   [43]
+            'h{o"}n' ('{o"}')       // |
+            'siin'   VI             // |
+            'seen'   LONG           //-'
+
+            'den'    VI
+            'tten'   VI             // Genitive plurals [34]
+                     ()
+            'n'                     // Genitive or Illative
+                ( try ( LONG // Illative
+                        or 'ie' // Genitive
+                          and next ]
+                      )
+                  /* otherwise Genitive */
+                )
+
+            'a' '{a"}'              //-.
+                     (V1 non-V1)    // |
+            'tta' 'tt{a"}'          // Partitive  [32]
+                     ('e')          // |
+            'ta' 't{a"}'            //-'
+
+            'ssa' 'ss{a"}'          // Inessive   [41]
+            'sta' 'st{a"}'          // Elative    [42]
+
+            'lla' 'll{a"}'          // Adessive   [44]
+            'lta' 'lt{a"}'          // Ablative   [51]
+            'lle'                   // Allative   [46]
+            'na' 'n{a"}'            // Essive     [49]
+            'ksi'                   // Translative[50]
+            'ine'                   // Comitative [51]
+
+            /* Abessive and Instructive are too rare for
+               inclusion [51] */
+
+        )
+        delete
+        set ending_removed
+    )
+    define other_endings as (
+        setlimit tomark p2 for ([substring])
+        among(
+            'mpi' 'mpa' 'mp{a"}'
+            'mmi' 'mma' 'mm{a"}'    // Comparative forms [85]
+                (not 'po')          //-improves things
+            'impi' 'impa' 'imp{a"}'
+            'immi' 'imma' 'imm{a"}' // Superlative forms [86]
+            'eja' 'ej{a"}'          // indicates agent [93.1B]
+        )
+        delete
+    )
+    define i_plural as (            // [26]
+        setlimit tomark p1 for ([substring])
+        among(
+            'i'  'j'
+        )
+        delete
+    )
+    define t_plural as (            // [26]
+        setlimit tomark p1 for (
+            ['t'] test V1
+            delete
+        )
+        setlimit tomark p2 for ([substring])
+        among(
+            'mma' (not 'po') //-mmat endings
+            'imma'           //-immat endings
+        )
+        delete
+    )
+    define tidy as (
+        setlimit tomark p1 for (
+            do ( LONG and ([next] delete ) ) // undouble vowel
+            do ( [AEI] non-V1 delete ) // remove trailing a, a", e, i
+            do ( ['j'] 'o' or 'u' delete )
+            do ( ['o'] 'j' delete )
+        )
+        goto non-V1 [next] -> x  x delete // undouble consonant
+    )
+)
+
+define stem as (
+
+    do mark_regions
+    unset ending_removed
+    backwards (
+        do particle_etc
+        do possessive
+        do case_ending
+        do other_endings
+        (ending_removed do i_plural) or do t_plural
+        do tidy
+    )
+)
+
+</DL>
+</PRE>
+</TR>
+</TABLE>
+</BODY>
+</HTML>

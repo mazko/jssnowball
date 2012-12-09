@@ -1,0 +1,642 @@
+
+<HTML>
+<HEAD>
+
+<TITLE>The Porter stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>The Porter stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample English vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="http://www.tartarus.org/~martin/PorterStemmer/index.html">
+The &#8216;official&#8217; home page of the Porter stemming algorithm</A>
+</TABLE></DL>
+
+<BR><BR>
+
+<B>Here is a case study on how to code up a stemming algorithm in Snowball. First,
+the definition of the Porter stemmer, as it appeared in <B><I>Program</I></B>, Vol 14 no. 3 pp
+130-137, July 1980.</B>
+
+<BR><BR>
+
+<TR><TD BGCOLOR="silver">
+
+<BR>&nbsp;<H2>THE ALGORITHM</H2>
+
+A <I>consonant</I> in a word is a letter other than A, E, I, O or U, and other
+than Y preceded by a consonant. (The fact that the term &#8216;consonant&#8217; is
+defined to some extent in terms of itself does not make it ambiguous.) So in
+TOY the consonants are T and Y, and in SYZYGY they are S, Z and G. If a
+letter is not a consonant it is a <I>vowel</I>.
+<BR><BR>
+A consonant will be denoted by c, a vowel by v. A list ccc... of length
+greater than 0 will be denoted by C, and a list vvv... of length greater
+than 0 will be denoted by V. Any word, or part of a word, therefore has one
+of the four forms:
+<DL>
+    <DT>CVCV ... C
+    <DT>CVCV ... V
+    <DT>VCVC ... C
+    <DT>VCVC ... V
+</DL>
+These may all be represented by the single form
+<DL><DD>
+    [C]VCVC ... [V]
+</DL>
+where the square brackets denote arbitrary presence of their contents.
+Using (VC)<SUP>m</SUP> to denote VC repeated m times, this may again be written as
+<DL><DD>
+    [C](VC)<SUP>m</SUP>[V].
+</DL>
+m will be called the <I>measure</I> of any word or word part when represented in
+this form. The case m = 0 covers the null word. Here are some examples:
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>   m=0 <TD></TD><TD>   TR, &nbsp;   EE, &nbsp;   TREE, &nbsp;   Y, &nbsp;   BY.
+<TR><TD>   m=1 <TD></TD><TD>   TROUBLE, &nbsp;   OATS, &nbsp;   TREES, &nbsp;   IVY.
+<TR><TD>   m=2 <TD></TD><TD>   TROUBLES, &nbsp;   PRIVATE, &nbsp;   OATEN, &nbsp;   ORRERY.
+</TABLE></DL>
+The <I>rules</I> for removing a suffix will be given in the form
+<DL><DD>
+    (condition) S1 <TT>-&gt;</TT> S2
+</DL>
+This means that if a word ends with the suffix S1, and the stem before S1
+satisfies the given condition, S1 is replaced by S2. The condition is
+usually given in terms of m, e.g.
+<DL><DD>
+    (m > 1) EMENT <TT>-&gt;</TT>
+</DL>
+Here S1 is &#8216;EMENT&#8217; and S2 is null. This would map REPLACEMENT to REPLAC,
+since REPLAC is a word part for which m = 2.
+<BR><BR>
+The &#8216;condition&#8217; part may also contain the following:
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>*S  <TD></TD><TD>-<TD></TD><TD> the stem ends with S (and similarly for the other letters).
+
+<TR><TD>*v* <TD></TD><TD>-<TD></TD><TD> the stem contains a vowel.
+
+<TR><TD>*d  <TD></TD><TD>-<TD></TD><TD> the stem ends with a double consonant (e.g. -TT, -SS).
+
+<TR><TD>*o  <TD></TD><TD>-<TD></TD><TD> the stem ends cvc, where the second c is not W, X or Y (e.g.
+       -WIL, -HOP).
+</TABLE></DL>
+And the condition part may also contain expressions with <I>and</I>, <I>or</I> and
+<I>not</I>, so that
+<DL><DD>
+    (m>1 and (*S or *T))
+</DL>
+tests for a stem with m>1 ending in S or T, while
+<DL><DD>
+    (*d and not (*L or *S or *Z))
+</DL>
+tests for a stem ending with a double consonant other than L, S or Z.
+Elaborate conditions like this are required only rarely.
+<BR><BR>
+In a set of rules written beneath each other, only one is obeyed, and this
+will be the one with the longest matching S1 for the given word. For
+example, with
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    SSES <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> SS
+<TR><TD>    IES  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> I
+<TR><TD>    SS   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> SS
+<TR><TD>    S    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>
+</TABLE></DL>
+(here the conditions are all null) CARESSES maps to CARESS since SSES is
+the longest match for S1. Equally CARESS maps to CARESS (S1=&#8216;SS&#8217;) and CARES
+to CARE (S1=&#8216;S&#8217;).
+<BR><BR>
+In the rules below, examples of their application, successful or otherwise,
+are given on the right in lower case. The algorithm now follows:
+<BR><BR>
+Step 1a
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> SSES <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> SS <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  caresses  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  caress
+<TR><TD> IES  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> I  <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  ponies    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  poni
+<TR><TD>      <TD></TD><TD>     <TD></TD><TD>    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  ties      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ti
+<TR><TD> SS   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> SS <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  caress    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  caress
+<TR><TD> S    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  cats      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  cat
+</TABLE></DL>
+Step 1b
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> (m>0) EED <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> EE <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> feed      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  feed
+<TR><TD>           <TD></TD><TD>     <TD></TD><TD>    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> agreed    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  agree
+<TR><TD> (*v*) ED  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> plastered <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  plaster
+<TR><TD>           <TD></TD><TD>     <TD></TD><TD>    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> bled      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  bled
+<TR><TD> (*v*) ING <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> motoring  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  motor
+<TR><TD>           <TD></TD><TD>     <TD></TD><TD>    <TD></TD><TD>        <TD></TD><TD> sing      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  sing
+</TABLE></DL>
+If the second or third of the rules in Step 1b is successful, the following
+is done:
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD> AT <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> ATE           <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> conflat(ed)  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  conflate
+<TR><TD> BL <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> BLE           <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> troubl(ed)   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  trouble
+<TR><TD> IZ <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> IZE           <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> siz(ed)      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  size
+<TR><TD> (*d and not (*L or *S or *Z))
+      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> single letter <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> hopp(ing)    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  hop
+<TR><TD>    <TD></TD><TD>     <TD></TD><TD>               <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> tann(ed)     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  tan
+<TR><TD>    <TD></TD><TD>     <TD></TD><TD>               <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> fall(ing)    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  fall
+<TR><TD>    <TD></TD><TD>     <TD></TD><TD>               <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> hiss(ing)    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  hiss
+<TR><TD>    <TD></TD><TD>     <TD></TD><TD>               <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> fizz(ed)     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  fizz
+<TR><TD> (m=1 and *o)
+      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> E             <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> fail(ing)    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  fail
+<TR><TD>    <TD></TD><TD>     <TD></TD><TD>               <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> fil(ing)     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  file
+</TABLE></DL>
+The rule to map to a single letter causes the removal of one of the double
+letter pair. The -E is put back on -AT, -BL and -IZ, so that the suffixes
+-ATE, -BLE and -IZE can be recognised later. This E may be removed in step
+4.
+<BR><BR>
+Step 1c
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    (*v*) Y <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> I     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> happy        <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  happi
+<TR><TD>            <TD></TD><TD>     <TD></TD><TD>       <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> sky          <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  sky
+</TABLE></DL>
+Step 1 deals with plurals and past participles. The subsequent steps are
+much more straightforward.
+<BR><BR>
+Step 2
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    (m>0) ATIONAL <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ATE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> relational     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  relate
+<TR><TD>    (m>0) TIONAL  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  TION   <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> conditional    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  condition
+<TR><TD>                  <TD></TD><TD>     <TD></TD><TD>         <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> rational       <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  rational
+<TR><TD>    (m>0) ENCI    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ENCE   <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> valenci        <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  valence
+<TR><TD>    (m>0) ANCI    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ANCE   <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> hesitanci      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  hesitance
+<TR><TD>    (m>0) IZER    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  IZE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> digitizer      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  digitize
+<TR><TD>    (m>0) ABLI    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ABLE   <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> conformabli    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  conformable
+<TR><TD>    (m>0) ALLI    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  AL     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> radicalli      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  radical
+<TR><TD>    (m>0) ENTLI   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ENT    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> differentli    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  different
+<TR><TD>    (m>0) ELI     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  E      <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> vileli         <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  vile
+<TR><TD>    (m>0) OUSLI   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  OUS    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> analogousli    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  analogous
+<TR><TD>    (m>0) IZATION <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  IZE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> vietnamization <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  vietnamize
+<TR><TD>    (m>0) ATION   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ATE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> predication    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  predicate
+<TR><TD>    (m>0) ATOR    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ATE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> operator       <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  operate
+<TR><TD>    (m>0) ALISM   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  AL     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> feudalism      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  feudal
+<TR><TD>    (m>0) IVENESS <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  IVE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> decisiveness   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  decisive
+<TR><TD>    (m>0) FULNESS <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  FUL    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> hopefulness    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  hopeful
+<TR><TD>    (m>0) OUSNESS <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  OUS    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> callousness    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  callous
+<TR><TD>    (m>0) ALITI   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  AL     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> formaliti      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  formal
+<TR><TD>    (m>0) IVITI   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  IVE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> sensitiviti    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  sensitive
+<TR><TD>    (m>0) BILITI  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  BLE    <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> sensibiliti    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  sensible
+</TABLE></DL>
+The test for the string S1 can be made fast by doing a program switch on
+the penultimate letter of the word being tested. This gives a fairly even
+breakdown of the possible values of the string S1. It will be seen in fact
+that the S1-strings in step 2 are presented here in the alphabetical order
+of their penultimate letter. Similar techniques may be applied in the other
+steps.
+<BR><BR>
+Step 3
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    (m>0) ICATE <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  IC <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  triplicate     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  triplic
+<TR><TD>    (m>0) ATIVE <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  formative      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  form
+<TR><TD>    (m>0) ALIZE <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  AL <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  formalize      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  formal
+<TR><TD>    (m>0) ICITI <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  IC <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  electriciti    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  electric
+<TR><TD>    (m>0) ICAL  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  IC <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  electrical     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  electric
+<TR><TD>    (m>0) FUL   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  hopeful        <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  hope
+<TR><TD>    (m>0) NESS  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  goodness       <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  good
+</TABLE></DL>
+Step 4
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    (m>1) AL    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  revival        <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  reviv
+<TR><TD>    (m>1) ANCE  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  allowance      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  allow
+<TR><TD>    (m>1) ENCE  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  inference      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  infer
+<TR><TD>    (m>1) ER    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  airliner       <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  airlin
+<TR><TD>    (m>1) IC    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  gyroscopic     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  gyroscop
+<TR><TD>    (m>1) ABLE  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  adjustable     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  adjust
+<TR><TD>    (m>1) IBLE  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  defensible     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  defens
+<TR><TD>    (m>1) ANT   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  irritant       <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  irrit
+<TR><TD>    (m>1) EMENT <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  replacement    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  replac
+<TR><TD>    (m>1) MENT  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  adjustment     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  adjust
+<TR><TD>    (m>1) ENT   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  dependent      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  depend
+<TR><TD>    (m>1 and (*S or *T)) ION
+                  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  adoption       <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  adopt
+<TR><TD>    (m>1) OU    <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  homologou      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  homolog
+<TR><TD>    (m>1) ISM   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  communism      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  commun
+<TR><TD>    (m>1) ATE   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  activate       <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  activ
+<TR><TD>    (m>1) ITI   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  angulariti     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  angular
+<TR><TD>    (m>1) OUS   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  homologous     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  homolog
+<TR><TD>    (m>1) IVE   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  effective      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  effect
+<TR><TD>    (m>1) IZE   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>  bowdlerize     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  bowdler
+</TABLE></DL>
+The suffixes are now removed. All that remains is a little tidying up.
+<BR><BR>
+Step 5a
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    (m>1) E     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>       probate   <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  probat
+<TR><TD>                <TD></TD><TD>     <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>       rate      <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  rate
+<TR><TD>    (m=1 and not *o) E
+                  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>     <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD>       cease     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  ceas
+</TABLE></DL>
+Step 5b
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    (m > 1 and *d and *L)
+                  <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD> single letter <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> controll <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  control
+<TR><TD>                <TD></TD><TD>     <TD></TD><TD>               <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;<TD></TD><TD> roll     <TD></TD><TD> <TT>-&gt;</TT> <TD></TD><TD>  roll
+</TABLE></DL>
+</TR>
+
+<TR><TD>
+<BR><BR>
+<B>Now, turning it into Snowball.</B>
+<BR><BR>
+
+The Porter stemmer makes a use of a measure, <I>m</I>, of the length of a word or
+word part. If <I>C</I> is a sequence of one or more consonants, and <I>V</I> a sequence
+of one or more vowels, any word part has the form
+<DL><DD>
+    [<I>C</I>](<I>VC</I>)<SUP><I>m</I></SUP>[<I>V</I>],
+</DL>
+which is to be read as an optional <I>C</I>, followed by <I>m</I> repetitions of <I>VC</I>,
+followed by an optional <I>V</I>. This defines <I>m</I>. So for <I>crepuscular</I> the
+measure would be 4.
+<BR><PRE>
+    c r e p u s c u l a r
+       |   |     |   |   |
+    [C] V C  V C  V C V C
+         1    2    3   4
+</PRE>
+Most of the rules for suffix removal involve leaving behind a stem whose
+measure exceeds some value, for example,
+<DL><DD>
+    (<I>m</I> > 0) <B><I>eed</I></B> <TT>-&gt;</TT> <B><I>ee</I></B>
+</DL>
+means &#8216;replace <B><I>eed</I></B> with <B><I>ee</I></B> if the stem before <B><I>eed</I></B> has measure
+<I>m</I> > 0&#8217;. Implementations of the Porter stemmer usually have a routine that
+computes <I>m</I> each time there is a possible candidate for removal.
+<BR><BR>
+In fact the only tests on <I>m</I> in the Porter stemmer are <I>m</I> > 0, <I>m</I> > 1, and,
+at two interesting points, <I>m</I> = 1. This suggests that there are two
+critical positions in a word: the point at which, going from left to
+right, <I>m</I> > 0 becomes true, and then the point at which <I>m</I> > 1 becomes true.
+It turns out that <I>m</I> > 0 becomes true at the point after the first consonant
+following a vowel, and <I>m</I> > 1 becomes true at the point after the first
+consonant following a vowel following a consonant following a vowel.
+Calling these positions <I>p</I>1 and <I>p</I>2, we can determine them quite simply in
+Snowball:
+<BR><PRE>
+    define v 'aeiouy'
+
+    ....
+
+    do(
+        gopast v  gopast non-v  setmark p1
+        gopast v  gopast non-v  setmark p2
+    )
+</PRE>
+The region to the right of <I>p</I>1 will be denoted by <I>R</I>1, the region to the
+right of <I>p</I>2 by <I>R</I>2:
+<BR><PRE>
+    c r e p u s c u l a r
+           |   |
+           p1  p2
+           <---  R1  --->
+               <-- R2 -->
+</PRE>
+We can test for being in these regions with calls to &nbsp;<TT>R1</TT>&nbsp; and &nbsp;<TT>R2</TT>, defined by,
+<BR><PRE>
+    define R1 as $p1 <= cursor
+    define R2 as $p2 <= cursor
+</PRE>
+and using these tests instead of computing <I>m</I> is acceptable, so long as the
+stemming process never alters the <I>p</I>1 and <I>p</I>2 positions, which is indeed true
+in the Porter stemmer.
+<BR><BR>
+A particularly interesting feature of the stemmers presented here is the
+common use they make of the positions <I>p</I>1 and <I>p</I>2. The details of marking
+<I>p</I>1
+and <I>p</I>2 vary between the languages because the definitions of vowel and
+consonant vary. For example, French <B><I>i</I></B> preceded and followed by vowel
+should be treated as a consonant (<I>inqu<B><I>i</I></B>&eacute;tude</I>); Portuguese (&atilde;</I></B> and <B><I>&otilde;</I></B>
+should be treated as a vowel-consonant pair (<I>S&atilde;o Jo&atilde;o</I>). A third
+important position is <I>pV</I>, which tries to mark the position of the shortest
+acceptable verb stem. Its definition varies somewhat between languages.
+The Porter stemmer does not use a <I>pV</I> explicitly, but the idea appears when
+the verb endings <B><I>ing</I></B> and <B><I>ed</I></B> are removed only when preceded by a vowel.
+In English therefore <I>pV</I> would be defined as the position after the first
+vowel.
+<BR><BR>
+The Porter stemmer is divided into five steps, step 1 is divided further
+into steps 1<I>a</I>, 1<I>b</I> and 1<I>c</I>, and step 5 into steps 5<I>a</I> and 5<I>b</I>. Step 1 removes
+the <I>i</I>-suffixes, and steps 2 to 4 the <I>d</I>-suffixes <A HREF="../../texts/glossary.html">(*)</A>. Composite <I>d</I>-suffixes are
+reduced to single <I>d</I>-suffixes one at a time. So for example if a word ends
+<B><I>icational</I></B>, step 2 reduces it to <B><I>icate</I></B> and step 3 to <B><I>ic</I></B>. Three steps are
+sufficient for this process in English. Step 5 does some tidying up.
+<BR><BR>
+One can see how easily the stemming rules translate into Snowball by
+comparing the definition of Step 1<I>a</I> from the 1980 paper,
+<BR><PRE>
+    Step 1a:
+        SSES -> SS                         caresses  ->  caress
+        IES  -> I                          ponies    ->  poni
+                                           ties      ->  ti
+        SS   -> SS                         caress    ->  caress
+        S    ->                            cats      ->  cat
+</PRE>
+with its Snowball equivalent,
+<BR><PRE>
+    define Step_1a as (
+        [substring] among (
+            'sses' (<-'ss')
+            'ies'  (<-'i')
+            'ss'   ()
+            's'    (delete)
+        )
+    )
+</PRE>
+The word to be stemmed is being scanned right to left from the end. The
+longest of &nbsp;<TT>'sses'</TT>, &nbsp;<TT>'ies'</TT>, &nbsp;<TT>'ss'</TT>&nbsp; or &nbsp;<TT>'s'</TT>&nbsp; is searched for and defined as the
+slice. (If none are found, Step_1a signals <B><I>f</I></B>.) If &nbsp;<TT>'sses'</TT>&nbsp; is found, it is
+replaced by &nbsp;<TT>'ss'</TT>, and so on. Of course, replacing &nbsp;<TT>'ss'</TT>&nbsp; by &nbsp;<TT>'ss'</TT>&nbsp; is a dummy
+action, so we can write
+<BR><PRE>
+            'ss'   ()
+</PRE>
+instead of
+<BR><PRE>
+            'ss'   (<-'ss')
+</PRE>
+Remember that &nbsp;<TT>delete</TT>&nbsp; just means &nbsp;<TT><- ''</TT>.
+<BR><BR>
+The really tricky part of the whole algorithm is step 1<I>b</I>,
+which may be worth looking at in detail. Here it is, without the
+example words on the far right,
+<BR><PRE>
+    Step 1b:
+        (m > 0) EED -> EE
+        (*v*)   ED  ->
+        (*v*)   ING ->
+
+    If the second or third of the rules in Step 1b is successful, the
+    following is done:
+
+        AT -> ATE
+        BL -> BLE
+        IZ -> IZE
+        (*d and not (*L or *S or *Z)) -> single letter
+        (m = 1 and *o) -> E
+</PRE>
+The first part of the rule means that <B><I>eed</I></B> maps to <B><I>ee</I></B> if <B><I>eed</I></B> is in <I>R</I>1
+(which is equivalent to <I>m</I> > 0), or <B><I>ed</I></B> and <B><I>ing</I></B> are removed if they are
+preceded by a vowel. In Snowball this is simply,
+<BR><PRE>
+    define Step_1b as (
+        [substring] among (
+            'eed'  (R1 <-'ee')
+            'ed'
+            'ing'  (test gopast v  delete)
+        )
+    )
+</PRE>
+But this must be modified by the second part of the rule. <I>*d</I> indicates a
+test for double letter consonant &#x2014; <B><I>bb</I></B>, <B><I>dd</I></B> etc. <I>*L</I>, <I>*S</I>, <I>*Z</I> are tests
+for <B><I>l</I></B>, <B><I>s</I></B>, <B><I>z</I></B>. <I>*o</I> is a short vowel test &#x2014; it is matched by
+consonant-vowel-consonant, where the consonant on the right is not <I>w</I>, <I>x</I>
+or <I>y</I>. If the short vowel test is satisfied, <I>m</I> = 1 is equivalent to the
+cursor being at <I>p</I>1. So the second part of the rule means, map <B><I>at</I></B>, <B><I>bl</I></B>, <B><I>iz</I></B>
+to <B><I>ate</I></B>, <B><I>ble</I></B>, <B><I>ize</I></B>; map certain double letters to single letters; and
+add <B><I>e</I></B> after a short vowel in words of one syllable.
+<BR><BR>
+We first need two extra groupings,
+<BR><PRE>
+    define v        'aeiouy'
+    define v_WXY    v + 'wxY'   // v with 'w', 'x' and 'y'-consonant
+    define v_LSZ    v + 'lsz'   // v with 'l', 's', 'z'
+</PRE>
+and a test for a short vowel,
+<BR><PRE>
+    define shortv as ( non-v_WXY v non-v )
+</PRE>
+(The &nbsp;<TT>v_WXY</TT>&nbsp; test comes first because we are scanning backwards, from right to
+left.)
+<BR><BR>
+The double to single letter map can be done as follows: first define the
+slice as the next &nbsp;<TT>non-v_LSZ</TT>&nbsp; and copy it to a string, &nbsp;<TT>ch</TT>, as a single
+character,
+<BR><PRE>
+    strings ( ch )
+
+    ....
+
+    [non-v_LSZ] ->ch
+</PRE>
+A further test, &nbsp;<TT>ch</TT>, tests that the next letter of the string is the same
+as the one in &nbsp;<TT>ch</TT>, and if this gives signal <B><I>t</I></B>, &nbsp;<TT>delete</TT>&nbsp; deletes the slice,
+<BR><PRE>
+    [non-v_LSZ] ->ch  ch  delete
+</PRE>
+<TT>Step_1b</TT>&nbsp; can then be written like this,
+<BR><PRE>
+    define Step_1b as (
+        [substring] among (
+            'eed'  (R1 <-'ee')
+            'ed'
+            'ing' (
+                test gopast v  delete
+                (test among('at' 'bl' 'iz')  <+ 'e')
+                or
+                ([non-v_LSZ]->ch  ch  delete)
+                or
+                (atmark p1  test shortv  <+ 'e')
+            )
+        )
+    )
+</PRE>
+But we can improve the appearance, and speed, of this by turning the
+second part of the rule into another &nbsp;<TT>among</TT>&nbsp; command, noting that the only
+letters that need undoubling are <B><I>b</I></B>, <B><I>d</I></B>, <B><I>f</I></B>, <B><I>g</I></B>, <B><I>m</I></B>, <B><I>n</I></B>, <B><I>p</I></B>, <B><I>r</I></B>
+and <B><I>t</I></B>,
+<BR><PRE>
+    define Step_1b as (
+        [substring] among (
+            'eed'  (R1 <-'ee')
+            'ed'
+            'ing' (
+                test gopast v  delete
+                test substring among(
+                    'at' 'bl' 'iz'
+                         (<+ 'e')
+                    'bb' 'dd' 'ff' 'gg' 'mm' 'nn' 'pp' 'rr' 'tt'
+                    // ignoring double c, h, j, k, q, v, w, and x
+                         ([next]  delete)
+                    ''   (atmark p1  test shortv  <+ 'e')
+                )
+            )
+        )
+    )
+</PRE>
+Note the null string in the second &nbsp;<TT>among</TT>, which acts as a default case.
+<BR><BR>
+The Porter stemmer in Snowball is given below. This is an exact
+implementation of the algorithm described in the 1980 paper, unlike the
+other implementations distributed by the author, which have, and have
+always had, three small points of difference (clearly indicated) from the
+original algorithm. Since all other implementations of the algorithm seen
+by the author are in some degree inexact, this may well be the first ever
+correct implementation.
+<BR><BR>
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+<BR>&nbsp;<H2>The full algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+integers ( p1 p2 )
+booleans ( Y_found )
+
+routines (
+   shortv
+   R1 R2
+   Step_1a Step_1b Step_1c Step_2 Step_3 Step_4 Step_5a Step_5b
+)
+
+externals ( stem )
+
+groupings ( v v_WXY )
+
+define v        'aeiouy'
+define v_WXY    v + 'wxY'
+
+backwardmode (
+
+    define shortv as ( non-v_WXY v non-v )
+
+    define R1 as $p1 <= cursor
+    define R2 as $p2 <= cursor
+
+    define Step_1a as (
+        [substring] among (
+            'sses' (<-'ss')
+            'ies'  (<-'i')
+            'ss'   ()
+            's'    (delete)
+        )
+    )
+
+    define Step_1b as (
+        [substring] among (
+            'eed'  (R1 <-'ee')
+            'ed'
+            'ing' (
+                test gopast v  delete
+                test substring among(
+                    'at' 'bl' 'iz'
+                         (<+ 'e')
+                    'bb' 'dd' 'ff' 'gg' 'mm' 'nn' 'pp' 'rr' 'tt'
+                    // ignoring double c, h, j, k, q, v, w, and x
+                         ([next]  delete)
+                    ''   (atmark p1  test shortv  <+ 'e')
+                )
+            )
+        )
+    )
+
+    define Step_1c as (
+        ['y' or 'Y']
+        gopast v
+        <-'i'
+    )
+
+    define Step_2 as (
+        [substring] R1 among (
+            'tional'  (<-'tion')
+            'enci'    (<-'ence')
+            'anci'    (<-'ance')
+            'abli'    (<-'able')
+            'entli'   (<-'ent')
+            'eli'     (<-'e')
+            'izer' 'ization'
+                      (<-'ize')
+            'ational' 'ation' 'ator'
+                      (<-'ate')
+            'alli'    (<-'al')
+            'alism' 'aliti'
+                      (<-'al')
+            'fulness' (<-'ful')
+            'ousli' 'ousness'
+                      (<-'ous')
+            'iveness' 'iviti'
+                      (<-'ive')
+            'biliti'  (<-'ble')
+        )
+    )
+
+    define Step_3 as (
+        [substring] R1 among (
+            'alize'   (<-'al')
+            'icate' 'iciti' 'ical'
+                      (<-'ic')
+            'ative' 'ful' 'ness'
+                      (delete)
+        )
+    )
+
+    define Step_4 as (
+        [substring] R2 among (
+            'al' 'ance' 'ence' 'er' 'ic' 'able' 'ible' 'ant' 'ement'
+            'ment' 'ent' 'ou' 'ism' 'ate' 'iti' 'ous' 'ive' 'ize'
+                      (delete)
+            'ion'     ('s' or 't' delete)
+        )
+    )
+
+    define Step_5a as (
+        ['e']
+        R2 or (R1 not shortv)
+        delete
+    )
+
+    define Step_5b as (
+        ['l']
+        R2 'l'
+        delete
+    )
+)
+
+define stem as (
+
+    unset Y_found
+    do ( ['y'] <-'Y' set Y_found)
+    do repeat(goto (v ['y']) <-'Y' set Y_found)
+
+    $p1 = limit
+    $p2 = limit
+    do(
+        gopast v  gopast non-v  setmark p1
+        gopast v  gopast non-v  setmark p2
+    )
+
+    backwards (
+        do Step_1a
+        do Step_1b
+        do Step_1c
+        do Step_2
+        do Step_3
+        do Step_4
+        do Step_5a
+        do Step_5b
+    )
+
+    do(Y_found  repeat(goto (['Y']) <-'y'))
+
+)
+</DL>
+</PRE>
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

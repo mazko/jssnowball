@@ -1,0 +1,899 @@
+
+<HTML>
+<HEAD>
+<TITLE>Snowball: A language for stemming algorithms</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+
+<TR><TD>
+<BR><BR>
+<H1>Snowball: A language for stemming algorithms</H1>
+<BR><BR>
+</TR>
+
+
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links</H2>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF=".."> Snowball main page</A>
+<TR><TD><A HREF="http://www.tartarus.org/~martin/PorterStemmer/index.html"> Porter stemmer page</A>
+</TABLE></DL>
+</TR>
+
+<TR><TD>
+<BR><BR>
+
+M.F. Porter<BR>
+October 2001<BR><BR><BR><BR>
+
+<DL><DD>
+    <B>Summary</B><BR><BR>
+
+    Algorithmic stemmers continue to have great utility in IR, despite the
+    promise of out-performance by dictionary-based stemmers. Nevertheless,
+    there are few algorithmic descriptions of stemmers, and even when they
+    exist they are liable to misinterpretation. Here we look at the ideas
+    underlying stemming, and on this website define a language, Snowball,
+    in which stemmers can be exactly defined, and from which fast stemmer
+    programs in ANSI C or Java can be generated. A range of stemmers is presented
+    in parallel algorithmic and Snowball form, including the original
+    Porter stemmer for English.
+</DL>
+<BR><BR>
+
+
+
+
+
+
+
+
+<BR>&nbsp;<H2>1 Introduction</H2>
+
+There are two main reasons for creating Snowball. One is the lack of
+readily available stemming algorithms for languages
+other than English. The other is the consciousness of a certain failure on
+my part in promoting exact implementations of the stemming
+algorithm described in (Porter 1980), which has come to be called the
+Porter stemming algorithm. The first point needs some qualification: a
+great deal of work has been done on stemmers in a wide range of natural
+languages, both in their development and evaluation, (a complete
+bibliography cannot be attempted here). But it is rare to see a stemmer
+laid out in an unambiguous algorithmic form from which encodings in C,
+Java, Perl etc might easily be made. When exact descriptions are
+attempted, it is often with approaches to stemming that are
+relatively simple, for example the Latin stemmer of Schinke (Shinke 1996),
+or the Slovene stemmer of Popovic (Popovic 1990). A more complex, and
+therefore more characteristic stemmer is the Kraaij-Pohlmann stemmer for
+Dutch (Kraaij 1994), which is presented as open source code in ANSI C. To
+extract an algorithmic description of their stemmer from the source code
+proves to be quite hard.
+
+<BR><BR>
+
+The disparity between the Porter stemmer definition and many of its
+purported implementations is much wider than is generally realised in the
+IR community. Three problems seem to compound: one is a misunderstanding
+of the meaning of the original algorithm, another is bugs in the
+encodings, and a third is the the almost irresistible urge of programmers
+to add improvements.
+
+For example, a Perl script advertised on the Web as an
+implementation of the Porter algorithm was tested in October 2001, and it was
+found that 14 percent of words were stemmed incorrectly when given a large sample
+vocabulary. Most words of English have
+very simple endings, so this means that it was effectively getting everything
+wrong. At certain points on the Web are demonstrations of the Porter stemmer.
+You type some English into a box and the stemmed words are displayed. These
+are frequently faulty. (A good test is to type in <I>agreement</I>. It should stem
+to <I>agreement</I> &#x2014; the same word. If it stems to <I>agreem</I> there is an
+error.) Researchers frequently pick up faulty versions of the stemmer and
+report that they have applied &#8216;Porter stemming&#8217;, with the result that their
+experiments are not quite repeatable. Researchers who work on stemming will
+sometimes give incorrect examples of the behaviour of the Porter stemmer in
+their published works.
+
+<BR><BR>
+
+To address all these problems I have tried to develop a rigorous system
+for defining stemming algorithms. A language, Snowball, has been invented,
+in which the rules of stemming algorithms can be expressed in a natural
+way. Snowball is quite small, and can be learned by an experienced
+programmer in an hour or so. On this website a number of foreign language
+stemmers is presented (<I>a</I>) in Snowball, and (<I>b</I>) in a less formal
+English-language description. (<I>b</I>) can be thought of as the program
+comments for (<I>a</I>). A Snowball compiler translates each Snowball
+definition into (<I>c</I>) an equivalent program in ANSI C or Java. Finally (<I>d</I>)
+standard vocabularies of words and their stemmed equivalents are provided
+for each stemmer. The combination of (<I>a</I>), (<I>b</I>), (<I>c</I>) and (<I>d</I>)
+can be used to pin down the definition of a stemmer  exactly, and it is
+hoped that Snowball itself will be a useful resource in creating stemmers
+in the future.
+
+
+<BR>&nbsp;<H2>2 Some ideas underlying stemming</H2>
+
+Work in stemming has produced a number of different approaches, albeit tied
+together by a number of common assumptions. It is worthwhile looking at some
+of them to see exactly where Snowball fits into the whole picture.
+
+<BR><BR>
+
+A point tacitly assumed in almost all of the stemming literature is that
+stemmers are based upon the written, and not the spoken, form of the
+language. This is also the assumption here. Historically,
+grammarians often regarded the written language as the real language and
+the spoken as a mere derivative form. Almost in reaction, many modern
+linguists have taken a precisely opposite view (Farmer, 1965 pp 2-3). A
+more balanced position is that the two languages are distinct though
+connected, and require separate treatment. One can in fact imagine parallel
+stemming algorithms for the spoken language, or rather for the phoneme
+sequence into which the spoken language is transformed. Stress and
+intonation could be used as clues for an indexing process in the same way
+that punctuation and capitalisation are used as clues in the written
+language. But currently stemmers work on the written language for the good
+reason that there is so much of it available in machine readable form from
+which to build our IR systems. Inevitably therefore the stemmers get
+caught up in accidental details of orthography. In English, removing the
+<B><I>ing</I></B> from <I>rotting</I> should be followed by undoubling the <B><I>tt</I></B>,
+whereas in <I>rolling</I> we do not undouble the <B><I>ll</I></B>. In French, removing
+the <B><I>er</I></B> from <I>ennuyer</I> should be followed by changing the <B><I>y</I></B> to
+<B><I>i</I></B>, so that the resulting word conflates with <I>ennui</I>, and so on.
+
+<BR><BR>
+
+The idea of stemming is to improve IR performance generally by bringing
+under one heading variant forms of a word which share a common meaning.
+Harman (1991) was first to present compelling evidence that it may not do
+so, when her experiments discovered no significant improvement with the
+use of stemming.
+Similarly Lennon (1981) discovered no appreciable difference between different
+stemmers running on a constant collection.
+Later work has modified this position however. Krovetz
+(1995) found significant, although sometimes small, improvements across a
+range of test collections. What he did discover is that the degree of
+improvement varies considerably between different collections.
+These tests were however done on collections in
+English, and the reasonable assumption of IR researchers has always been that for
+languages that are more highly inflected than English (and nearly all
+are), greater improvements will be observed when stemming is applied. My
+own view is that stemming helps regularise the
+vocabulary of an IR system, and this leads to advantages that are not
+easily quantifiable through standard IR experiments. For example, it helps
+in presenting lists of terms associated with the query back to the IR user
+in a relevance feedback cycle, which is one of the underlying ideas of the
+probabilistic model. More will be said on the use of a stemmed vocabulary
+in section 5.
+
+<BR><BR>
+
+Stemming is not a concept applicable to all languages. It is not, for
+example, applicable in Chinese. But to languages of the Indo-European <A HREF="glossary.html">(*)</A>
+group (and most of the stemmers on this site are for Indo-European
+languages), a common
+pattern of word structure does emerge. Assuming words are written left to
+right, the stem, or root of a word is on the left, and zero or more
+suffixes may be added on the right. If the root is modified by this
+process it will normally be at its right hand end. And also prefixes may
+be added on the left. So <I>unhappiness</I> has a prefix <B><I>un</I></B>, a suffix
+<B><I>ness</I></B>, and the <B><I>y</I></B> of <I>happy</I> has become <B><I>i</I></B> with the addition of
+the suffix. Usually, prefixes alter meaning radically, so they are best
+left in place (German and Dutch <B><I>ge</I></B> is an exception here). But suffixes
+can, in certain circumstances, be removed. So for example <I>happy</I> and
+<I>happiness</I> have closely related meanings, and we may wish to stem both
+forms to <I>happy</I>, or <I>happi</I>. Infixes can occur, although rarely:
+<B><I>ge</I></B> in German and Dutch, and <B><I>zu</I></B> in German.
+
+<BR><BR>
+
+One can make some distinction between <I>root</I> and <I>stem</I>. Lovins (1968)
+sees the root as the stem minus any prefixes. But here we will
+think of the stem as the residue of the stemming process, and the root as the
+inner word from which the stemmed word derives, so we think of root to
+some extent in an etymological way. It must be admitted that when you
+start thinking hard about these concepts <I>root</I>, <I>stem</I>, <I>suffix</I>,
+<I>prefix</I> ... they turn out to be very difficult indeed to define.
+Nor do definitions, even if we arrive at them, help us much. After all, suffix
+stripping is a practical aid in IR, not an exercise in linguistics or
+etymology. This is especially true of the central concept of <I>root</I>. We
+think of the etymological root of a word as something we can discover with
+certainty from a dictionary, forgetting that etymology itself is a subject
+with its own doubts and controversies (Jesperson 1922, Chapter XVI).
+Indeed, Jesperson goes so far as to say that
+
+<DL><DD>
+    &#8216;It is of course impossible to say how great a proportion of the
+    etymologies given in dictionaries should strictly be classed under
+    each of the following heads: (1) certain, (2) probable, (3)
+    possible, (4) improbable, (5) impossible &#x2014; but I am afraid the
+    first two classes would be the least numerous.&#8217;
+</DL>
+
+Here we will simply assume a common sense understanding of
+the basic idea of stem and suffix, and hope that this proves sufficient
+for designing and discussing stemming algorithms.
+
+<BR><BR>
+
+We can separate suffixes out into three basic classes, which will be
+called <I>d</I>-, <I>i</I>- and <I>a</I>-suffixes.
+
+<BR><BR>
+
+An <I>a</I>-suffix, or <I>attached</I> suffix, is a particle word attached to another
+word. (In the stemming literature they sometimes get referred to as
+&#8216;enclitics&#8217;.) In Italian, for example, personal pronouns attach to
+certain verb forms:
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    mandargli    = <TD></TD><TD> mandare + <B><I>gli</I></B>      <TD></TD><TD> = <TD></TD><TD> to send + to him
+<TR><TD>    mandarglielo = <TD></TD><TD> mandare + <B><I>gli</I></B> + <B><I>lo</I></B> <TD></TD><TD> = <TD></TD><TD> to send + it + to him
+</TABLE></DL>
+
+<I>a</I>-suffixes appear in Italian and Spanish, and also in Portuguese, although
+in Portuguese they are separated by hyphen from the preceding word, which
+makes them easy to eliminate.
+
+<BR><BR>
+
+An <I>i</I>-suffix, or <I>inflectional</I> suffix, forms part of the basic grammar of a
+language, and is applicable to all words of a certain grammatical type,
+with perhaps a small number of exceptions. In English for example, the past
+of a verb is formed by adding <B><I>ed</I></B>. Certain modifications may be required
+in the stem:
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    fit + <B><I>ed</I></B>   <TD></TD><TD> <TT>-&gt;</TT>  <TD></TD><TD> fitted (double <B><I>t</I></B>)
+<TR><TD>    love + <B><I>ed</I></B>  <TD></TD><TD> <TT>-&gt;</TT>  <TD></TD><TD> loved (drop the final <B><I>e</I></B> of love)
+</TABLE></DL>
+
+but otherwise the rule applies in a regular way to all verbs in
+contemporary English, with about 150 (Palmer, 1965) exceptional forms,
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    bear  <TD></TD><TD> beat   <TD></TD><TD> become  <TD></TD><TD> begin  <TD></TD><TD> bend <TD></TD><TD> ....
+<TR><TD>    bore  <TD></TD><TD> beat   <TD></TD><TD> became  <TD></TD><TD> began  <TD></TD><TD> bent
+</TABLE></DL>
+
+A <I>d</I>-suffix, or <I>derivational</I> suffix, enables a new word, often with a
+different grammatical category, or with a different sense, to be built from
+another word. Whether a <I>d</I>-suffix can be attached is discovered not from
+the rules of grammar, but by referring to a dictionary. So in English,
+<B><I>ness</I></B> can be added to certain adjectives to form corresponding nouns
+(<I>littleness</I>, <I>kindness</I>, <I>foolishness</I> ...) but not to all adjectives (not for
+example, to <I>big</I>, <I>cruel</I>, <I>wise</I> ...) <I>d</I>-suffixes can be used to change
+meaning, often in rather exotic ways. So in italian <B><I>astro</I></B> means a sham
+form of something else:
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    medico + <B><I>astro</I></B> <TD></TD><TD> = <TD></TD><TD> medicastro    <TD></TD><TD> = <TD></TD><TD> quack doctor
+<TR><TD>    poeta + <B><I>astro</I></B>  <TD></TD><TD> = <TD></TD><TD> poetastro     <TD></TD><TD> = <TD></TD><TD> poetaster
+</TABLE></DL>
+
+Generally <I>i</I>-suffixes follow <I>d</I>-suffixes. <I>i</I>-suffixes can precede <I>d</I>-suffixes,
+for example <I>lovingly</I>, <I>devotedness</I>, but such cases are exceptional. To
+be a little more precise, <I>d</I>-suffixes can sometimes be added to
+participles. <I>devoted</I>, used adjectivally, is a participle derived from the
+verb <I>devote</I>, and <B><I>ly</I></B> can be added to turn the adjective into an adverb,
+or <B><I>ness</I></B> to turn it into a noun. The same feature occurs in other
+Indo-European languages.
+
+<BR><BR>
+
+Sometimes it is hard to say whether a suffix is a <I>d</I>-suffix or <I>i</I>-suffix,
+the comparative and superlative endings <B><I>er</I></B>, <B><I>est</I></B> of English for example.
+
+<BR><BR>
+
+A <I>d</I>-suffix can serve more than one function. In English, for example,
+<B><I>ly</I></B> standardly turns an adjective into an adverb (<I>greatly</I>), but it
+can also turn a noun into an adjective (<I>kingly</I>). In French, <B><I>ement</I></B>
+also standardly turns an adjective into an adverb (<I>grandement</I>), but it
+can also turn a verb into a noun (<I>rapprochement</I>). (Referring to the
+French stemmer, this double use is ultimately why <B><I>ement</I></B> is tested for
+being in the <I>RV</I> rather than the <I>R</I>2 region of the word being
+stemmed.)
+
+<BR><BR>
+
+It is quite common for an <I>i</I>-suffix to serve more than one function.
+In English, <B><I>s</I></B> can either be (1) a verb ending attached to third person
+singular forms (<I>runs</I>, <I>sings</I>), (2) a noun ending indicating the plural
+(<I>dogs</I>, <I>cats</I>) or (3) a noun ending indicating the possessive
+(<I>boy&#8217;s</I>, <I>girls&#8217;</I>). By an orthographic convention now several hundred
+years old, the possessive is written with an apostrophe, but
+nowadays this is
+frequently omitted in familiar phrases (<I>a girls school</I>). (Usage (3) is
+relatively rare compared with (1) and (2): there are only nine uses of
+<B><I>&#8217;s</I></B> in this document.)
+
+<BR><BR>
+
+
+
+Since the normal order of suffixes is <I>d</I>, <I>i</I> and <I>a</I>, we
+can expect them to be removed
+from the right in the order <I>a</I>, <I>i</I> and <I>d</I>. Usually we want to remove
+all <I>a</I>- and <I>i</I>-suffixes, and some of the <I>d</I>-suffixes.
+
+<BR><BR>
+
+If the stemming process reduces two words to the same stem, they are said
+to be <I>conflated</I>.
+
+
+<BR>&nbsp;<H2>3 Stemming errors, and the use of dictionaries</H2>
+
+One way of thinking of the relation between terms and documents in an IR
+system is to see the documents as being about concepts, and the terms as
+words that describe the concepts. Then, of course, one word can cover many
+concepts, so <I>pound</I> can mean a unit of currency, a weight, an enclosure,
+or a beating. <I>Pound</I> is a homonym. And one concept can be described by
+many words, as with <I>money</I>, <I>capital</I>, <I>cash</I>, <I>currency</I>. These words
+are synonyms. There is a many-many mapping therefore between the set of
+terms and the set of concepts. Stemming is a process that transforms this
+mapping to advantage, on the whole reducing the number of synonyms, but
+occasionally creating new homonyms. It is worth remembering that what are
+called stemming errors are usually just the introduction of new homonyms into
+vocabularies that already contain very large numbers of homonyms.
+
+<BR><BR>
+
+Words which have no place in this term-concept mapping are those which
+describe no concepts. The particle words of grammar, <I>the</I>, <I>of</I>,
+<I>and</I>
+..., known in IR as <I>stopwords</I>, fall into this category. Stopwords can be
+useful for retrieval but only in searching for phrases, <I>&#8216;to be or not to
+be&#8217;</I>, <I>&#8216;do as you would be done by&#8217;</I> etc. This suggests that stemming
+stopwords is not useful. More will be said on stopwords in section 7.
+
+<BR><BR>
+
+In the literature, a distinction is often made between
+under-stemming, which is the error of taking off too small a suffix, and
+over-stemming, which is the error of taking off too much. In French, for
+example, <I>cro&ucirc;tons</I> is the plural of <I>cro&ucirc;ton</I>, &#8216;a crust&#8217;, so to remove
+<B><I>ons</I></B> would be over-stemming, while <I>croulons</I> is a verb form of <I>crouler</I>,
+&#8216;to totter&#8217;, so to remove <B><I>s</I></B> would be under-stemming. We would like to
+introduce a further distinction between mis-stemming and over-stemming.
+Mis-stemming is taking off what looks like an ending, but is really part
+of the stem. Over-stemming is taking off a true ending which results in
+the conflation of words of different meanings.
+
+<BR><BR>
+
+So for example <B><I>ly</I></B> can be removed from <I>cheaply</I>, but not from <I>reply</I>,
+because in <I>reply</I> <B><I>ly</I></B> is not a suffix. If it was removed, <I>reply</I> would
+conflate with <I>rep</I>, (the commonly used short form of <I>representative</I>).
+Here we have a case of mis-stemming.
+
+<BR><BR>
+
+To illustrate over-stemming, look at these four words,
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>                  <TD></TD><TD>  <B>verb</B>     <TD></TD><TD>   <B>adjective</B>
+
+<TR><TD>    First pair:   <TD></TD><TD>  prove   <TD></TD><TD>    provable
+<TR><TD>    Second pair:  <TD></TD><TD>  probe   <TD></TD><TD>    probable
+</TABLE></DL>
+
+Morphologically, the two pairs are exactly parallel (in the written, if not
+the spoken language). They also have a common etymology. All four words
+derive from the Latin <I>probare</I>, &#8216;to prove or to test&#8217;, and the idea of
+testing connects the meanings of the words. But the meanings are not parallel.
+<I>provable</I> means &#8216;able to be proved&#8217;; <I>probable</I> does not mean &#8216;able to be
+probed&#8217;. Most people would judge conflation of the first pair as correct,
+and of the second pair, incorrect. In other words, to remove <B><I>able</I></B> from
+<I>probable</I> is a case of over-stemming.
+
+<BR><BR>
+
+We can try to avoid mis-stemming and over-stemming by using a dictionary.
+The dictionary can tell us that <I>reply</I> does not derive from <I>rep</I>, and
+that the meanings of <I>probe</I> and <I>probable</I> are well separated in modern
+English. It is important to realise however that a dictionary does not give
+a complete solution here, but can be a tool to improve the conflation
+process.
+
+<BR><BR>
+
+In Krovetz&#8217;s dictionary experiments (Krovetz 1995), he noted that in
+looking up a past participle like <I>suited</I>, one is led either to <I>suit</I> or
+to <I>suite</I> as plausible infinitive forms. <I>suite</I> can be rejected,
+however, because the dictionary tells us that
+although it is a word of English
+it is not a verb form. Cases
+like this (and Krovetz found about 60) had to be treated as exceptions. But
+the form <I>routed</I> could
+either derive from the the verb <I>rout</I> or the verb <I>route</I>:
+
+<DL><DD>
+    At Waterloo Napoleon&#8217;s forces were routed<BR>
+    The cars were routed off the motorway
+</DL>
+
+Such cases in English are extremely rare, but they are commoner in more
+highly inflected languages. In French for example, <I>affiliez</I> can either be
+the verb <I>affiler</I>, to sharpen, with imperfect ending <B><I>iez</I></B>, or the verb
+<I>affilier</I>, to affiliate, with present indicative ending <B><I>ez</I></B>:
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    vous affiliez <TD></TD><TD> = <TD></TD><TD> vous affil-iez <TD></TD><TD> = <TD></TD><TD> you sharpened
+<TR><TD>    vous affiliez <TD></TD><TD> = <TD></TD><TD> vous affili-ez <TD></TD><TD> = <TD></TD><TD> you affiliate
+</TABLE></DL>
+
+If the second is intended, removal of <B><I>iez</I></B> is mis-stemming.
+
+<BR><BR>
+
+With over-stemming we must rely upon the dictionary to separate meanings.
+There are different ways of doing this, but all involve some degree of
+reliance upon the lexicographers. Krovetz&#8217;s methods are no doubt best,
+because the most objective: he uses several measures, but they are based on
+the idea of measuring the similarity in
+meaning of two words by the degree of overlap among the words used to define
+them, and this is at a good remove from a lexicographer&#8217;s subjective
+judgement about semantic similarity.
+
+<BR><BR>
+
+There is an interesting difference between mis-stemming and over-stemming
+to do with language history. The morphology of a language changes less
+rapidly than the meanings of the words in it. When extended to include a
+few archaic endings, such as <B><I>ick</I></B> as an alternative to <B><I>ic</I></B>, a stemmer for
+contemporary English can be applied to the English of 300 years ago.
+Mis-stemmings will be roughly the same, but the pattern of over-stemming will
+be different because of the changing meaning of words in the language. For
+example, <I>relativity</I> in the 19th century merely meant &#8216;the condition of
+being relative to&#8217;. With that meaning, it is acceptable to conflate it
+with <I>relative</I>.
+But with the 20th century meaning brought to it by
+Einstein, stemming to <I>relativ</I> is over-stemming.
+Here we see the word with the suffix changing its meaning, but it can happen
+the other way round. <I>transpire</I> has come to mean &#8216;happen&#8217;, and its old
+meaning of &#8217;exhalation&#8217; or &#8216;breathing out&#8217; is now effectively lost.
+(That is the bitter reality, although dictionaries still try to persuade us
+otherwise). But <I>transpiration</I> still carries the earlier meaning.
+So what was formerly an acceptable stemming may be judged now as
+an over-stemming, not because the word being stemmed has changed its meaning,
+but because some cognate word has changed its meaning.
+
+<BR><BR>
+
+In these examples we are presenting words as if they had single meanings, but
+the true picture is more complicated. Krovetz uses a model of word
+meanings which is extremely helpful here. He makes a distinction between
+<I>homonyms</I> and <I>polysemes</I>. The meaning of homonyms are quite unrelated.
+For example, <I>ground</I> in the sense of &#8216;earth&#8217;, and &#8216;ground&#8217; as the past
+participle of &#8216;grind&#8217; are homonyms. Etymologically homonyms have different
+stories, and they usually have separate entries in a dictionary. But each
+homonym form can have a range of polysemic forms, corresponding to different
+shades of meaning. So <I>ground</I> can mean the earth&#8217;s surface, or the bottom
+of the sea, or soil, or any base, and so the basis of an argument, and so on.
+Over time new polysemes appear and old ones die. At any moment, the use of a
+word will be common in some polysemic forms and rare in others. If a suffix is
+attached to a word the new word will get a different set of polysemes. For
+example, <I>grounds</I> = <I>ground</I> + <B><I>s</I></B> acquires the sense of &#8216;dregs&#8217; and
+&#8216;estate lands&#8217;, loses the sense of &#8216;earth&#8217;, and shares the sense of
+&#8216;basis&#8217;.
+
+
+Consider the conflation of <I>mobility</I> with <I>mobile</I>. <I>mobile</I> has
+acquired two new polysemes not shared with <I>mobility</I>. One is the &#8216;mobile
+art object&#8217;, common in the nursery. This arrived in the 1960s, and is
+still in use. The other is the &#8216;mobile phone&#8217; which is now very dominant,
+although it may decline in the future when it has been replaced by some new
+gadget with a different name. We might draw a graph of the degree of
+separation of the meanings of <I>mobility</I> and <I>mobile</I> against time,
+which would depend upon the number of polysemes and the intensity of their
+use. What seemed like a valid conflation of the two words in 1940 may seem
+to be invalid today.
+
+<BR><BR>
+
+In general therefore one can say that judgements about whether words are
+over-stemmed change with time as the meanings of words in the language
+change.
+
+<BR><BR>
+
+The use of a dictionary should reduce errors of mis-stemming and errors of
+over-stemming. And, for English at least, the mis-stemming errors should
+reduce well, even if there are problems with over-stemming errors. Of
+course, it depends on the quality of the dictionary. A dictionary will need
+to be very comprehensive, fully up-to-date, and with good word definitions
+to achieve the best results.
+
+<BR><BR>
+
+Historically, stemmers have often been thought of as either
+dictionary-based or algorithmic. The presentation of studies of stemming
+in the literature has perhaps helped to create this division. In the
+Lovins&#8217; stemmer the algorithmic description is central. In accounts of
+dictionary-based stemmers the emphasis tends to be on dictionary content
+and structure, and IR effectiveness. Savoy&#8217;s French stemmer (Savoy, 1993)
+is a good example of this. But the two approaches are not really distinct.
+An algorithmic stemmer can include long exception lists that are
+effectively mini-dictionaries, and a dictionary-based stemmer usually
+needs a process for removing at least <I>i</I>-suffixes to make the look-up
+in the dictionary possible. In fact in a language in which proper names
+are inflected (Latin, Finnish, Russian ...), a dictionary-based stemmer
+will need to remove <I>i</I>-suffixes independently of dictionary look-up,
+because the proper names will not of course be in the dictionary.
+
+<BR><BR>
+
+The stemmers available on the Snowball website are all purely
+algorithmic. They can be extended to include built-in exception lists, they
+could be used in combination with a full dictionary, but they are still
+presented here in their simplest possible form. Being purely algorithmic,
+they are, or ought to be, inferior to the performance of well-constructed
+dictionary-based stemmers. But they are still very useful, for the
+following reasons:
+
+<BR><BR>
+
+1) Algorithmic stemmers are (or can be made) very lean and very fast. The
+stemmers presented here generate code that will process about a million
+words in six seconds on a conventional 500MHz PC. Nowadays we can generate
+very large IR systems with quite modest resources, and tools that assist in
+this have value.
+
+<BR><BR>
+
+2) Despite the errors they can be seen to make, algorithmic stemmers still
+give good practical results. As Krovetz (1995) says in surprise of the
+algorithmic stemmer, &#8216;Why does it do so well?&#8217; (page 89).
+
+<BR><BR>
+
+3) Dictionary-based stemmers require dictionary maintenance, to keep up
+with an ever-changing language, and this is actually quite a problem. It
+is not just that a dictionary created to assist stemming today will
+probably require major updating in a few years time, but that a dictionary
+in use for this purpose today may already be several years out of date.
+
+<BR><BR>
+
+We can hazard an answer to Krovetz&#8217;s question, as to why algorithmic
+stemmers perform as well as they do, when they reveal so many cases of
+under-, over- and mis-stemming. Under-stemming is a fault, but by itself
+it will not degrade the performance of an IR system. Because of
+under-stemming words may fail
+to conflate that ought to have conflated, but you are, in a sense, no
+worse off than you were before. Mis-stemming is more serious, but again
+mis-stemming does not really matter unless it leads to false conflations,
+and that frequently does not happen. For example, removing the <B><I>ate</I></B>
+ending in English, can result in useful conflations (<I>luxury</I>,
+<I>luxuriate</I>; <I>affection</I>, <I>affectionate</I>), but very often produces
+stems that are not English words
+(<I>enerv-ate</I>, <I>accommod-ate</I>,
+<I>deliber-ate</I> etc). In the literature, these are normally
+classed as stemming errors &#x2014; overstemming &#x2014; although in our nomenclature
+they are examples of mis-stemming.
+However these residual stems,
+<I>enerv</I>, <I>accommod</I>,
+<I>deliber</I> ... do not conflate with other word forms, and so behave in
+an IR system in the same way as if they still retained their <B><I>ate</I></B>
+ending. No false conflations arise, and so there is no over-stemming here.
+
+<BR><BR>
+
+To summarise, one can say that just as a word can be over-stemmed
+but not mis-stemmed (<I>relativity</I> <TT>-&gt;</TT> <I>relative</I>), so it can be
+mis-stemmed but not over-stemmed (<I>enervate</I> <TT>-&gt;</TT> <I>enerv</I>). And, of
+course, even over-stemming does not matter, if the over-stemmed word falsely
+conflates with other words that exist in the language, but are not
+encountered in the IR
+system which is being used.
+
+<BR><BR>
+
+Of the three types of error,
+over-stemming is the most important, and
+using a dictionary does not eliminate all over-stemmings, but does reduce their
+incidence.
+
+
+<BR>&nbsp;<H2>4 Stemming as part of an indexing process</H2>
+
+Stemming is part of a composite process of extracting words from text and
+turning them into index terms in an IR system. Because stemming is somewhat
+complex and specialised, it is usually studied in isolation. Even so, it
+cannot really be separated from other aspect of the indexing process:
+
+<BR><BR>
+
+1) What is a word? For indexing purposes, a word in a European language is
+a sequence of letters bounded by non-letters. But in English, an internal
+apostrophe does not split a word, although it is not classed as a letter.
+The treatment of these word boundary characters affects the stemmer. For
+example, the Kraaij Pohlmann stemmer for Dutch (Kraaij, 1994, 1995) removes hyphen and
+treats apostrophe as part of the alphabet (so <B><I>&#8217;s</I></B>, <B><I>&#8217;tje</I></B> and <B><I>&#8217;je</I></B> are three
+of their endings). The Dutch stemmer presented here assumes hyphen and
+apostrophe have already been removed from the word to be stemmed.
+
+<BR><BR>
+
+2) What is a letter? Clearly letters define words, but different languages
+use different letters, much confusion coming from the varied use of
+accented Roman letters.
+
+<BR><BR>
+
+English speakers, perhaps influenced by the ASCII character set, typically regard
+their alphabet of <B><I>a</I></B> to <B><I>z</I></B> as the norm, and other forms (for example, Danish
+<B><I>&aring;</I></B> and <B><I>&oslash;</I></B>, or German <B><I>&szlig;</I></B>) as somewhat abnormal. But this is
+an insular point of view. In Italian, for example, the letters
+<B><I>j</I></B>, <B><I>k</I></B>, <B><I>w</I></B>, <B><I>x</I></B> and <B><I>y</I></B> are not part of the alphabet, and are
+only seen in foreign words. We also tend to regard other alphabets as only
+used for isolated languages, and that is not strictly true. Cyrillic is
+used for a range of languages other than Russian, among which additional
+letters and accented forms abound.
+
+<BR><BR>
+
+In English, a broad definition of letter would be anything that could be
+accepted as a pronounceable element of a word. This would include
+accented Roman letters (<I>na<B><I>&iuml;</I></B>ve</I>, <I>Faur<B><I>&eacute;</I></B></I>), and certain ligature
+forms (<I>encyclop<B><I>&aelig;</I></B>dia</I>). It would exclude letters
+of foreign alphabets, such as Greek and Cyrillic.
+The <B><I>a</I></B> to <B><I>z</I></B> alphabet is one of those where letters come in
+two styles, upper and lower case, which historically correspond (very roughly) to the
+shapes you get if you use a chisel or a pen. Across all languages, the
+exact relation of upper to lower case is not so easy to define. In Italian,
+for example, an accented lower case letter is sometimes represented in
+upper case by an the unaccented letter followed by an apostrophe. (I have
+seen this convention used in modern Italian news stories in machine
+readable form.)
+
+<BR><BR>
+
+In fact the Porter stemmer (which is for English) assumes the word being stemmed is
+unaccented and in lower case. More exactly, <B><I>a</I></B>, <B><I>e</I></B>, <B><I>i</I></B>, <B><I>o</I></B>,
+<B><I>u</I></B>,
+and sometimes <B><I>y</I></B>, are
+treated as vowels, and any other character gets treated as a consonant.
+Each stemmer presented here assumes some degree of normalisation before it
+receives the word, which is roughly (<I>a</I>) put all letters into lower case,
+and (<I>b</I>) remove accents from letter-accent combinations that do not form
+part of the alphabet of the language. Each stemmer declares the
+letter-accent combinations for its language, and this can be used as a
+guide for the normalisation, but even so, we can see from
+the discussion above that (<I>a</I>) and (<I>b</I>) are not trivial
+operations, and need to be done with care.
+
+<BR><BR>
+
+(Incidentally, because the stemmers work on lower case words, turning
+letters to upper case is sometimes used internally for flagging purposes.)
+
+<BR><BR>
+
+3) Identifying stopwords. Invariant stopwords are more easily found before
+stemming is applied, but inflecting stopwords (for example, German <I>kein</I>, <I>keine</I>, <I>keinem</I>,
+<I>keinen</I> ... ) may be easier to find after &#x2014; because there are fewer forms.
+There is a case for building stopword identification into the stemming
+process. See section 7.
+
+<BR><BR>
+
+4) Conflating irregular forms. More will be said on this in section 6.
+
+
+<BR>&nbsp;<H2>5 The use of stemmed words</H2>
+
+The idea of how stemmed words might be employed in an IR system has
+evolved slightly over the years. The Lovins stemmer (Lovins 1968) was
+developed not for indexing document texts, but the subject terms attached
+to them. With queries stemmed in the same way, the user needed no special
+knowledge of the form of the subject terms. Rijsbergen (1979, Chapter 2)
+assumes document text analysis: stopwords are removed, the remaining words
+are stemmed, and the resulting set of stemmed word constitute the IR index
+(and this style of use is widespread today). More flexibility however is
+obtained by indexing <I>all</I> words in a text in an unstemmed form, and
+keeping a separate two-column relation which connects the words to their
+stemmed equivalents. The relation can be denoted by <I>R(s, w)</I>, which means
+that <I>s</I> is the stemmed form of word <I>w</I>. From the relation we can get, for
+any word <I>w</I>, its unique stemmed form, <I>stem(w)</I>, and for any stem <I>s</I>, the set
+of words, <I>words(s)</I>, that stem to <I>s</I>.
+
+<BR><BR>
+
+The user should not have to see the stemmed form of a word. If a list of
+stems is to be presented back for query expansion, in place of
+a stem, <I>s</I>, the user should be shown a single representative from the set
+<I>words(s)</I>, the one of highest frequency perhaps. The user should also
+be able to choose for the whole query, or at a lower level for each word
+in a query, whether or not it should be stemmed. In the absence of such
+choices, the system can make its own
+decisions.
+Perhaps single word queries would not undergo
+stemming; long queries would; stopwords would be removed
+except in phrases. In query expansion, the system would work with stemmed
+forms, ignoring stopwords.
+
+<BR><BR>
+
+Query expansion with stemming results in a much cleaner vocabulary list
+than without, and this is a main strength of using a stemming process.
+
+<BR><BR>
+
+A question arises: if the user never sees the stemmed form, does its
+appearance matter? The answer must be no, although
+the Porter stemmer tries to make the unstemmed forms guessable from the stemmed
+forms. For example, from <I>appropri</I> you can guess <I>appropriate</I>. At least,
+trying to achieve this effect acts as a useful control. Similarly with the
+other stemmers presented here, an attempt has been made to keep the
+appearance of the stemmed forms as familiar as possible.
+
+<BR>&nbsp;<H2>6 Irregular grammatical forms</H2>
+
+All languages contain irregularities, but to what extent should they be
+accommodated in a stemming algorithm? An English stemmer, for example, can
+convert regular plurals to singular form without difficulty (<I>boys</I>, <I>girls</I>,
+<I>hands</I> ...). Should it do the same with irregular plurals (<I>men</I>, <I>children</I>,
+<I>feet</I>, ...)? Here we have irregular cases with <I>i</I>-suffixes, but there are
+irregularities with <I>d</I>-suffixes, which Lovins calls &#8216;spelling exceptions&#8217;.
+<I>absorb/absorption</I> and <I>conceive/conception</I> are examples of this.
+Etymologically, the explanation of the first is that the Latin root,
+<I>sorbere</I>, is an irregular verb, and of the second that the word
+<I>conceive</I> comes to us from the French rather than straight from the Latin.
+It is interesting that, even with no knowledge of the etymology, we do
+recognise the connection between the words.
+
+<BR><BR>
+
+Lovins tries to solve spelling exceptions by formulating general respelling
+rules (turn <B><I>rpt</I></B> into <B><I>rb</I></B> for example), but it might be easier to have
+simply a list of exceptional stems.
+
+<BR><BR>
+
+The Porter stemmer does not handle irregularities at all, but from the
+author&#8217;s own experience, this has never been an area of complaint.
+Complaints in fact are always about false conflations, for example <I>new</I>
+and <I>news</I>.
+
+<BR><BR>
+
+Possibly Lovins was right in wanting to resolve <I>d</I>-suffix irregularities,
+and not being concerned about <I>i</I>-suffix irregularities. <I>i</I>-suffix
+irregularities in English go with short, old words, that are either in very
+common use (<I>man/men</I>, <I>woman/women</I>, <I>see/saw</I> ...) or are used only rarely
+(<I>ox/oxen</I>, <I>louse/lice</I>, <I>forsake/forsook</I> ...). The latter class can be
+ignored, and the former has its own problems which are not always solved
+by stemming. For example <I>man</I> is a verb, and <I>saw</I> can mean a cutting
+instrument, or, as a verb, can mean to use such an instrument. Conflation
+of these forms frequently leads to an error like mis-stemming therefore.
+
+<BR><BR>
+
+An algorithmic stemmer really needs holes where the irregular forms can be
+plugged in as necessary. This is more serviceable than attempting to
+embed special lists of these irregular forms into software.
+
+
+<BR>&nbsp;<H2>7 Stopwords</H2>
+
+We have suggested that stemming stopwords is not useful. There is a
+grammatical connection between <I>being</I> and <I>be</I>, but conflation of the two
+forms has little use in IR because they have no shared meaning that would
+entitle us to think of them as synonyms. <I>being</I> and <I>be</I> have a
+morphological connection as well, but that is not true of <I>am</I> and <I>was</I>,
+although they have a grammatical connection. Generally speaking,
+inflectional stopwords exhibit many irregularities, which means that
+stemming is not only not useful, but not possible, unless one builds into
+the stemmer tables of exceptions.
+
+<BR><BR>
+
+Switching from English to French, consider <I>&ecirc;tre</I>, the equivalent form
+of <I>be</I>. It has about 40 different forms, including,
+
+<DL><DD>
+  <B><I>suis  &nbsp;  es  &nbsp;  sommes  &nbsp;  serez  &nbsp;  &eacute;taient  &nbsp;  fus  &nbsp;  furent  &nbsp;  sois  &nbsp;  &eacute;t&eacute;</I></B>
+</DL>
+
+(and <I>suis</I> incidentally is a homonym, as part of the verb <I>suivre</I>.)
+Passing all forms through a rule-based stemmer creates something of a
+mess. An alternative approach is to recognise this group of words, and
+other groups, and take special action. The recognition could take place
+inside the stemmer, or be done before the stemmer is called. One special
+action would be to stem (perhaps one should say &#8216;map&#8217;) all the forms to a
+standard form, ETRE, to indicate that they are parts of the verb <I>&ecirc;tre</I>.
+Deciding what to do with the term ETRE, and it would probably be to
+discard it, would be done outside the stemming process. Another special
+action would be to recognize a whole class of stopwords and simply discard
+them.
+
+<BR><BR>
+
+The strategy adopted will depend upon the underlying IR model, so what one
+needs is the flexibility to create modified forms of a standard stemmer.
+Usually we present Snowball stemmers in their unadorned form. Thereafter,
+the addition of stopword tables is quite easy.
+
+
+<BR>&nbsp;<H2>8 Rare forms</H2>
+
+Stemmers do not need to handle linguistic forms that turn up only very
+rarely, but in practice it is hard to design a stemmer with all rare forms
+eliminated without there appearing to be some gaps in the thinking. For
+this reason one should not worry too much about their occasional presence.
+For example, in contemporary Portuguese, use of the second person plural
+form of verbs has almost completely disappeared. Even so, endings for
+those forms are included in the Portuguese stemmer. They appear in all the
+grammar books, and will in any case be found in older texts. The habit of
+putting in rare forms to &#8216;complete the picture&#8217; is well established, and
+usually passes unnoticed. An example is the list of English stopwords in
+van Rijsbergen (1979). This includes <I>yourselves</I>, by analogy with
+<I>himself</I>, <I>herself</I> etc., although <I>yourselves</I> is actually quite a rare
+word in English.
+
+<BR><BR><BR>
+<BR><BR><BR>
+
+
+
+
+&nbsp;<H4>References</H4>
+
+Farber DJ, Griswold RE and Polonsky IP (1964) SNOBOL, a string manipulation
+language. <I>Journal of the Association for Computing Machinery</I>, <B>11</B>: 21-30.
+<BR><BR>
+Griswold RE, Poage JF and Polonsky IP (1968) <I>The SNOBOL4 programming
+language</I>. Prentice-Hall, New Jersey.
+<BR><BR>
+Harman D (1991) How effective is suffixing? <I>Journal of the American
+Society for Information Science</I>, <B>42</B>: 7-15.
+<BR><BR>
+Jesperson O (1921) <I>Language, its nature, origin and development.</I> George
+Allen &amp; Unwin, London.
+<BR><BR>
+Kraaij W and Pohlmann R. (1994) Porter&#8217;s stemming algorithm for Dutch. In
+Noordman LGM and de Vroomen WAM, eds. <I>Informatiewetenschap 1994:
+Wetenschappelijke bijdragen aan de derde STINFON Conferentie</I>, Tilburg,
+1994. pp. 167-180.
+<BR><BR>
+Kraaij W and Pohlmann R (1995) Evaluation of a Dutch stemming algorithm.
+Rowley J, ed. <I>The New Review of Document and Text Management</I>, volume 1,
+Taylor Graham, London, 1995. pp. 25-43,
+<BR><BR>
+Krovetz B (1995) <I>Word sense disambiguation for large text databases</I>. PhD
+Thesis. Department of Computer Science, University of Massachusetts
+Amherst.
+<BR><BR>
+Lennon M, Pierce DS, Tarry BD and Willett P (1981) An evaluation of some
+conflation algorithms for information retrieval. <I>Journal of Information
+Science</I>, <B>3</B>: 177-183.
+<BR><BR>
+Lovins JB (1968) Development of a stemming algorithm. <I>Mechanical
+Translation and Computational Linguistics</I>, <B>11</B>: 22-31.
+<BR><BR>
+Palmer FR (1965) <I>A linguistic study of the English verb</I>. Longmans, London.
+<BR><BR>
+Popovic M and Willett P (1990) Processing of documents and queries in a
+Slovene language free text retrieval system. <I>Literary and Linguistic
+Computing</I>, <B>5</B>: 182-190.
+<BR><BR>
+Porter MF (1980) An algorithm for suffix stripping. <I>Program</I>, 14: 130-137.
+<BR><BR>
+Rijsbergen CJ (1979) <I>Information retrieval</I>. Second edition. Butterworths,
+London.
+<BR><BR>
+Savoy J (1993) Stemming of French words based on grammatical categories.
+<I>Journal of the American Society for Information Science</I>, <B>44</B>: 1-9.
+<BR><BR>
+Schinke R, Greengrass M, Robertson AM and Willett P (1996) A stemming
+algorithm for Latin text databases. <I>Journal of Documentation</I>, <B>52</B>:
+172-187.
+<BR><BR>
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,574 @@
+﻿/*
+ * Author:  Luca Gentili
+ * E-mail:  luka.gentili[at]gmail[dot]com
+ * Version: 1.0.0
+ * Date:    21.08.2008
+ * 
+ * This is a C# implementation of M.F.Porter's "Italian Stemming Algorithm" as described on:
+ * 
+ * http://snowball.tartarus.org/algorithms/italian/stemmer.html
+ * 
+ * The class has just one public static method:
+ * 
+ * public static string getStem(String word)
+ * 
+ * for my own convenience I put the class under the Linguistics namespace.
+ * 
+ * 
+ * If you detect any flaws or ways to improve this implementation, 
+ * or if you simply find it useful and decide to use it, 
+ * please let me know through the provided contact information.
+ * 
+ * 
+ * 
+ * LICENSE:
+ *  
+ * Copyright (c) 2008, Gentili Luca. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, 
+ * are permitted provided that the following conditions are met:
+ * 
+ *    1. Redistributions of source code must retain the above copyright notice, 
+ *       this list of conditions and the following disclaimer.
+ * 
+ *    2. Redistributions in binary form must reproduce the above copyright notice, 
+ *       this list of conditions and the following disclaimer in the documentation 
+ *       and/or other materials provided with the distribution.
+ * 
+ *
+ * THIS SOFTWARE IS PROVIDED BY LUCA GENTILI ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL LUCA GENTILI BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+ * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * */
+
+using System;
+using System.Text;
+
+namespace Linguistics
+{
+    public class ItalianStemmer
+    {
+        private static int RV;
+        private static int R1;
+        private static int R2;
+
+
+
+        public static string getStem(String inWord)
+        {
+            /* put the whole word into lowercase
+             * */
+            String copy = inWord.ToLower();
+
+            /* replace acute with grave accents
+             * */
+            copy = removeAccents(copy);
+
+
+            /*put semivowels to uppercase 
+            * */
+            copy = markSemivowels(copy);
+
+            if (copy.Length > 2)
+            {
+                /* find regions start point
+                 * */
+                if (copy.Length > 3)
+                {
+                    RV = 3;
+                }
+                else
+                {
+                    RV = copy.Length;
+                }
+
+                findR1R2(copy);
+
+
+                Boolean doStep2 = true;
+
+                copy = step0(copy);
+                copy = step1(copy, ref doStep2);
+
+                if (doStep2)
+                {
+                    copy = step2(copy);
+                }
+
+                copy = step3(copy);
+            }
+
+
+            return copy;
+
+        }
+
+        private static string removeAccents(string inCopy)
+        {
+            String[,] accentedCharReplacements ={{"á","à"},{"é","è"},
+                                               {"í","ì"},{"ó","ò"},
+                                               {"ú","ù"}};
+
+            for (int i = 0; i < accentedCharReplacements.Length / 2; i++)
+            {
+                inCopy.Replace(accentedCharReplacements[i, 0], accentedCharReplacements[i, 1]);
+            }
+            return inCopy;
+        }
+
+        private static String markSemivowels(String inText)
+        {
+
+            /* put semivocalic u/i in Uppercase quV -> qU, ViV -> VIV, VuV -> VUV
+             * 
+             * */
+            StringBuilder sb = new StringBuilder(inText);
+            for (int i = 1; i < sb.Length-1; i++)
+            {
+                if ((isVowel(sb[i].ToString()) || sb[i] == 'q') && isVowel(sb[i - 1].ToString()) && isVowel(sb[i + 1].ToString()))
+                {
+                    switch (sb[i])
+                    {
+                        case 'i':
+                            sb[i] = 'I';
+                            break;
+                        case 'u':
+                            sb[i] = 'U';
+                            break;
+                    }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        private static Boolean isVowel(String x)
+        {
+            String vowels = "aeiouyàèìòù";
+            if (vowels.Contains(x.ToString()))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static void findR1R2(String inCopy)
+        {
+            /*Limit values for R1, R2
+             * */
+            R1 = inCopy.Length;
+            R2 = inCopy.Length;
+
+            /* compute R1
+             * */
+            for (int i = 1; i < inCopy.Length; ++i)
+            {
+                if (!isVowel(inCopy.Substring(i, 1)) && isVowel(inCopy.Substring(i - 1, 1)))
+                {
+                    R1 = i + 1;
+                    break;
+                }
+            }
+
+            /* compute R2
+             * */
+            for (int i = R1 + 1; i < inCopy.Length; ++i)
+            {
+                if (!isVowel(inCopy.Substring(i, 1)) && isVowel(inCopy.Substring(i - 1, 1)))
+                {
+                    R2 = i + 1;
+                    break;
+                }
+            }
+        }
+
+        private static string step0(String inCopy)
+        {
+            /* suffixes MUST BE ordered by their length
+             * */
+            String[] suffixes = { "gliela", "gliele", "glieli", "glielo", "gliene", 
+                                  "mela", "mele", "meli", "melo", "mene", "tela", 
+                                  "tele", "teli", "telo", "tene", "cela", "cele", 
+                                  "celi", "celo", "cene", "vela", "vele", "veli", 
+                                  "velo", "vene", "sene",
+                                  "gli",
+                                  "ci", "la", "le", "li", "lo", 
+                                  "mi", "ne", "si", "ti", "vi"                                  
+                                };
+            String[] prevSuff = { "ando", "endo", "ar", "er", "ir" };
+            String[] prevReplace ={ "", "", "are", "ere", "ire" };
+
+
+            foreach (String s in suffixes)
+            {
+                bool inRV = inCopy.Length - s.Length >= RV;
+                if (inRV && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    /* remove the suffix 
+                     * */
+
+                    
+
+                    /* when preceded by ANDO/ENDO remove preceding suffix
+                     * replace it with an E when preceded by AR/ER/IR
+                     * */
+
+
+                    for (int i = 0; i < prevSuff.Length; i++)
+                    {
+                        //int initPos = RV - s.Length - prevSuff[i].Length;
+                        int initPos = inCopy.Length - s.Length - prevSuff[i].Length;
+
+                        if (initPos > 0 && (inCopy.Length > s.Length + prevSuff[i].Length) && inCopy.Substring(initPos, prevSuff[i].Length) == prevSuff[i])
+                        {
+                            inCopy = inCopy.Remove(inCopy.Length - s.Length - prevSuff[i].Length);
+                            inCopy += prevReplace[i];
+                            break; // inner for
+                        }
+                    }
+                    break; // outer for
+                }
+            }
+            return inCopy;
+        }
+
+        private static string step1(String inCopy, ref Boolean doStep2)
+        {
+            doStep2 = true;
+
+            /* Search for the longest among the following suffixes
+             * and delete them if in R2
+             * 
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup1 ={"atrice", "atrici",
+                                    "abile", "abili", "ibile", "ibili", "mente",
+                                    "anza", "anze", "ante", "anti", "iche", "ichi", "ismo",
+                                    "ismi", "ista", "iste", "isti", "istà", "istè", "istì",
+                                    "ico", "ici", "ica", "ice",  "oso", "osi", "osa", "ose"};
+
+            foreach (String s in suffixGroup1)
+            {
+                bool inR2 = inCopy.Length - s.Length >= R2;
+                if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    doStep2 = false;
+                    break;
+                }
+            }
+            /* Search for the longest among the following suffixes
+             * and delete them if in R2 
+             * if preceded by IC delete also the preceding suffix
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup2 ={ "azione", "azioni", "atore", "atori" };
+
+            foreach (String s in suffixGroup2)
+            {
+                bool inR2 = inCopy.Length - s.Length >= R2;
+                if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    if ((inCopy.Length > s.Length + 2) && inCopy.Substring(inCopy.Length - s.Length - 2, 2) == "ic")
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length -2, s.Length+2);
+                        doStep2 = false;
+                        break;
+                    }
+                    else
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                        doStep2 = false;
+                        break;
+                    }
+                }
+            }
+
+            /* Search for the following suffixes
+             * and REPLACE them with LOG if in R2
+             * 
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup3 ={ "logia", "logie" };
+
+            foreach (String s in suffixGroup3)
+            {
+                bool inR2 = inCopy.Length - s.Length >= R2;
+                if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    inCopy += "log";
+                    doStep2 = false;
+                    break;
+                }
+            }
+            /* Search for the following suffixes
+             * and REPLACE them with U if in R2
+             * 
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup4 ={ "uzione", "uzioni", "usione", "usioni" };
+
+            foreach (String s in suffixGroup4)
+            {
+                bool inR2 = inCopy.Length - s.Length >= R2;
+                if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    inCopy += "u";
+                    doStep2 = false;
+                    break;
+                }
+            }
+
+            /* Search for the following suffixes
+             * and REPLACE them with ENTE if in R2
+             * 
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup5 ={ "enza", "enze" };
+
+            foreach (String s in suffixGroup5)
+            {
+                bool inR2 = inCopy.Length - s.Length >= R2;
+                if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    inCopy += "ente";
+                    doStep2 = false;
+                    break;
+                }
+            }
+
+            /* Search for the following suffixes
+             * and DELETE them if in RV
+             * 
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup6 ={ "amento", "amenti", "imento", "imenti" };
+
+            foreach (String s in suffixGroup6)
+            {
+                bool inRV = inCopy.Length - s.Length >= RV;
+                if (inRV && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    doStep2 = false;
+                    break;
+                }
+            }
+
+            /* Search for the following suffixes
+             * and DELETE them if in R1
+             * if preceded by IV delete if in R2 (and if further preceded by AT, delete if in R2)
+             * if preceded by OS, IC or ABIL, delete if in R2
+             * 
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup7 ={ "amente" };
+
+            foreach (String s in suffixGroup7)
+            {
+                bool inR1 = inCopy.Length - s.Length >= R1;
+                bool inR2 = inCopy.Length - s.Length >= R2;
+                if (inR1 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    doStep2 = false;
+                    break;
+                }
+                else if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {  /* if preceded by IV ... 
+                    * */
+                    if ((inCopy.Length > s.Length + 2) && (inCopy.Length - s.Length - 2 >= R2) && inCopy.Substring(inCopy.Length - s.Length - 2, 2) == "iv") // preceding IV)
+                    {
+
+
+                        if ((inCopy.Length > s.Length + 4) && (inCopy.Length - s.Length - 4 >= R2) && inCopy.Substring(inCopy.Length - s.Length - 4, 2) == "at") // preceding AT
+                        {
+                            /* if further ... AT ...
+                             * */
+                            inCopy = inCopy.Remove(inCopy.Length - (s.Length + 4), (s.Length + 4));
+                            doStep2 = false;
+                        }
+                        else
+                        {
+                            inCopy = inCopy.Remove(inCopy.Length - (s.Length + 2), (s.Length + 2));
+                            doStep2 = false;
+                        }
+                        break;
+                    }
+                    /* ... by OS, IC or ABIL, delete if in R2
+                     * */
+                    else if ((inCopy.Length - s.Length - 2 >= R2) && (inCopy.Length > s.Length + 2)
+                             && (inCopy.Substring(inCopy.Length - s.Length - 2, 2) == "os" // preceding OS
+                             || inCopy.Substring(inCopy.Length - s.Length - 2, 2) == "ic"))// preceding IC
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length - 2, s.Length + 2);
+                        doStep2 = false;
+                        break;
+                    }
+                    else if ((inCopy.Length > s.Length + 4) && (inCopy.Length - s.Length - 4 >= R2)
+                             && (inCopy.Substring(inCopy.Length - s.Length - 4, 4) == "abil"))// preceding IV
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length - 4, s.Length + 4);
+                        doStep2 = false;
+                        break;
+                    }
+                    else
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                        doStep2 = false;
+                        break;
+                    }
+                }
+            }
+
+
+            /* Search for the following suffixes
+             * and DELETE them if in R2
+             * if preceded by IV, IC or ABIL, delete if in R2
+             * 
+             * suffixes MUST BE ordered by their length
+             * */
+            String[] suffixGroup8 ={ "ità" };
+
+            foreach (String s in suffixGroup8)
+            {
+                bool inR2 = inCopy.Length - s.Length >= R2;
+                if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+
+                    if ((inCopy.Length > s.Length + 2) && (inCopy.Length - s.Length - 2 >= R2)
+                             && (inCopy.Substring(inCopy.Length - s.Length - 2, 2) == "iv" // preceding OS
+                             || inCopy.Substring(inCopy.Length - s.Length - 2, 2) == "ic"))// preceding IC
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length - 2, s.Length + 2);
+                        doStep2 = false;
+                        break;
+                    }
+                    else if ((inCopy.Length > s.Length + 4) && (inCopy.Length - s.Length - 4 >= R2)
+                             && (inCopy.Substring(inCopy.Length - s.Length - 4, 4) == "abil"))// preceding IV
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length - 4, s.Length + 4);
+                        doStep2 = false;
+                        break;
+                    }
+                    else
+                    {
+                        inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                        doStep2 = false;
+                        break;
+                    }
+            }
+
+
+            /* Search for the following suffixes
+             * and DELETE them if in R2
+             * if preceded by AT, delete if in R2 (and if further preceded by IC, delete if in R2) 
+             * */
+            String[] suffixGroup9 ={ "ivo", "ivi", "iva", "ive" };
+
+            foreach (String s in suffixGroup9)
+            {
+                bool inR2 = inCopy.Length - s.Length > R2;
+                if (inR2 && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    doStep2 = false;
+                    break;
+                }
+            }
+            return inCopy;
+        }
+
+
+        private static String step2(String inCopy)
+        {
+            /* Search for the longest  among the following verb suffixes
+             * and REMOVE it if in RV
+             * 
+             * suffixes MUST be ordered by their length
+             * */
+            String[] suffixVerb ={"erebbero", "irebbero",
+                                  "assero", "assimo", "eranno", "erebbe", "eresti",
+                                  "eremmo", "ereste", "essero", "iranno", "irebbe",
+                                  "iremmo", "ireste", "iresti", "iscano", "iscono", 
+                                  "issero",
+                                  "arono", "avamo", "avano", "avate", "eremo", 
+                                  "erete", "erono", "evamo", "evano", "evate",
+                                  "iremo", "irete", "irono", "ivamo", "ivano",
+                                  "ivate",
+                                  "ammo", "ando",   "asse",  "assi", 
+                                  "emmo", "enda", "ende", "endi", "endo", 
+                                  "erai", "erei", "iamo", "immo", "irai",
+                                  "irei", "isca", "isce", "isci", "isco",
+                                  "ano", "are", "ata", "ate", "ati", 
+                                  "ato", "ava",  "avi", "avo", "erà", "ere",     
+                                  "erò", "ete", "eva", "evi", "evo", "irà", "ire", 
+                                  "irò", "ita", "ite", "iti", "ito", "iva", "ivi", "ivo", 
+                                  "ono", "uta", "ute", "uti", "uto", 
+                                  "ar", "ir"};
+
+            foreach (String s in suffixVerb)
+            {
+                bool inRV = inCopy.Length - s.Length >= RV;
+                if (inRV && (inCopy.Length > s.Length) && inCopy.Substring(inCopy.Length - s.Length, s.Length) == s)
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - s.Length, s.Length);
+                    break;
+                }
+            }
+            return inCopy;
+        }
+
+        private static String step3(String inCopy)
+        {
+            /* Delete a final A, E, I, O, À, È, Ì or Ò if it is in RV, and a preceding I if it is in RV
+             * */
+            String lastChar = inCopy.Substring(inCopy.Length - 1, 1);
+            String penultChar = inCopy.Substring(inCopy.Length - 2, 1);
+
+            bool inRV = (inCopy.Length - 1) >= RV; //True if last char is in RV
+            bool penInRV = (inCopy.Length - 2) >= RV; // True if second-last char is in RV
+
+            if (inRV && isVowel(lastChar) && (lastChar != "u") && (lastChar != "ù"))
+            {
+                if (penInRV && penultChar == "i")
+                {
+                    //remove I and last vowel
+                    inCopy = inCopy.Remove(inCopy.Length - 2, 2);
+                }
+                else
+                {
+                    inCopy = inCopy.Remove(inCopy.Length - 1, 1);
+                }
+            }
+
+            /* Replace final CH (or GH) with C (or G) if in RV  
+             * */
+            String lastChars = inCopy.Substring(inCopy.Length - 1, 1);
+            inRV = (inCopy.Length - 2) >= RV;
+
+            if (inRV && (lastChars == "ch" || lastChars == "gh"))
+            {
+                inCopy = inCopy.Remove(inCopy.Length - 1, 1);
+            }
+
+            /* Turn I and U back into lowercase 
+             * */
+            return inCopy.ToLower();
+
+        }
+
+    }
+
+}
+

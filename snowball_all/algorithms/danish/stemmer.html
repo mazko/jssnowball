@@ -1,0 +1,431 @@
+
+<HTML>
+<HEAD>
+<META http-equiv="content-type" content="text/html; charset=UTF-8">
+<TITLE>Danish stemming algorithm</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Danish stemming algorithm</H1>
+
+<TR><TD>
+<BR>&nbsp;<H2>Links to resources</H2>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../.."> Snowball main page</A>
+<TR><TD><A HREF="stem_ISO_8859_1.sbl">    The stemmer in Snowball</A>
+<TR><TD><A HREF="stem.c">      The ANSI C stemmer</A>
+<TR><TD><A HREF="stem.h">      &#x2014; and its header</A>
+<TR><TD><A HREF="voc.txt">     Sample Danish vocabulary</A>
+<TR><TD><A HREF="output.txt">  Its stemmed equivalent</A>
+<TR><TD><A HREF="diffs.txt">   Vocabulary + stemmed equivalent in two columns</A>
+<TR><TD><A HREF="tarball.tgz"> Tar-gzipped file of all of the above</A>
+<BR><BR>
+<TR><TD><A HREF="stop.txt">     Danish stop word list</A>
+</TABLE></DL>
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="stem_MS_DOS_Latin_I.sbl">    The stemmer in Snowball &#x2014; MS DOS Latin I encodings</A>
+</TABLE></DL>
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF="../../texts/scandinavian.html">
+                  Scandinavian language stemmers</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD BGCOLOR="lightpink">
+
+<BR><BR>
+
+Here is a sample of Danish vocabulary, with the stemmed forms that will
+be generated with this algorithm.
+
+<BR><BR>
+
+
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>  <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+ <TD></TD><TD>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+ <TD></TD><TD> <B>word</B> </TD>
+ <TD></TD><TD> </TD>
+ <TD></TD><TD> <B>stem</B> </TD>
+</TR>
+
+<TR><TD>
+indtage<BR>
+indtagelse<BR>
+indtager<BR>
+indtages<BR>
+indtaget<BR>
+indtil<BR>
+indtog<BR>
+indtraf<BR>
+indtryk<BR>
+indtræde<BR>
+indtræder<BR>
+indtræffe<BR>
+indtræffer<BR>
+indtrængende<BR>
+indtægt<BR>
+indtægter<BR>
+indvandrede<BR>
+indvandret<BR>
+indvender<BR>
+indvendig<BR>
+indvendige<BR>
+indvendigt<BR>
+indvending<BR>
+indvendingerne<BR>
+indvie<BR>
+indviede<BR>
+indvielse<BR>
+indvielsen<BR>
+indvielsesløfte<BR>
+indvielsestid<BR>
+indvier<BR>
+indvies<BR>
+indviet<BR>
+indvikle<BR>
+indvikler<BR>
+indvolde<BR>
+indvoldene<BR>
+indvortes<BR>
+indånde<BR>
+indåndede<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+indtag<BR>
+indtag<BR>
+indtag<BR>
+indtag<BR>
+indtag<BR>
+indtil<BR>
+indtog<BR>
+indtraf<BR>
+indtryk<BR>
+indtræd<BR>
+indtræd<BR>
+indtræf<BR>
+indtræf<BR>
+indtræng<BR>
+indtæg<BR>
+indtæg<BR>
+indvandred<BR>
+indvandr<BR>
+indvend<BR>
+indvend<BR>
+indvend<BR>
+indvend<BR>
+indvending<BR>
+indvending<BR>
+indvi<BR>
+indvied<BR>
+indvi<BR>
+indvi<BR>
+indvielsesløft<BR>
+indvielsestid<BR>
+indvi<BR>
+indvi<BR>
+indvi<BR>
+indvikl<BR>
+indvikl<BR>
+indvold<BR>
+indvold<BR>
+indvort<BR>
+indånd<BR>
+indånded<BR>
+</TD>
+<TD></TD><TD> </TD>
+<TD></TD><TD>
+underste<BR>
+undersåtter<BR>
+undersåtters<BR>
+undersøg<BR>
+undersøge<BR>
+undersøgelse<BR>
+undersøgelsen<BR>
+undersøger<BR>
+undersøgt<BR>
+undersøgte<BR>
+undertryk<BR>
+undertrykke<BR>
+undertrykkelse<BR>
+undertrykker<BR>
+undertrykkere<BR>
+undertrykkeren<BR>
+undertrykkerens<BR>
+undertrykkeres<BR>
+undertrykkes<BR>
+undertrykt<BR>
+undertrykte<BR>
+undertryktes<BR>
+undertvang<BR>
+undertvunget<BR>
+undertvungne<BR>
+undervejs<BR>
+underverdenen<BR>
+undervise<BR>
+underviser<BR>
+undervises<BR>
+undervisning<BR>
+undervisningen<BR>
+undervist<BR>
+underviste<BR>
+underværk<BR>
+underværker<BR>
+undevise<BR>
+undeviste<BR>
+undfange<BR>
+undfanged<BR>
+</TD>
+<TD></TD><TD> &nbsp;<TT><B> => </B></TT>&nbsp; </TD>
+<TD></TD><TD>
+underst<BR>
+undersåt<BR>
+undersåt<BR>
+undersøg<BR>
+undersøg<BR>
+undersøg<BR>
+undersøg<BR>
+undersøg<BR>
+undersøg<BR>
+undersøg<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertryk<BR>
+undertvang<BR>
+undertvung<BR>
+undertvungn<BR>
+undervej<BR>
+underverden<BR>
+undervis<BR>
+undervis<BR>
+undervis<BR>
+undervisning<BR>
+undervisning<BR>
+undervist<BR>
+undervist<BR>
+underværk<BR>
+underværk<BR>
+undevis<BR>
+undevist<BR>
+undfang<BR>
+undfanged<BR>
+</TD>
+</TR>
+</TABLE></DL>
+
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+<BR>&nbsp;<H2>The stemming algorithm</H2>
+
+
+The Danish alphabet includes the following additional letters,
+<DL><DD>
+    <B><I>æ  &nbsp;  å  &nbsp;  ø</I></B>
+</DL>
+
+
+The following letters are vowels:
+<DL><DD>
+    <B><I>a  &nbsp;  e  &nbsp;  i  &nbsp;  o  &nbsp;  u  &nbsp;  y  &nbsp;  æ  &nbsp;  å  &nbsp;  ø</I></B>
+</DL>
+A consonant is defined as a non-vowel.
+<BR><BR>
+<I>R</I>2 is not used: <I>R</I>1 is defined in the same way as in the
+<A HREF="../german/stemmer.html">German stemmer</A>.
+(See the <A HREF="../../texts/r1r2.html"> note</A> on <I>R</I>1 and <I>R</I>2.)
+<BR><BR>
+Define a valid <B><I>s</I></B>-ending as one of
+<DL><DD>
+<B><I>a  &nbsp;  b  &nbsp;  c  &nbsp;  d  &nbsp;  f  &nbsp;  g  &nbsp;  h  &nbsp;  j  &nbsp;  k  &nbsp;  l  &nbsp;  m  &nbsp;  n  &nbsp;  o  &nbsp;  p  &nbsp;  r
+ &nbsp;  t  &nbsp;  v  &nbsp;  y  &nbsp;  z  &nbsp;  å</I></B>
+</DL>
+
+Do each of steps 1, 2, 3 and 4.
+
+<BR><BR>
+Step 1:
+<DL><DD>
+    Search for the longest among the following suffixes in <I>R</I>1, and
+    perform the action indicated.
+<BR><BR><DL>
+        <DT>(<I>a</I>)
+            <B><I>hed  &nbsp;  ethed  &nbsp;  ered  &nbsp;  e  &nbsp;  erede  &nbsp;  ende  &nbsp;  erende  &nbsp;  ene
+             &nbsp;  erne  &nbsp;  ere  &nbsp;  en  &nbsp;  heden  &nbsp;  eren  &nbsp;  er  &nbsp;  heder  &nbsp;  erer
+             &nbsp;  heds  &nbsp;  es  &nbsp;  endes  &nbsp;  erendes  &nbsp;  enes  &nbsp;  ernes  &nbsp;  eres  &nbsp;
+            ens  &nbsp;  hedens  &nbsp;  erens  &nbsp;  ers  &nbsp;  ets  &nbsp;  erets  &nbsp;  et  &nbsp;  eret</I></B>
+                <DD>delete
+<BR><BR>
+        <DT>(<I>b</I>)
+            <B><I>s</I></B>
+                <DD>delete if preceded by a valid <B><I>s</I></B>-ending
+</DL>
+<BR>
+    (Of course the letter of the valid <B><I>s</I></B>-ending is
+    not necessarily in <I>R</I>1)
+</DL>
+
+Step 2:
+<DL><DD>
+    Search for one of the following suffixes in <I>R</I>1, and if found
+    delete the last letter.
+<BR><BR><DL><DD>
+        <B><I>gd  &nbsp;  dt  &nbsp;  gt  &nbsp;  kt</I></B>
+</DL>
+<BR>
+    (For example, <I>friskt</I> <TT>-&gt;</TT> <I>frisk</I>)
+</DL>
+
+Step 3:
+<DL><DD>
+    If the word ends <B><I>igst</I></B>, remove the final <B><I>st</I></B>.
+<BR><BR>
+    Search for the longest among the following suffixes in <I>R</I>1, and
+    perform the action indicated.
+<BR><BR>
+<DL>
+    <DT>(<I>a</I>)
+    <B><I>ig  &nbsp;  lig  &nbsp;  elig  &nbsp;  els</I></B>
+        <DD>delete, and then repeat step 2
+<BR><BR>
+    <DT>(<I>b</I>)
+    <B><I>løst</I></B>
+        <DD>replace with <B><I>løs</I></B>
+</DL>
+</DL>
+
+Step 4: undouble
+<DL><DD>
+    If the word ends with double consonant in <I>R</I>1, remove one of the
+    consonants.
+<BR><BR>
+    (For example, <I>bestemmelse</I> <TT>-&gt;</TT> <I>bestemmels</I> (step 1)
+    <TT>-&gt;</TT> <I>bestemm</I> (step 3<I>a</I>)
+    <TT>-&gt;</TT> <I>bestem</I> in this step.)
+</DL>
+
+
+</TR>
+
+<TR><TD BGCOLOR="lightblue">
+
+<BR>&nbsp;<H2>The same algorithm in Snowball</H2>
+
+<BR><PRE>
+<DL><DD>
+routines (
+           mark_regions
+           main_suffix
+           consonant_pair
+           other_suffix
+           undouble
+)
+
+externals ( stem )
+
+strings ( ch )
+
+integers ( p1 x )
+
+groupings ( v s_ending )
+
+stringescapes {}
+
+/* special characters (in ISO Latin I) */
+
+stringdef ae   hex 'E6'
+stringdef ao   hex 'E5'
+stringdef o/   hex 'F8'
+
+define v 'aeiouy{ae}{ao}{o/}'
+
+define s_ending  'abcdfghjklmnoprtvyz{ao}'
+
+define mark_regions as (
+
+    $p1 = limit
+
+    test ( hop 3 setmark x )
+    goto v gopast non-v  setmark p1
+    try ( $p1 < x  $p1 = x )
+)
+
+backwardmode (
+
+    define main_suffix as (
+        setlimit tomark p1 for ([substring])
+        among(
+
+            'hed' 'ethed' 'ered' 'e' 'erede' 'ende' 'erende' 'ene' 'erne' 'ere'
+            'en' 'heden' 'eren' 'er' 'heder' 'erer' 'heds' 'es' 'endes'
+            'erendes' 'enes' 'ernes' 'eres' 'ens' 'hedens' 'erens' 'ers' 'ets'
+            'erets' 'et' 'eret'
+                (delete)
+            's'
+                (s_ending delete)
+        )
+    )
+
+    define consonant_pair as (
+        test (
+            setlimit tomark p1 for ([substring])
+            among(
+                'gd' // significant in the call from other_suffix
+                'dt' 'gt' 'kt'
+            )
+        )
+        next] delete
+    )
+
+    define other_suffix as (
+        do ( ['st'] 'ig' delete )
+        setlimit tomark p1 for ([substring])
+        among(
+            'ig' 'lig' 'elig' 'els'
+                (delete do consonant_pair)
+            'l{o/}st'
+                (<-'l{o/}s')
+        )
+    )
+    define undouble as (
+        setlimit tomark p1 for ([non-v] ->ch)
+        ch
+        delete
+    )
+)
+
+define stem as (
+
+    do mark_regions
+    backwards (
+        do main_suffix
+        do consonant_pair
+        do other_suffix
+        do undouble
+    )
+)
+</DL>
+</PRE>
+</TABLE>
+</BODY>
+</HTML>

@@ -1,0 +1,116 @@
+
+<HTML>
+<HEAD>
+<TITLE>Germanic language stemmers</TITLE></HEAD>
+<BODY BGCOLOR=WHITE>
+<TABLE WIDTH=75% ALIGN=CENTER COLS=1>
+<H1 ALIGN=CENTER>Germanic language stemmers</H1>
+<TR><TD BGCOLOR="wheat">
+<BR>&nbsp;<H2>Links to resources</H2>
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD><A HREF=".."> Snowball main page</A>
+<TR><TD><A HREF="../algorithms/german/stemmer.html">   German stemmer</A>
+<TR><TD><A HREF="../algorithms/german2/stemmer.html">  (German stemmer variant)</A>
+<TR><TD><A HREF="../algorithms/dutch/stemmer.html">    Dutch stemmer</A>
+</TABLE></DL>
+
+</TR>
+
+<TR><TD>
+
+<BR><BR>
+
+
+Despite its inflexional complexities, German has quite a simple suffix
+structure, so that, if one ignores the almost intractable problems of
+compound words, separable verb prefixes, and prefixed and infixed <B><I>ge</I></B>, an
+algorithmic stemmer can be made quite short. (Infixed <B><I>zu</I></B> can be removed
+algorithmically, but this minor feature is not shown here.) The umlaut in
+German is a regular feature of plural formation, so its removal is a
+natural feature of stemming, but this leads to certain false conflations
+(for example, <I>sch&ouml;n</I>, beautiful; <I>schon</I>, already).
+<BR><BR>
+By contrast, Dutch is inflexionally simple, but even so, this does not make
+for any great difference between the stemmers. A feature of Dutch that
+makes it markedly different from German is that the grammar of the written
+language has changed, and continues to change, relatively rapidly, and that
+it has assimilated a large and mixed foreign vocabulary with some of the
+accompanying foreign suffixes. Foreign words may, or may not, be
+transliterated into a Dutch style. Naturally these create problems in
+stemming. The stemmer here is intended for native words of contemporary
+Dutch.
+<BR><BR>
+In a Dutch noun, a vowel may double in the singular form (manen = moons, maan
+= moon). We attempt to solve this by undoubling the double vowel (Kraaij
+Pohlman by contrast attempt to double the single vowel). The endings <B><I>je</I></B>,
+<B><I>tje</I></B>, <B><I>pje</I></B> etc., although extremely common, are not stemmed. They are
+diminutives and can significantly alter word meaning.
+<BR><BR>
+
+<BR>&nbsp;<H2>A note on compound words</H2>
+
+Famously, German allows for the formation of long compound words, written
+without spaces. For retrieval purposes, it is useful to be able to search
+on the parts of such words, as well as the on the complete words
+themselves. This is not just peculiar to German: Dutch, Danish, Norwegian,
+Swedish, Icelandic and Finnish have the same property. To split up
+compound words cannot be done without a dictionary, and the purely
+algorithmic stemmers presented here do not attempt it.
+
+<BR><BR>
+
+We would suggest, however, that the need for compound word splitting in
+these languages has been somewhat overstated. In the case of German:
+
+<BR><BR>
+
+1) There are many English compounds one would see no advantage in
+splitting,
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    blackberry  <TD></TD><TD>  blackboard  <TD></TD><TD>  rainbow  <TD></TD><TD>  coastguard <TD></TD><TD> ....
+</TABLE></DL>
+
+Many German compounds are like this,
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    Bleistift (pencil)      <TD></TD><TD> = <TD></TD><TD> Blei (lead) + Stift (stick)
+<TR><TD>    Eisenbahn (railway)     <TD></TD><TD> = <TD></TD><TD> Eisen (iron) + Bahn (road)
+<TR><TD>    Unterseeboot (submarine)<TD></TD><TD> = <TD></TD><TD> under + sea + boat
+</TABLE></DL>
+
+2) Other compounds correspond to what in English one would want to do by
+phrase searching, so they are ready made for that purpose,
+
+<DL><DD><TABLE CELLPADDING=0>
+<TR><TD>    Gesundheitspflege      <TD></TD><TD>  = <TD></TD><TD> &#8216;health care&#8217;
+<TR><TD>    Fachhochschule         <TD></TD><TD>  = <TD></TD><TD> &#8216;technical college&#8217;
+<TR><TD>    Kunstmuseum            <TD></TD><TD>  = <TD></TD><TD> &#8216;museum of fine art&#8217;
+</TABLE></DL>
+
+3) In any case, longer compounds, especially involving personal names, are
+frequently hyphenated,
+
+<DL><DD>    Heinrich-Heine-Universit&auml;t
+</DL>
+
+4) It is possible to construct participial adjectives of almost any
+length, but they are little used in contemporary German, and regarded now
+as poor style. As in English, very long words are not always to be taken
+too seriously. On the author's last visit to Germany, the longest word he
+had to struggle with was
+
+<DL><DD>    Nasenspitzenwurzelentz&uuml;ndung
+</DL>
+
+It means &#8216;inflammation of the root of the tip of the nose&#8217;, and comes from
+a cautionary tale for children.
+
+
+
+
+</TR>
+
+</TABLE>
+</BODY>
+</HTML>
