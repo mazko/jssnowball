@@ -108,10 +108,10 @@ js_snowball/lib/Snowball.js: $(JAVA_SOURCES)
 	@echo "/*!" > $@
 	@echo " * Snowball JavaScript Library v0.4" >> $@
 	@echo " * http://snowball.tartarus.org/" >> $@
-	@echo " * http://nongreedy.ru/" >> $@
+	@echo " * https://github.com/mazko/jssnowball" >> $@
 	@echo " *" >> $@
 	@echo " * Copyright `date +'%y.%m.%d %H:%M:%S'`, Oleg Mazko" >> $@
-	@echo " * http://creativecommons.org/licenses/by/3.0/us/" >> $@
+	@echo " * http://www.opensource.org/licenses/bsd-license.html" >> $@
 	@echo " */" >> $@
 	@echo "function Snowball(lng) {" >> $@
 	@cat js_snowball/src/Among.js | sed '1,9d' | sed 's!^!\t!' >> $@

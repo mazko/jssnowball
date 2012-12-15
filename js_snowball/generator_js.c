@@ -1238,11 +1238,11 @@ static void generate_start_comment(struct generator * g) {
     w(g, "/*!~N"
 	 " * Snowball JavaScript Library v0.4~N"
 	 " * http://snowball.tartarus.org/~N"
-	 " * http://nongreedy.ru/~N *~N"
+	 " * https://github.com/mazko/jssnowball~N *~N"
 	 " * Copyright ");
     w(g, __DATE__);
     w(g, ", Oleg Mazko~N"
-	 " * http://creativecommons.org/licenses/by/3.0/us/~N"
+	 " * http://www.opensource.org/licenses/bsd-license.html~N"
 	 " * This file was generated automatically by the Snowball to JavaScript compiler~N"
 	 " */~N~N");
 }

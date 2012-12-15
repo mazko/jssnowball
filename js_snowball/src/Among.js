@@ -1,10 +1,10 @@
 /*!
  * Snowball JavaScript Library v0.4
  * http://snowball.tartarus.org/
- * http://nongreedy.ru/
+ * https://github.com/mazko/jssnowball
  *
  * Copyright Nov 25 2012, Oleg Mazko
- * http://creativecommons.org/licenses/by/3.0/us/
+ * http://www.opensource.org/licenses/bsd-license.html
  */
 
 function Among(s, substring_i, result, method) {
