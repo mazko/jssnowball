@@ -107,8 +107,8 @@ snowball_code/stemwords: $(JAVA_SOURCES)
 	sed -i $${line_begin}','$${line_end}'d' snowball_code/GNUmakefile_js_copy;				\
 	sed -i $${line_begin}'i\\' snowball_code/GNUmakefile_js_copy;						\
 	sed -i $${line_begin}'i\\libstemmer_algorithms = $(subst $(eval), ,$(libstemmer_algorithms))' snowball_code/GNUmakefile_js_copy
-	@$(foreach a,$(libstemmer_algorithms), grep -q '\s*$(a)\s\+' snowball_code/libstemmer/modules.txt ||	\
-	echo '$(a) UTF_8 $(a)' >> snowball_code/libstemmer/modules.txt;)
+	@$(foreach a,$(libstemmer_algorithms), grep -q '\s*$(a)\s\+' snowball_code/libstemmer/modules_js_copy.txt || \
+	echo '$(a) UTF_8 $(a)' >> snowball_code/libstemmer/modules_js_copy.txt;)
 	@make -C snowball_code -f GNUmakefile_js_copy --no-print-directory stemwords
 
 js_snowball/lib/Snowball.js: $(JAVA_SOURCES) $(wildcard js_snowball/src/*.js)
