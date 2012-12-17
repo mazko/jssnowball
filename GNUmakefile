@@ -3,7 +3,7 @@
 libstemmer_algorithms = danish dutch english finnish french german hungarian \
 			italian \
 			norwegian porter portuguese romanian \
-			russian spanish swedish turkish
+			russian spanish swedish turkish basque
 
 java_src_generated = java/org/tartarus/snowball/ext
 
@@ -91,8 +91,11 @@ js_snowball/tests/js/%Tests.js: snowball_all/algorithms/%/voc.txt snowball_code/
               "testStemmer.setCurrent(word); testStemmer.stem(); return testStemmer.getCurrent();}})();" >> $@
 	@echo "Generating tests for $*"
 	@./snowball_code/stemwords -i snowball_all/algorithms/$*/voc.txt -l $* -p | 	 			\
-	       sed '/^\s\+\S*\s\+$$/d' | sed 's!\"!\\\"!g' |							\
-	       sed 's!\(\S\+\)\s\+\S*\s\+\(\S*\)!test\(\"\1 -> \2\", function\(\) {deepEqual\( Stem(\"\1\"\), \"\2\"\);}\);!' >> $@
+	       sed '/^\s\+\S*\s\+$$/d' | sed 's!\"!\\\"!g' | 							\
+	       sed 's!\s\+[->]\+\s\+!\"\), \"!' |								\
+	       sed 'h;G;s/\n/\", function\(\) {deepEqual\( Stem(\"/' | 						\
+	       sed 's!\"), \"! -> !' |										\
+	       sed 's!^!test\(\"!' | sed 's!$$!\"\);}\);!' >> $@
 	@total=`cat snowball_all/algorithms/$*/voc.txt | sed '/^$$/d' | wc -l`;					\
 	echo "QUnit.done(function( details ) {" 								\
 	     "test(\"Total tests generated equals total words count in voc.txt\", "				\
