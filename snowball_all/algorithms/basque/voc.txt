@@ -53,7 +53,7 @@ abantzamendu
 abantzatu
 abantzu
 abantzu
-abantzuño
+abantzuÃ±o
 abao
 abar
 abar
@@ -439,7 +439,7 @@ adarki
 adarkizko
 adarmotz
 adarmoztu
-adarño
+adarÃ±o
 adaro
 adarpunta
 adarreko
@@ -1020,7 +1020,7 @@ agoniako
 agoniatsu
 agoniko
 agontze
-agoñu
+agoÃ±u
 agor
 agor
 agora
@@ -1393,7 +1393,7 @@ ahultasun
 ahultze
 ahulune
 ahume
-ahuña
+ahuÃ±a
 ahuntzadar
 ahuntzain
 ahuntzama
@@ -2825,7 +2825,7 @@ amandre
 amanita
 amankomun
 amankomunean
-amaño
+amaÃ±o
 amantal
 amante
 amantsatu
@@ -3090,7 +3090,7 @@ anderauren
 andere
 andereder
 anderegai
-andereño
+andereÃ±o
 anderetu
 anderezko
 andesina
@@ -3108,7 +3108,7 @@ andregai
 andrekari
 andrekoi
 andrekunde
-andreña
+andreÃ±a
 andrerrai
 andretegi
 andreteria
@@ -3792,7 +3792,7 @@ apurkeria
 apurketa
 apurkin
 apurkor
-apurño
+apurÃ±o
 apuro
 apurtasun
 apurtu
@@ -4123,7 +4123,7 @@ argikuntza
 argimen
 argimutil
 arginabar
-argiño
+argiÃ±o
 argiontzi
 argipen
 argiratu
@@ -5161,7 +5161,7 @@ astama
 astamahats
 astamakila
 astamenda
-astaña
+astaÃ±a
 astanafarreri
 astapalma
 astaperrexil
@@ -11060,7 +11060,7 @@ crescendo
 cricket
 croissant
 cromlech
-curaçao
+curaÃ§ao
 curriculum
 daborduko
 dadaismo
@@ -12796,7 +12796,7 @@ doministiku
 doministikuka
 domino
 domu
-doña
+doÃ±a
 donabera
 donado
 donari
@@ -13939,7 +13939,7 @@ elizain
 elizako
 elizakoi
 elizalde
-elizaño
+elizaÃ±o
 elizaratu
 elizarte
 elizate
@@ -14150,7 +14150,7 @@ emaztegai
 emaztegaitu
 emaztekari
 emazteki
-emazteño
+emazteÃ±o
 emazurtz
 eme
 emekeria
@@ -15774,7 +15774,7 @@ errekonbertitu
 errekonde
 errekondo
 errekonkista
-errekoño
+errekoÃ±o
 errekonozimendu
 errekonozitu
 errekonpentsa
@@ -15984,7 +15984,7 @@ erresidentzial
 erresiditu
 erresiduo
 erresiloi
-erresiñol
+erresiÃ±ol
 erresistente
 erresistentzia
 erresistibitate
@@ -17624,7 +17624,7 @@ etxekotu
 etxekotze
 etxekume
 etxelagun
-etxeño
+etxeÃ±o
 etxerakoi
 etxerarazi
 etxeratu
@@ -17838,7 +17838,7 @@ exotismo
 exozentriko
 exozentrismo
 extra
-extremeño
+extremeÃ±o
 ez
 ezaba
 ezabaera
@@ -20018,7 +20018,7 @@ garakuntza
 garaldi
 garamola
 garangorri
-garaño
+garaÃ±o
 garantia
 garantizatu
 garapa
@@ -20421,7 +20421,7 @@ gazteluratu
 gazteluzain
 gazteluzaingo
 gazteluztatu
-gazteño
+gazteÃ±o
 gazteria
 gazterik
 gaztetan
@@ -20983,7 +20983,7 @@ gingiltxo
 gingondo
 ginkgo
 ginoan
-giñol
+giÃ±ol
 ginseng
 giputz
 gipuzkera
@@ -22054,7 +22054,7 @@ groggy
 grotesko
 grua
 grumete
-gruyère
+gruyÃ¨re
 gu
 guaiaba
 guaiabondo
@@ -22253,7 +22253,7 @@ gurutzefikatzaile
 gurutzefikatze
 gurutzegrama
 gurutzelarkatu
-gurutzeño
+gurutzeÃ±o
 gurutzeratu
 gurutzeria
 gurutzetar
@@ -22476,7 +22476,7 @@ haizekin
 haizemaile
 haizeman
 haizemate
-haizeño
+haizeÃ±o
 haizeputz
 haizeratu
 haizeratze
@@ -23418,7 +23418,7 @@ hegaldun
 hegalka
 hegalkada
 hegalkin
-hegalño
+hegalÃ±o
 hegalpe
 hegaltaz
 hegaltxo
@@ -23457,7 +23457,7 @@ hegaztatu
 hegazterren
 hegazti
 hegaztiki
-hegaztiño
+hegaztiÃ±o
 hegaztitegi
 hegaztitzar
 hegaztizain
@@ -23769,7 +23769,7 @@ herrikoitasun
 herrikoitu
 herrilan
 herrimin
-herriño
+herriÃ±o
 herriorde
 herriratu
 herriratze
@@ -24452,7 +24452,7 @@ hiztegi
 hiztegigile
 hiztegigintza
 hiztegilari
-hiztegiño
+hiztegiÃ±o
 hiztegitxo
 hiztegizale
 hiztoki
@@ -25218,7 +25218,7 @@ idazte
 idaztegi
 Idazteun
 idazti
-idaztiño
+idaztiÃ±o
 idaztitegi
 idaztohitura
 idaztohol
@@ -25896,7 +25896,7 @@ ilkibide
 ilkintza
 ilkitze
 iloba
-ilobaño
+ilobaÃ±o
 ilobaso
 ilobatxo
 ilogika
@@ -26007,7 +26007,7 @@ imurtxi
 imurtxikada
 imurtxitze
 inadaptatu
-iñakitar
+iÃ±akitar
 inar
 inarrosaldi
 inarrosi
@@ -27444,7 +27444,7 @@ irrilari
 irrimarra
 irrinarte
 irringa
-irriño
+irriÃ±o
 irrintzi
 irrintzika
 irrintzilari
@@ -27915,7 +27915,7 @@ iturgintza
 iturri
 iturrigorri
 iturriketari
-iturriño
+iturriÃ±o
 iturritxo
 itxarobide
 itxarokizun
@@ -28151,7 +28151,7 @@ izarniarazte
 izarniatu
 izarniatzaile
 izarniatze
-izarño
+izarÃ±o
 izaro
 izarputz
 izarrari
@@ -28299,7 +28299,7 @@ izpil
 izpildun
 izpiliku
 izpiltsu
-izpiño
+izpiÃ±o
 izpirik
 izpiritista
 izpiritu
@@ -29481,7 +29481,7 @@ kafegailu
 kafegile
 kafeina
 kafelari
-kafeño
+kafeÃ±o
 kafeondo
 kafeontzi
 kafesne
@@ -30012,7 +30012,7 @@ kapelu
 kapen
 kapentxori
 kapera
-kaperaño
+kaperaÃ±o
 kapeta
 kapetadun
 kapetatu
@@ -30251,7 +30251,7 @@ karlistaldi
 karlo
 karlostar
 karmadharaya
-karmañola
+karmaÃ±ola
 karmeletxe
 karmelo
 karmin
@@ -31046,7 +31046,7 @@ kitsch
 kitzika
 kitzikaberatasun
 kitzikagarri
-kitzikaño
+kitzikaÃ±o
 kitzikapen
 kitzikari
 kitzikatu
@@ -31666,7 +31666,7 @@ komunztadura
 komunztagarri
 komunztatu
 komunztatze
-koñak
+koÃ±ak
 konatibo
 konatu
 konbalidatu
@@ -31928,7 +31928,7 @@ konnotapen
 konnotatibo
 konnotatu
 konnotazio
-koño
+koÃ±o
 kono
 konopial
 konorte
@@ -33354,7 +33354,7 @@ laburkiro
 laburkuntza
 laburmetraia
 laburmin
-laburño
+laburÃ±o
 laburpen
 laburrarazi
 laburrera
@@ -35375,7 +35375,7 @@ loredun
 loreil
 lorekadura
 lorekatu
-loreño
+loreÃ±o
 loretoki
 loretsu
 lorezale
@@ -35570,7 +35570,7 @@ lumakada
 lumaki
 lumaldatu
 lumaldatze
-lumaño
+lumaÃ±o
 lumardi
 lumaritu
 lumatsu
@@ -36045,7 +36045,7 @@ maitekorki
 maitemin
 maitemindu
 maitemintze
-maiteño
+maiteÃ±o
 maitetsu
 maitetsukeria
 maitetxo
@@ -36118,7 +36118,7 @@ makilaka
 makilakada
 makilakari
 makilakazoka
-makilaño
+makilaÃ±o
 makilari
 makilatu
 makilatzaile
@@ -36671,7 +36671,7 @@ marrakuku
 marralari
 marramiau
 marranga
-marraño
+marraÃ±o
 marranta
 marrantatu
 marrantatze
@@ -37065,7 +37065,7 @@ mehe
 mehegarri
 mehego
 meheki
-meheño
+meheÃ±o
 mehetasun
 mehetu
 mehetze
@@ -38311,8 +38311,8 @@ monolitismo
 monolito
 monomero
 monomio
-moñoña
-moñoño
+moÃ±oÃ±a
+moÃ±oÃ±o
 monopatin
 monoplano
 monopolio
@@ -39035,9 +39035,9 @@ muzintze
 muztiatu
 muztio
 naba
-ñabar
+Ã±abar
 nabar
-ñabardura
+Ã±abardura
 nabardura
 nabargarri
 nabari
@@ -39064,7 +39064,7 @@ nabarmentasun
 nabarmentze
 nabarri
 nabartasun
-ñabartu
+Ã±abartu
 nabartu
 nabartze
 nabas
@@ -39241,13 +39241,13 @@ nahizer
 nahuatl
 naia
 naif
-ñaka
+Ã±aka
 nakaitz
 nakaizdura
 nakaizgarri
 nakaizki
 nakaiztu
-ñakako
+Ã±akako
 nakan
 nakandun
 nakar
@@ -39255,14 +39255,14 @@ nakaratu
 nakareztatu
 namibiar
 nana
-ñañan
-ñañarro
-ñandu
+Ã±aÃ±an
+Ã±aÃ±arro
+Ã±andu
 nanismo
-ñaño
+Ã±aÃ±o
 nano
 nanotasun
-ñañotu
+Ã±aÃ±otu
 nanotu
 nanotxo
 nanoxka
@@ -39270,10 +39270,10 @@ napalm
 napilda
 napoleondar
 napolitar
-ñapur
-ñapurkeria
-ñapurki
-ñapurtu
+Ã±apur
+Ã±apurkeria
+Ã±apurki
+Ã±apurtu
 narda
 nardabera
 nardaberaki
@@ -39352,10 +39352,10 @@ narritari
 narritatu
 narritatzaile
 narritatze
-ñarro
-ñarrokeria
-ñarrotu
-ñarrotze
+Ã±arro
+Ã±arrokeria
+Ã±arrotu
+Ã±arrotze
 narru
 nartzisismo
 nartzisista
@@ -39375,7 +39375,7 @@ nasaitze
 naslika
 nasofaringe
 nasserismo
-ñasta
+Ã±asta
 nata
 Natibitate
 natila
@@ -39393,13 +39393,13 @@ naturismo
 naturzale
 natutu
 natza
-ñau
+Ã±au
 nauder
 naufragatu
 naufragio
 naufrago
-ñauka
-ñaukari
+Ã±auka
+Ã±aukari
 nausa
 nausaka
 nausale
@@ -39786,11 +39786,11 @@ nigertar
 nihaur
 nihilismo
 nihilista
-ñika
-ñikada
+Ã±ika
+Ã±ikada
 nikalo
 nikaraguar
-ñikatu
+Ã±ikatu
 nikel
 nikeleztatu
 nikeleztatzaile
@@ -39801,15 +39801,15 @@ nikotina
 niky
 nilotar
 nimi
-ñimiño
-ñimiñotu
-ñimiñotze
+Ã±imiÃ±o
+Ã±imiÃ±otu
+Ã±imiÃ±otze
 ninberatze
 ninfa
 ninfomania
 ninfomano
 ninfosi
-ñiñi
+Ã±iÃ±i
 nini
 ninibetar
 ninika
@@ -39820,10 +39820,10 @@ niniketari
 niniko
 niobio
 niponiar
-ñirñir
-ñirñirka
-ñirñirtu
-ñirñirtze
+Ã±irÃ±ir
+Ã±irÃ±irka
+Ã±irÃ±irtu
+Ã±irÃ±irtze
 nirrotu
 nirvana
 nitasun
@@ -39969,7 +39969,7 @@ nongotar
 nongotasun
 nongura
 nonolinguismo
-ñoñorro
+Ã±oÃ±orro
 nontsu
 nor
 nora
@@ -40069,7 +40069,7 @@ nozio
 nozional
 nozitu
 nozitze
-ñu
+Ã±u
 nubiar
 nuklear
 nukleiko
@@ -40082,10 +40082,10 @@ nukleoplasma
 nukleoproteina
 nukleotido
 nukleozale
-ñuku
-ñukukeria
-ñukutasun
-ñukutu
+Ã±uku
+Ã±ukukeria
+Ã±ukutasun
+Ã±ukutu
 nulitate
 nulu
 numen
@@ -40101,10 +40101,10 @@ numerotsu
 numismatika
 numismatiko
 numulite
-ñuñ
+Ã±uÃ±
 nuntziatura
 nuntzio
-ñuñu
+Ã±uÃ±u
 nuraga
 nutriente
 nutritibo
@@ -40363,7 +40363,7 @@ ohatze
 ohazal
 ohe
 ohekoi
-oheño
+oheÃ±o
 ohepe
 oherarazi
 oheratu
@@ -42231,7 +42231,7 @@ papergile
 papergin
 papergintza
 paperjale
-paperño
+paperÃ±o
 paperontzi
 paperpisu
 papertegi
@@ -42443,7 +42443,7 @@ partiar
 partiarazi
 partiarazte
 partida
-partidaño
+partidaÃ±o
 partidu
 partiketa
 partikula
@@ -42781,7 +42781,7 @@ pentastomido
 Pentateuko
 pentatloi
 pentoka
-pentokaño
+pentokaÃ±o
 pentosa
 pentsabide
 pentsaera
@@ -43164,7 +43164,7 @@ pinazi
 pindar
 pindardun
 pindarka
-pindarño
+pindarÃ±o
 pindartsu
 pindartu
 pindartze
@@ -43979,7 +43979,7 @@ poxelatze
 poxelu
 poxi
 poxika
-poxiño
+poxiÃ±o
 poxpolu
 poxpolugintza
 poz
@@ -46655,7 +46655,7 @@ sotiltze
 soto
 sotolari
 sotorroin
-soufflé
+soufflÃ©
 soul
 sovkhoz
 soz
@@ -48833,7 +48833,7 @@ txakurka
 txakurkeria
 txakurkume
 txakurlandia
-txakurño
+txakurÃ±o
 txakurrada
 txakurtegi
 txakurtu
@@ -49324,7 +49324,7 @@ txorigorotz
 txorikume
 txorimalo
 txorinegar
-txoriño
+txoriÃ±o
 txorisats
 txoritegi
 txorizain
@@ -50036,7 +50036,7 @@ usnamen
 usnatu
 uso
 usokari
-usoño
+usoÃ±o
 usta
 ustaga
 ustari
@@ -50496,7 +50496,7 @@ zaharkizale
 zaharkote
 zaharmin
 zaharmindu
-zaharño
+zaharÃ±o
 zaharo
 zaharrarazi
 zaharreria
@@ -50612,7 +50612,7 @@ zaldiketa
 zaldiketari
 zaldiki
 zaldiko
-zaldiño
+zaldiÃ±o
 zaldiorrazi
 zalditasun
 zalditegi
@@ -50794,7 +50794,7 @@ zapelatz
 zapero
 zapezpikutegi
 zapi
-zapiño
+zapiÃ±o
 zapitako
 zapitxo
 zapla
@@ -50863,7 +50863,7 @@ zardai
 zardaikatu
 zardaitu
 zare
-zareño
+zareÃ±o
 zargaldu
 zarpa
 zarpail
