@@ -22,5 +22,9 @@ cp js_snowball/generator_js.c snowball_code/compiler/generator_java.c
 tar xf snowball_all/algorithms/basque/tarball.tgz -C snowball_all/algorithms/basque
 iconv -f `file -bi snowball_all/algorithms/basque/basque/voc.txt | sed 's!.*charset=\(.*\)!\1!'` -t utf-8 snowball_all/algorithms/basque/basque/voc.txt > snowball_all/algorithms/basque/voc.txt
 mkdir snowball_code/algorithms/basque
-cp snowball_all/algorithms/basque/basque/stemmer.sbl snowball_code/algorithms/basque/stem_ISO_8859_1.sbl
+cp snowball_all/algorithms/basque/basque/stemmer.sbl snowball_code/algorithms/basque/stem_Unicode.sbl
+line_begin=`sed -n '/\/\* special characters (in ISO Latin I) \*\//=' snowball_code/algorithms/basque/stem_Unicode.sbl`;	\
+sed -i "${line_begin}a\\stringdef n\" hex 'F1'" snowball_code/algorithms/basque/stem_Unicode.sbl;				\
+sed -i ${line_begin}'a\\' snowball_code/algorithms/basque/stem_Unicode.sbl
+sed -i 's!\xc3\xb1!{n"}!g' snowball_code/algorithms/basque/stem_Unicode.sbl
 rm -fr snowball_all/algorithms/basque/basque
