@@ -11,9 +11,9 @@ JAVA_SOURCES = $(libstemmer_algorithms:%=snowball_code/$(java_src_generated)/%St
 JS_TESTS_SRC = $(libstemmer_algorithms:%=js_snowball/tests/js/%Tests.js)
 JS_TESTS_HTML = $(libstemmer_algorithms:%=js_snowball/tests/%Tests.html)
 
-all: js_snowball/demo.html js_snowball/tests/composite.html js_snowball/lib/Snowball.js
+all: js_snowball/index.html js_snowball/tests/composite.html js_snowball/lib/Snowball.js
 
-js_snowball/demo.html: $(JAVA_SOURCES)
+js_snowball/index.html: $(JAVA_SOURCES)
 	@echo "<!DOCTYPE html>" > $@
 	@echo "<html>" >> $@
 	@echo "<head>" >> $@
@@ -162,5 +162,5 @@ clean:
 	-make -C snowball_code -f GNUmakefile_js_copy libstemmer_algorithms="$(subst $(eval), ,$(libstemmer_algorithms))" --no-print-directory clean
 	-rm js_snowball/lib/Snowball.js js_snowball/tests/js/*Tests.js		\
 		js_snowball/tests/composite.html js_snowball/tests/*Tests.html	\
-		js_snowball/demo.html snowball_code/GNUmakefile_js_copy		\
+		js_snowball/index.html snowball_code/GNUmakefile_js_copy		\
 		snowball_code/libstemmer/modules_js_copy.txt
