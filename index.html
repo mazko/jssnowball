@@ -1,77 +1,63 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Jssnowball by mazko</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/main.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-  </head>
-  <body>
-
-      <header>
-        <h1>Jssnowball</h1>
-        <p></p>
-      </header>
-
-      <div id="banner">
-        <span id="logo"></span>
-
-        <a href="https://github.com/mazko/jssnowball" class="button fork"><strong>View On GitHub</strong></a>
-        <div class="downloads">
-          <span>Downloads:</span>
-          <ul>
-            <li><a href="https://github.com/mazko/jssnowball/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/mazko/jssnowball/tarball/master" class="button">TAR</a></li>
-          </ul>
-        </div>
-      </div><!-- end banner -->
-
-    <div class="wrapper">
-      <nav>
-        <ul></ul>
-      </nav>
-      <section>
-        <h3>Welcome to GitHub Pages.</h3>
-
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
-
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
-
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
-
-<h3>Designer Templates</h3>
-
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
-
-<h3>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>Project maintained by <a href="https://github.com/mazko">mazko</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
-      </footer>
-    </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
-  </body>
+<head>
+	<meta charset="utf-8">
+	<title>Online Snowball stemmers demo</title>
+	<script src="lib/Snowball.js"></script>
+	<script>
+		var Stem = (function() { var lang, testStemmer; return function(lng, word) { if (lng != lang) {lang = lng; testStemmer = new Snowball(lang);}  testStemmer.setCurrent(word); testStemmer.stem(); return testStemmer.getCurrent();}})();
+		function printstem(lng, word){document.getElementById("result").innerHTML = "<b>" + Stem(lng, word) + "</b>";}
+	</script>
+</head>
+<body>
+	<p>Type ONE word, select language and press "<b>Stem!</b>" button.</p>
+	<input maxlength="50" size="50" id="query" type="text">
+	<select id="language">
+		<option value="danish">danish</option>
+		<option value="dutch">dutch</option>
+		<option value="english">english</option>
+		<option value="finnish">finnish</option>
+		<option value="french">french</option>
+		<option value="german">german</option>
+		<option value="hungarian">hungarian</option>
+		<option value="italian">italian</option>
+		<option value="norwegian">norwegian</option>
+		<option value="porter">porter</option>
+		<option value="portuguese">portuguese</option>
+		<option value="romanian">romanian</option>
+		<option value="russian">russian</option>
+		<option value="spanish">spanish</option>
+		<option value="swedish">swedish</option>
+		<option value="turkish">turkish</option>
+		<option value="basque">basque</option>
+	</select>
+	<button type="button" onclick=" printstem(document.getElementById('language').value,  document.getElementById('query').value);"><noscript> <span style="color:red;">Enable JavaScript ! </span></noscript>Stem!</button>
+	<p id="result"></p>
+	<fieldset><legend>Unit tests</legend>
+		<a href="tests/composite.html" target="_blank">all</a>
+		<a href="tests/danishTests.html" target="_blank">danish</a>
+		<a href="tests/dutchTests.html" target="_blank">dutch</a>
+		<a href="tests/englishTests.html" target="_blank">english</a>
+		<a href="tests/finnishTests.html" target="_blank">finnish</a>
+		<a href="tests/frenchTests.html" target="_blank">french</a>
+		<a href="tests/germanTests.html" target="_blank">german</a>
+		<a href="tests/hungarianTests.html" target="_blank">hungarian</a>
+		<a href="tests/italianTests.html" target="_blank">italian</a>
+		<a href="tests/norwegianTests.html" target="_blank">norwegian</a>
+		<a href="tests/porterTests.html" target="_blank">porter</a>
+		<a href="tests/portugueseTests.html" target="_blank">portuguese</a>
+		<a href="tests/romanianTests.html" target="_blank">romanian</a>
+		<a href="tests/russianTests.html" target="_blank">russian</a>
+		<a href="tests/spanishTests.html" target="_blank">spanish</a>
+		<a href="tests/swedishTests.html" target="_blank">swedish</a>
+		<a href="tests/turkishTests.html" target="_blank">turkish</a>
+		<a href="tests/basqueTests.html" target="_blank">basque</a>
+	</fieldset>
+	<fieldset><legend>Links</legend>
+		<a href="https://github.com/mazko/jssnowball" target="_blank" rel="nofollow">Sources</a>
+		<a href="http://snowball.tartarus.org/" target="_blank" rel="nofollow">Snowball</a>
+		<a href="http://github.com/mazko" target="_blank" rel="nofollow">GitHub</a>
+		<a href="mailto:o.mazko%20%5Bat%5D%20mail.ru?subject=Snowball%20to%20JavaScript%20generator"  target="_blank" rel="nofollow" onmouseover="var split = this.href.split('?');  split[0] = split[0].replace('%20%5Bat%5D%20','@'); this.href = split.join('?');">Feedback</a>
+	</fieldset>
+</body>
 </html>
