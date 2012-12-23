@@ -37,8 +37,21 @@ js_snowball/demo.html: $(JAVA_SOURCES)
 	@echo "</select>" | sed 's!^!\t!' >> $@
 	@echo "<button type=\"button\" onclick=\""						\
 	      "printstem(document.getElementById('language').value, "				\
-	      "document.getElementById('query').value);\">Stem!</button>" | sed 's!^!\t!' >> $@
+	      "document.getElementById('query').value);\"><noscript>"				\
+	      "<span style=\"color:red;\">Enable JavaScript ! </span></noscript>Stem!</button>" | sed 's!^!\t!' >> $@
 	@echo "<p id=\"result\"></p>" | sed 's!^!\t!' >> $@
+	@echo "<fieldset><legend>Unit tests</legend>" | sed 's!^!\t!' >> $@
+	@echo "<a href=\"tests/composite.html\" target=\"_blank\">all</a>" | sed 's!^!\t\t!' >> $@;
+	@$(foreach l,$(libstemmer_algorithms), echo "<a href=\"tests/$(l)Tests.html\" target=\"_blank\">$(l)</a>" | sed 's!^!\t\t!' >> $@;)
+	@echo "</fieldset>" | sed 's!^!\t!' >> $@
+	@echo "<fieldset><legend>Links</legend>" | sed 's!^!\t!' >> $@
+	@echo "<a href=\"https://github.com/mazko/jssnowball\" target=\"_blank\" rel=\"nofollow\">Sources</a>" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"http://snowball.tartarus.org/\" target=\"_blank\" rel=\"nofollow\">Snowball</a>" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"http://github.com/mazko\" target=\"_blank\" rel=\"nofollow\">GitHub</a>" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"mailto:o.mazko%20%5Bat%5D%20mail.ru?subject=Snowball%20to%20JavaScript%20generator\" " \
+	      "target=\"_blank\" rel=\"nofollow\" onmouseover=\"var split = this.href.split('?'); "		\
+	      "split[0] = split[0].replace('%20%5Bat%5D%20','@'); this.href = split.join('?');\">Feedback</a>" | sed 's!^!\t\t!' >> $@;
+	@echo "</fieldset>" | sed 's!^!\t!' >> $@
 	@echo "</body>" >> $@
 	@echo "</html>" >> $@
 
@@ -105,14 +118,9 @@ snowball_code/stemwords: $(JAVA_SOURCES)
 	@cp snowball_code/GNUmakefile snowball_code/GNUmakefile_js_copy
 	@cp snowball_code/libstemmer/modules.txt snowball_code/libstemmer/modules_js_copy.txt
 	@sed -i 's!libstemmer\/modules\.txt!libstemmer\/modules_js_copy\.txt!' snowball_code/GNUmakefile_js_copy
-	@line_begin=`sed -n '/libstemmer_algorithms\s*=/=' snowball_code/GNUmakefile_js_copy | sed -n 1p`;	\
-	line_end=`sed -n $${line_begin}',$$ { /^\s*$$/= }' snowball_code/GNUmakefile_js_copy | sed -n 1p`;	\
-	sed -i $${line_begin}','$${line_end}'d' snowball_code/GNUmakefile_js_copy;				\
-	sed -i $${line_begin}'i\\' snowball_code/GNUmakefile_js_copy;						\
-	sed -i $${line_begin}'i\\libstemmer_algorithms = $(subst $(eval), ,$(libstemmer_algorithms))' snowball_code/GNUmakefile_js_copy
 	@$(foreach a,$(libstemmer_algorithms), grep -q '\s*$(a)\s\+' snowball_code/libstemmer/modules_js_copy.txt || \
 	echo '$(a) UTF_8 $(a)' >> snowball_code/libstemmer/modules_js_copy.txt;)
-	@make -C snowball_code -f GNUmakefile_js_copy --no-print-directory stemwords
+	@make -C snowball_code libstemmer_algorithms="$(subst $(eval), ,$(libstemmer_algorithms))" -f GNUmakefile_js_copy --no-print-directory stemwords
 
 js_snowball/lib/Snowball.js: $(JAVA_SOURCES) $(wildcard js_snowball/src/*.js)
 	@mkdir -p js_snowball/lib
@@ -137,7 +145,11 @@ js_snowball/lib/Snowball.js: $(JAVA_SOURCES) $(wildcard js_snowball/src/*.js)
 	@echo "return new stemFactory[stemName]();" | sed 's!^!\t!' >> $@
 	@echo "}" >> $@
 
-snowball_code/$(java_src_generated)/%Stemmer.java: $(wildcard snowball_code/compiler/*.c) $(wildcard snowball_code/compiler/*.h)
+snowball_code/algorithms/%/stem_Unicode.sbl: snowball_code/algorithms/%/stem_ISO_8859_1.sbl
+	cp $^ $@
+
+snowball_code/$(java_src_generated)/%Stemmer.java: snowball_code/algorithms/%/stem_Unicode.sbl \
+	    $(wildcard snowball_code/compiler/*.c) $(wildcard snowball_code/compiler/*.h)
 	@target=`echo "$@" | sed 's![^/]*/!!'`; \
 	make -C snowball_code --no-print-directory $${target}
 
@@ -147,7 +159,7 @@ java_src_check: $(JAVA_SOURCES)
 	diff -r $(JAVA_SRC_DWNLD)/libstemmer_java/$(java_src_generated) snowball_code/$(java_src_generated)
 
 clean:
-	-make -C snowball_code -f GNUmakefile_js_copy --no-print-directory clean
+	-make -C snowball_code -f GNUmakefile_js_copy libstemmer_algorithms="$(subst $(eval), ,$(libstemmer_algorithms))" --no-print-directory clean
 	-rm js_snowball/lib/Snowball.js js_snowball/tests/js/*Tests.js		\
 		js_snowball/tests/composite.html js_snowball/tests/*Tests.html	\
 		js_snowball/demo.html snowball_code/GNUmakefile_js_copy		\
