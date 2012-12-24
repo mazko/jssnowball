@@ -1,9 +1,9 @@
 # -*- makefile -*-
 
-libstemmer_algorithms = danish dutch english finnish french german hungarian \
+libstemmer_algorithms = armenian basque danish dutch english finnish french german hungarian \
 			italian \
 			norwegian porter portuguese romanian \
-			russian spanish swedish turkish basque
+			russian spanish swedish turkish
 
 java_src_generated = java/org/tartarus/snowball/ext
 
