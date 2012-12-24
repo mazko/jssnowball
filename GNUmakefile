@@ -49,7 +49,7 @@ js_snowball/index.html: $(JAVA_SOURCES)
 	@echo "<a href=\"http://snowball.tartarus.org/\" target=\"_blank\" rel=\"nofollow\">Snowball</a>" | sed 's!^!\t\t!' >> $@;
 	@echo "<a href=\"http://github.com/mazko\" target=\"_blank\" rel=\"nofollow\">GitHub</a>" | sed 's!^!\t\t!' >> $@;
 	@echo "<a href=\"mailto:o.mazko%20%5Bat%5D%20mail.ru?subject=Snowball%20to%20JavaScript%20generator\" " \
-	      "target=\"_blank\" rel=\"nofollow\" onmouseover=\"var split = this.href.split('?'); "		\
+	      "rel=\"nofollow\" onmouseover=\"var split = this.href.split('?'); "				\
 	      "split[0] = split[0].replace('%20%5Bat%5D%20','@'); this.href = split.join('?');\">Feedback</a>" | sed 's!^!\t\t!' >> $@;
 	@echo "</fieldset>" | sed 's!^!\t!' >> $@
 	@echo "</body>" >> $@
