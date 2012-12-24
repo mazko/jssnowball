@@ -30,7 +30,7 @@ sed -i ${line_begin}'a\\' snowball_code/algorithms/basque/stem_Unicode.sbl
 sed -i 's!\xc3\xb1!{n"}!g' snowball_code/algorithms/basque/stem_Unicode.sbl
 rm -fr snowball_all/algorithms/basque/basque
 
-# armenian - extract voc.txt from aspell, lowercase, sort, uniq (debian sudo apt-get install aspell-hy)
-aspell -l hy dump master | aspell -l hy expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u > snowball_all/algorithms/armenian/voc.txt
+# armenian - extract voc.txt from aspell, lowercase, sort, uniq, and / 3 (debian sudo apt-get install aspell-hy)
+aspell -l hy dump master | aspell -l hy expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~3p'> snowball_all/algorithms/armenian/voc.txt
 mkdir snowball_code/algorithms/armenian
 cp snowball_all/algorithms/armenian/stemmer.sbl snowball_code/algorithms/armenian/stem_Unicode.sbl
