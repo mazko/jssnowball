@@ -13,6 +13,8 @@
 	<p>Type ONE word, select language and press "<b>Stem!</b>" button.</p>
 	<input maxlength="50" size="50" id="query" type="text">
 	<select id="language">
+		<option value="armenian">armenian</option>
+		<option value="basque">basque</option>
 		<option value="danish">danish</option>
 		<option value="dutch">dutch</option>
 		<option value="english">english</option>
@@ -29,12 +31,13 @@
 		<option value="spanish">spanish</option>
 		<option value="swedish">swedish</option>
 		<option value="turkish">turkish</option>
-		<option value="basque">basque</option>
 	</select>
 	<button type="button" onclick=" printstem(document.getElementById('language').value,  document.getElementById('query').value);"><noscript> <span style="color:red;">Enable JavaScript ! </span></noscript>Stem!</button>
 	<p id="result"></p>
 	<fieldset><legend>Unit tests</legend>
 		<a href="tests/composite.html" target="_blank">all</a>
+		<a href="tests/armenianTests.html" target="_blank">armenian</a>
+		<a href="tests/basqueTests.html" target="_blank">basque</a>
 		<a href="tests/danishTests.html" target="_blank">danish</a>
 		<a href="tests/dutchTests.html" target="_blank">dutch</a>
 		<a href="tests/englishTests.html" target="_blank">english</a>
@@ -51,7 +54,6 @@
 		<a href="tests/spanishTests.html" target="_blank">spanish</a>
 		<a href="tests/swedishTests.html" target="_blank">swedish</a>
 		<a href="tests/turkishTests.html" target="_blank">turkish</a>
-		<a href="tests/basqueTests.html" target="_blank">basque</a>
 	</fieldset>
 	<fieldset><legend>Links</legend>
 		<a href="https://github.com/mazko/jssnowball" target="_blank" rel="nofollow">Sources</a>
