@@ -35,6 +35,13 @@ aspell -l hy dump master | aspell -l hy expand | tr ' ' '\n' | sed -e 's/./\L\0/
 mkdir snowball_code/algorithms/armenian
 cp snowball_all/algorithms/armenian/stemmer.sbl snowball_code/algorithms/armenian/stem_Unicode.sbl
 
+# catalan - extract voc.txt from aspell, lowercase, sort, uniq, and / 200 (debian sudo apt-get install aspell-ca)
+aspell -l ca dump master | aspell -l ca expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~200p'> snowball_all/algorithms/catalan/voc.txt
+mkdir snowball_code/algorithms/catalan
+tar xf snowball_all/algorithms/catalan/tarball.tgz -C snowball_all/algorithms/catalan
+cp snowball_all/algorithms/catalan/catalan/stemmer.sbl snowball_code/algorithms/catalan/stem_Unicode.sbl
+rm -fr snowball_all/algorithms/catalan/catalan
+
 # czech - extract voc.txt from aspell, lowercase, sort, uniq, and / 75 (apt-get install aspell-cs), download, convert ISO-8859-2 to unicode
 mkdir snowball_all/algorithms/czech
 aspell -l cs dump master | aspell -l cs expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~75p' > snowball_all/algorithms/czech/voc.txt

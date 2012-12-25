@@ -1,6 +1,6 @@
 # -*- makefile -*-
 
-libstemmer_algorithms = armenian basque czech danish dutch english \
+libstemmer_algorithms = armenian basque catalan czech danish dutch english \
 			finnish french german hungarian italian irish \
 			norwegian porter portuguese romanian \
 			russian spanish swedish turkish
