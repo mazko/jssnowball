@@ -42,7 +42,7 @@ mkdir snowball_code/algorithms/czech
 wget -O snowball_code/algorithms/czech/stem_Unicode.sbl http://snowball.tartarus.org/otherapps/oregan/czech-do.sbl
 VARS_8859_2=`sed -n "s/^.*\s\+hex\s\+'\(\w\+\)'/\1/p" snowball_code/algorithms/czech/stem_Unicode.sbl`;		\
 for v in $VARS_8859_2; do											\
-vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+\(\w\+\).*/\1/p'`;	\
+vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+\(\w\+\).*/\U\1/p'`;	\
 echo "'$v' => '$vc'"; sed -i "s/\s\+hex\s\+'$v'/ hex '$vc'/" snowball_code/algorithms/czech/stem_Unicode.sbl; done;
 
 # irish - extract voc.txt from aspell, lowercase, sort, uniq, and / 5 (debian sudo apt-get install aspell-ga), download stemmer
