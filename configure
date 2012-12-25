@@ -34,3 +34,15 @@ rm -fr snowball_all/algorithms/basque/basque
 aspell -l hy dump master | aspell -l hy expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~3p'> snowball_all/algorithms/armenian/voc.txt
 mkdir snowball_code/algorithms/armenian
 cp snowball_all/algorithms/armenian/stemmer.sbl snowball_code/algorithms/armenian/stem_Unicode.sbl
+
+# czech - extract voc.txt from aspell, lowercase, sort, uniq, and / 75 (debian sudo apt-get install aspell-cs), download stemmer
+mkdir snowball_all/algorithms/czech
+aspell -l cs dump master | aspell -l cs expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~75p' > snowball_all/algorithms/czech/voc.txt
+mkdir snowball_code/algorithms/czech
+wget -O snowball_code/algorithms/czech/stem_Unicode.sbl http://snowball.tartarus.org/otherapps/oregan/czech-do.sbl
+
+# irish - extract voc.txt from aspell, lowercase, sort, uniq, and / 5 (debian sudo apt-get install aspell-ga), download stemmer
+mkdir snowball_all/algorithms/irish
+aspell -l ga dump master | aspell -l ga expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~5p' > snowball_all/algorithms/irish/voc.txt
+mkdir snowball_code/algorithms/irish
+wget -O snowball_code/algorithms/irish/stem_Unicode.sbl http://snowball.tartarus.org/otherapps/oregan/irish.sbl
