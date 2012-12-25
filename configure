@@ -19,7 +19,7 @@ make JAVA_SRC_DWNLD="$JAVA_SRC_DWNLOADED" libstemmer_algorithms="danish dutch en
 
 cp js_snowball/generator_js.c snowball_code/compiler/generator_java.c
 
-# basque manipulation - encoding and little .sbl patch
+# basque manipulation - encoding and little .sbl patch: echo -n $'\xC3\xB1' | iconv -f utf8 -t ISO-8859-1 | xxd -p => f1
 tar xf snowball_all/algorithms/basque/tarball.tgz -C snowball_all/algorithms/basque
 iconv -f `file -bi snowball_all/algorithms/basque/basque/voc.txt | sed 's!.*charset=\(.*\)!\1!'` -t utf-8 snowball_all/algorithms/basque/basque/voc.txt > snowball_all/algorithms/basque/voc.txt
 mkdir snowball_code/algorithms/basque
@@ -35,11 +35,15 @@ aspell -l hy dump master | aspell -l hy expand | tr ' ' '\n' | sed -e 's/./\L\0/
 mkdir snowball_code/algorithms/armenian
 cp snowball_all/algorithms/armenian/stemmer.sbl snowball_code/algorithms/armenian/stem_Unicode.sbl
 
-# czech - extract voc.txt from aspell, lowercase, sort, uniq, and / 75 (debian sudo apt-get install aspell-cs), download stemmer
+# czech - extract voc.txt from aspell, lowercase, sort, uniq, and / 75 (apt-get install aspell-cs), download, convert ISO-8859-2 to unicode
 mkdir snowball_all/algorithms/czech
 aspell -l cs dump master | aspell -l cs expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~75p' > snowball_all/algorithms/czech/voc.txt
 mkdir snowball_code/algorithms/czech
 wget -O snowball_code/algorithms/czech/stem_Unicode.sbl http://snowball.tartarus.org/otherapps/oregan/czech-do.sbl
+VARS_8859_2=`sed -n "s/^.*\s\+hex\s\+'\(\w\+\)'/\1/p" snowball_code/algorithms/czech/stem_Unicode.sbl`;		\
+for v in $VARS_8859_2; do											\
+vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+\(\w\+\).*/\1/p'`;	\
+echo "'$v' => '$vc'"; sed -i "s/\s\+hex\s\+'$v'/ hex '$vc'/" snowball_code/algorithms/czech/stem_Unicode.sbl; done;
 
 # irish - extract voc.txt from aspell, lowercase, sort, uniq, and / 5 (debian sudo apt-get install aspell-ga), download stemmer
 mkdir snowball_all/algorithms/irish
