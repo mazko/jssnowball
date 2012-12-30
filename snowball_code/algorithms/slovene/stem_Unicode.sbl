@@ -12,9 +12,9 @@ stringescapes {}
 
 /* special characters (in ISO-8859-2) */
 
-stringdef sv hex 'B9' // s-hacek
-stringdef cv hex 'E8' // c-hacek
-stringdef zv hex 'BE' // z-hacek
+stringdef sv hex '161' // s-hacek
+stringdef cv hex '10D' // c-hacek
+stringdef zv hex '17E' // z-hacek
 
 define crke 'abc{cv}defghijklmnoprs{sv}tuvz{zv}'
 define samoglasniki 'aeiou'

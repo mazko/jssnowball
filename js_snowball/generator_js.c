@@ -339,7 +339,7 @@ static void generate_AE(struct generator * g, struct node * p) {
         case c_limit:
             w(g, p->mode == m_forward ? "sbp.limit" : "sbp.limit_backward"); break;
         case c_size:
-            w(g, "(sbp.current.length)"); break;
+            w(g, "sbp.get_size_of_p()"); break;
     }
 }
 

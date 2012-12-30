@@ -3,7 +3,7 @@
 libstemmer_algorithms = armenian basque catalan czech danish dutch english \
 			finnish french german hungarian italian irish \
 			norwegian porter portuguese romanian \
-			russian spanish swedish turkish
+			russian spanish slovene swedish turkish
 
 java_src_generated = java/org/tartarus/snowball/ext
 

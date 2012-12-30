@@ -47,9 +47,9 @@ mkdir snowball_all/algorithms/czech
 aspell -l cs dump master | aspell -l cs expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~75p' > snowball_all/algorithms/czech/voc.txt
 mkdir snowball_code/algorithms/czech
 wget -O snowball_code/algorithms/czech/stem_Unicode.sbl http://snowball.tartarus.org/otherapps/oregan/czech-do.sbl
-VARS_8859_2=`sed -n "s/^.*\s\+hex\s\+'\(\w\+\)'/\1/p" snowball_code/algorithms/czech/stem_Unicode.sbl`;		\
+VARS_8859_2=`sed -n "s/^.*\s\+hex\s\+'\(\w\+\)'.*/\1/p" snowball_code/algorithms/czech/stem_Unicode.sbl`;	\
 for v in $VARS_8859_2; do											\
-vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+\(\w\+\).*/\U\1/p'`;	\
+vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+0*\(\w\+\).*/\U\1/p'`;	\
 echo "'$v' => '$vc'"; sed -i "s/\s\+hex\s\+'$v'/ hex '$vc'/" snowball_code/algorithms/czech/stem_Unicode.sbl; done;
 
 # irish - extract voc.txt from aspell, lowercase, sort, uniq, and / 5 (debian sudo apt-get install aspell-ga), download stemmer
@@ -63,7 +63,7 @@ mkdir snowball_all/algorithms/slovene
 aspell -l sl dump master | aspell -l sl expand | tr ' ' '\n' | sed -e 's/./\L\0/g' | sort -u | sed -n '1~15p' > snowball_all/algorithms/slovene/voc.txt
 mkdir snowball_code/algorithms/slovene
 cp albert_einstein/slovene_stemmer_from_discuss.sbl snowball_code/algorithms/slovene/stem_Unicode.sbl
-VARS_8859_2=`sed -n "s/^.*\s\+hex\s\+'\(\w\+\)'/\1/p" snowball_code/algorithms/slovene/stem_Unicode.sbl`;	\
+VARS_8859_2=`sed -n "s/^.*\s\+hex\s\+'\(\w\+\)'.*/\1/p" snowball_code/algorithms/slovene/stem_Unicode.sbl`;	\
 for v in $VARS_8859_2; do											\
-vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+\(\w\+\).*/\U\1/p'`;	\
+vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+0*\(\w\+\).*/\U\1/p'`;	\
 echo "'$v' => '$vc'"; sed -i "s/\s\+hex\s\+'$v'/ hex '$vc'/" snowball_code/algorithms/slovene/stem_Unicode.sbl; done;
