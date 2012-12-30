@@ -229,6 +229,12 @@ function SnowballProgram() {
 		},
 		eq_v_b : function(s) {
 			return this.eq_s_b(s.length, s);
+		},
+		get_size_of_p : function() {
+			
+			/* Potentially bug of ANSI C stemmers, presents here for porting compliance */
+
+			return encodeURIComponent(current).split(/%..|./).length;
 		}
 	};
 }
