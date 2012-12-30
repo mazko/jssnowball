@@ -234,7 +234,7 @@ function SnowballProgram() {
 			
 			/* Potentially bug of ANSI C stemmers, presents here for porting compliance */
 
-			return encodeURIComponent(current).split(/%..|./).length;
+			return current ? encodeURIComponent(current).match(/%..|./g).length + 1 : 1;
 		}
 	};
 }
