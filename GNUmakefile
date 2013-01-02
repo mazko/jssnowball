@@ -144,7 +144,7 @@ js_snowball/lib/Snowball.js: $(JAVA_SOURCES) $(wildcard js_snowball/src/*.js)
 	@echo "var stemName = lng.toLowerCase() + \"Stemmer\";" | sed 's!^!\t!' >> $@
 	@echo "return new stemFactory[stemName]();" | sed 's!^!\t!' >> $@
 	@echo "}" >> $@
-	@grep -q 'copy_from\|in_range\|in_range_b\|out_range\|out_range_b\|assign_to' $@  && \
+	@grep -q 'copy_from\|in_range\|in_range_b\|out_range\|out_range_b\|assign_to\|eq_v[^_]' $@ && \
 	echo 'Error: possible usage of not implemented method in SnowballProgramm.js' ; [ $$? -ne 0 ]
 
 snowball_code/algorithms/%/stem_Unicode.sbl: snowball_code/algorithms/%/stem_ISO_8859_1.sbl
