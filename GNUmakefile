@@ -43,11 +43,11 @@ js_snowball/index.html: $(JAVA_SOURCES)
 	@echo "<fieldset><legend>Unit tests</legend>" | sed 's!^!\t!' >> $@
 	@echo "<a href=\"tests/composite.html\" target=\"_blank\">all</a>" | sed 's!^!\t\t!' >> $@;
 	@$(foreach l,$(libstemmer_algorithms), echo "<a href=\"tests/$(l)Tests.html\" target=\"_blank\">$(l)</a>" | sed 's!^!\t\t!' >> $@;)
-	@echo "</fieldset>" | sed 's!^!\t!' >> $@
+	@echo "</fieldset><p></p>" | sed 's!^!\t!' >> $@
 	@echo "<fieldset><legend>Links</legend>" | sed 's!^!\t!' >> $@
-	@echo "<a href=\"https://github.com/mazko/jssnowball\" target=\"_blank\" rel=\"nofollow\">Sources</a>" | sed 's!^!\t\t!' >> $@;
-	@echo "<a href=\"http://snowball.tartarus.org/\" target=\"_blank\" rel=\"nofollow\">Snowball</a>" | sed 's!^!\t\t!' >> $@;
-	@echo "<a href=\"http://mazko.github.com/jsli/\" target=\"_blank\">Language Identifier</a>" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"https://github.com/mazko/jssnowball\" target=\"_blank\" rel=\"nofollow\">Sources</a> |" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"http://snowball.tartarus.org/\" target=\"_blank\" rel=\"nofollow\">Snowball</a> |" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"http://mazko.github.com/jsli/\" target=\"_blank\">Language Identifier</a> |" | sed 's!^!\t\t!' >> $@;
 	@echo "<a href=\"mailto:o.mazko%20%5Bat%5D%20mail.ru?subject=Snowball%20to%20JavaScript%20generator\" " \
 	      "rel=\"nofollow\" onmouseover=\"var split = this.href.split('?'); "				\
 	      "split[0] = split[0].replace('%20%5Bat%5D%20','@'); this.href = split.join('?');\">Feedback</a>" | sed 's!^!\t\t!' >> $@;
