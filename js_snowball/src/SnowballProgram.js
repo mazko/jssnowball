@@ -222,7 +222,7 @@ function SnowballProgram() {
 			return current.substring(this.bra, this.ket);
 		},
 		get_size_of_p : function() {
-			
+
 			/* Potentially bug of ANSI C stemmers, presents here for porting compliance */
 
 			return current ? encodeURIComponent(current).match(/%..|./g).length + 1 : 1;
