@@ -521,7 +521,7 @@ static void generate_backwards(struct generator * g, struct node * p) {
     write_comment(g, p);
     writef(g,"~Msbp.limit_backward = sbp.cursor; sbp.cursor = sbp.limit;~N", p);
     generate(g, p->left);
-    w(g, "~Msbp.cursor = sbp.limit_backward;");
+    w(g, "~Msbp.cursor = sbp.limit_backward;~N");
 }
 
 
