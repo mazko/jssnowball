@@ -48,7 +48,7 @@ js_snowball/index.html: $(JAVA_SOURCES)
 	@echo "<a href=\"https://github.com/mazko/jssnowball\" target=\"_blank\" rel=\"nofollow\">Sources</a> |" | sed 's!^!\t\t!' >> $@;
 	@echo "<a href=\"http://snowball.tartarus.org/\" target=\"_blank\" rel=\"nofollow\">Snowball</a> |" | sed 's!^!\t\t!' >> $@;
 	@echo "<a href=\"http://mazko.github.com/jsli/\" target=\"_blank\">Language Identifier</a> |" | sed 's!^!\t\t!' >> $@;
-	@echo "<a href=\"http://autotagcloud.com/\" target=\"_blank\">AutoTagCloud</a> |" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"http://mazko.github.io/jstaggregator/\" target=\"_blank\">Urim</a> |" | sed 's!^!\t\t!' >> $@;
 	@echo "<a href=\"mailto:o.mazko%20%5Bat%5D%20mail.ru?subject=Snowball%20to%20JavaScript%20generator\" " \
 	      "rel=\"nofollow\" onmouseover=\"var split = this.href.split('?'); "				\
 	      "split[0] = split[0].replace('%20%5Bat%5D%20','@'); this.href = split.join('?');\">Feedback</a>" | sed 's!^!\t\t!' >> $@;
