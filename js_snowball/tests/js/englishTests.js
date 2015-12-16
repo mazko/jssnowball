@@ -1,5 +1,4 @@
 QUnit.config.hidepassed = true;
-QUnit.config.blocking = false;
 var Stem = (function() { var testStemmer = new Snowball('english'); return function(word) {  testStemmer.setCurrent(word); testStemmer.stem(); return testStemmer.getCurrent();}})();
 test("' -> '", function() {deepEqual( Stem("'"), "'");});
 test("'' -> ''", function() {deepEqual( Stem("''"), "''");});
@@ -29418,4 +29417,3 @@ test("zorillo -> zorillo", function() {deepEqual( Stem("zorillo"), "zorillo");})
 test("zorillos -> zorillo", function() {deepEqual( Stem("zorillos"), "zorillo");});
 test("zossimov -> zossimov", function() {deepEqual( Stem("zossimov"), "zossimov");});
 test("zu -> zu", function() {deepEqual( Stem("zu"), "zu");});
-QUnit.done(function( details ) { test("Total tests generated equals total words count in voc.txt",  function() {deepEqual(details.total, 29417); QUnit.config.done = []});});

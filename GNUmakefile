@@ -106,7 +106,6 @@ js_snowball/tests/%Tests.html:
 js_snowball/tests/js/%Tests.js: $(snowball_all)/algorithms/%/voc.txt $(snowball_code)/stemwords
 	@mkdir -p js_snowball/tests/js
 	@echo "QUnit.config.hidepassed = true;" > $@
-	@echo "QUnit.config.blocking = false;" >> $@
 	@echo "var Stem = (function() { var testStemmer = new Snowball('$*'); return function(word) { "		\
               "testStemmer.setCurrent(word); testStemmer.stem(); return testStemmer.getCurrent();}})();" >> $@
 	@echo "Generating tests for $*"
@@ -116,10 +115,6 @@ js_snowball/tests/js/%Tests.js: $(snowball_all)/algorithms/%/voc.txt $(snowball_
 	       sed 'h;G;s/\n/\", function\(\) {deepEqual\( Stem(\"/' | 						\
 	       sed 's!\"), \"! -> !' |										\
 	       sed 's!^!test\(\"!' | sed 's!$$!\"\);}\);!' >> $@
-	@total=`cat $(snowball_all)/algorithms/$*/voc.txt | sed '/^$$/d' | wc -l`;					\
-	echo "QUnit.done(function( details ) {" 								\
-	     "test(\"Total tests generated equals total words count in voc.txt\", "				\
-	     "function() {deepEqual(details.total, $${total}); QUnit.config.done = []});});" >> $@
 
 $(snowball_code)/stemwords: $(JAVA_SOURCES)
 	@cp $(snowball_code)/GNUmakefile $(snowball_code)/GNUmakefile_js_copy
