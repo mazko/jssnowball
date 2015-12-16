@@ -3,7 +3,7 @@
 module.exports = function(grunt) {
 	grunt.initConfig({
 	    qunit: {
-	    	options: { timeout: 50000},
+	    	options: { timeout: 50000 },
 	        files: ["js_snowball/tests/composite.html"]
 	    }
 	});
