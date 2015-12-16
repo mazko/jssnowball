@@ -141,7 +141,7 @@ static void write_declare(struct generator * g,
 }
 
 static void write_comment(struct generator * g, struct node * p) {
-/*
+
     write_margin(g);
     write_string(g, "// ");
     write_string(g, (char *) name_of_token(p->type));
@@ -152,7 +152,6 @@ static void write_comment(struct generator * g, struct node * p) {
     write_string(g, ", line ");
     write_int(g, p->line_number);
     write_newline(g);
-*/
 }
 
 static void write_block_start(struct generator * g) {
@@ -170,16 +169,16 @@ static void write_savecursor(struct generator * g, struct node * p,
 
     g->B[0] = str_data(savevar);
     g->S[1] = "";
-    if (p->mode != m_forward) g->S[1] = "sbp.limit - ";
-    write_declare(g, "var ~B0", p);
-    writef(g, "~M~B0 = ~S1sbp.cursor;~N" , p);
+    if (p->mode != m_forward) g->S[1] = "limit - ";
+    write_declare(g, "int ~B0", p);
+    writef(g, "~M~B0 = ~S1cursor;~N" , p);
 }
 
 static void restore_string(struct node * p, struct str * out, struct str * savevar) {
 
     str_clear(out);
-    str_append_string(out, "sbp.cursor = ");
-    if (p->mode != m_forward) str_append_string(out, "sbp.limit - ");
+    str_append_string(out, "cursor = ");
+    if (p->mode != m_forward) str_append_string(out, "limit - ");
     str_append(out, savevar);
     str_append_string(out, ";");
 }
@@ -198,7 +197,7 @@ static void write_restorecursor(struct generator * g, struct node * p,
 static void write_inc_cursor(struct generator * g, struct node * p) {
 
     write_margin(g);
-    write_string(g, p->mode == m_forward ? "sbp.cursor++;" : "sbp.cursor--;");
+    write_string(g, p->mode == m_forward ? "cursor++;" : "cursor--;");
     write_newline(g);
 }
 
@@ -260,9 +259,9 @@ static void write_failure_if(struct generator * g, char * s, struct node * p) {
 static void write_check_limit(struct generator * g, struct node * p) {
 
     if (p->mode == m_forward) {
-        write_failure_if(g, "sbp.cursor >= sbp.limit", p);
+        write_failure_if(g, "cursor >= limit", p);
     } else {
-        write_failure_if(g, "sbp.cursor <= sbp.limit_backward", p);
+        write_failure_if(g, "cursor <= limit_backward", p);
     }
 }
 
@@ -333,13 +332,13 @@ static void generate_AE(struct generator * g, struct node * p) {
             write_string(g, s); generate_AE(g, p->right); write_string(g, ")"); break;
         case c_sizeof:
             g->V[0] = p->name;
-            w(g, "(~V0.length)"); break;
+            w(g, "(~V0.length())"); break;
         case c_cursor:
-            w(g, "sbp.cursor"); break;
+            w(g, "cursor"); break;
         case c_limit:
-            w(g, p->mode == m_forward ? "sbp.limit" : "sbp.limit_backward"); break;
+            w(g, p->mode == m_forward ? "limit" : "limit_backward"); break;
         case c_size:
-            w(g, "sbp.get_size_of_p()"); break;
+            w(g, "(current.length())"); break;
     }
 }
 
@@ -519,9 +518,9 @@ static void generate_or(struct generator * g, struct node * p) {
 static void generate_backwards(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    writef(g,"~Msbp.limit_backward = sbp.cursor; sbp.cursor = sbp.limit;~N", p);
+    writef(g,"~Mlimit_backward = cursor; cursor = limit;~N", p);
     generate(g, p->left);
-    w(g, "~Msbp.cursor = sbp.limit_backward;~N");
+    w(g, "~Mcursor = limit_backward;");
 }
 
 
@@ -694,7 +693,7 @@ static void generate_loop(struct generator * g, struct node * p) {
     struct str * loopvar = vars_newname(g);
     write_comment(g, p);
     g->B[0] = str_data(loopvar);
-    write_declare(g, "var ~B0", p);
+    write_declare(g, "int ~B0", p);
     w(g, "~Mfor (~B0 = ");
     generate_AE(g, p->AE);
     g->B[0] = str_data(loopvar);
@@ -750,7 +749,7 @@ static void generate_atleast(struct generator * g, struct node * p) {
     write_comment(g, p);
     w(g, "~{");
     g->B[0] = str_data(loopvar);
-    w(g, "~Mvar ~B0 = ");
+    w(g, "~Mint ~B0 = ");
     generate_AE(g, p->AE);
     w(g, ";~N");
     {
@@ -773,7 +772,7 @@ static void generate_setmark(struct generator * g, struct node * p) {
 
     write_comment(g, p);
     g->V[0] = p->name;
-    writef(g, "~M~V0 = sbp.cursor;~N", p);
+    writef(g, "~M~V0 = cursor;~N", p);
 }
 
 static void generate_tomark(struct generator * g, struct node * p) {
@@ -781,18 +780,18 @@ static void generate_tomark(struct generator * g, struct node * p) {
     write_comment(g, p);
     g->S[0] = p->mode == m_forward ? ">" : "<";
 
-    w(g, "~Mif (sbp.cursor ~S0 "); generate_AE(g, p->AE); w(g, ")~N");
+    w(g, "~Mif (cursor ~S0 "); generate_AE(g, p->AE); w(g, ")~N");
     write_block_start(g);
     write_failure(g);
     write_block_end(g);
     g->unreachable = false;
-    w(g, "~Msbp.cursor = "); generate_AE(g, p->AE); writef(g, ";~N", p);
+    w(g, "~Mcursor = "); generate_AE(g, p->AE); writef(g, ";~N", p);
 }
 
 static void generate_atmark(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    w(g, "~Mif (sbp.cursor != "); generate_AE(g, p->AE); writef(g, ")~N", p);
+    w(g, "~Mif (cursor != "); generate_AE(g, p->AE); writef(g, ")~N", p);
     write_block_start(g);
     write_failure(g);
     write_block_end(g);
@@ -805,21 +804,21 @@ static void generate_hop(struct generator * g, struct node * p) {
     write_comment(g, p);
     g->S[0] = p->mode == m_forward ? "+" : "-";
 
-    w(g, "~{~Mvar c = sbp.cursor ~S0 ");
+    w(g, "~{~Mint c = cursor ~S0 ");
     generate_AE(g, p->AE);
     w(g, ";~N");
 
-    g->S[0] = p->mode == m_forward ? "0" : "sbp.limit_backward";
+    g->S[0] = p->mode == m_forward ? "0" : "limit_backward";
 
-    write_failure_if(g, "~S0 > c || c > sbp.limit", p);
-    writef(g, "~Msbp.cursor = c;~N", p);
+    write_failure_if(g, "~S0 > c || c > limit", p);
+    writef(g, "~Mcursor = c;~N", p);
     writef(g, "~}", p);
 }
 
 static void generate_delete(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    writef(g, "~Msbp.slice_del();~N", p);
+    writef(g, "~Mslice_del();~N", p);
 }
 
 
@@ -833,44 +832,44 @@ static void generate_next(struct generator * g, struct node * p) {
 static void generate_tolimit(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    g->S[0] = p->mode == m_forward ? "sbp.limit" : "sbp.limit_backward";
-    writef(g, "~Msbp.cursor = ~S0;~N", p);
+    g->S[0] = p->mode == m_forward ? "limit" : "limit_backward";
+    writef(g, "~Mcursor = ~S0;~N", p);
 }
 
 static void generate_atlimit(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    g->S[0] = p->mode == m_forward ? "sbp.limit" : "sbp.limit_backward";
+    g->S[0] = p->mode == m_forward ? "limit" : "limit_backward";
     g->S[1] = p->mode == m_forward ? "<" : ">";
-    write_failure_if(g, "sbp.cursor ~S1 ~S0", p);
+    write_failure_if(g, "cursor ~S1 ~S0", p);
 }
 
 static void generate_leftslice(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    g->S[0] = p->mode == m_forward ? "sbp.bra" : "sbp.ket";
-    writef(g, "~M~S0 = sbp.cursor;~N", p);
+    g->S[0] = p->mode == m_forward ? "bra" : "ket";
+    writef(g, "~M~S0 = cursor;~N", p);
 }
 
 static void generate_rightslice(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    g->S[0] = p->mode == m_forward ? "sbp.ket" : "sbp.bra";
-    writef(g, "~M~S0 = sbp.cursor;~N", p);
+    g->S[0] = p->mode == m_forward ? "ket" : "bra";
+    writef(g, "~M~S0 = cursor;~N", p);
 }
 
 static void generate_assignto(struct generator * g, struct node * p) {
 
     write_comment(g, p);
     g->V[0] = p->name;
-    writef(g, "~M~V0 = sbp.assign_to(~V0);~N", p);
+    writef(g, "~M~V0 = assign_to(~V0);~N", p);
 }
 
 static void generate_sliceto(struct generator * g, struct node * p) {
 
     write_comment(g, p);
     g->V[0] = p->name;
-    writef(g, "~M~V0 = sbp.slice_to(~V0);~N", p);
+    writef(g, "~M~V0 = slice_to(~V0);~N", p);
 }
 
 static void generate_address(struct generator * g, struct node * p) {
@@ -888,11 +887,11 @@ static void generate_insert(struct generator * g, struct node * p, int style) {
     int keep_c = style == c_attach;
     write_comment(g, p);
     if (p->mode == m_backward) keep_c = !keep_c;
-    if (keep_c) w(g, "~{~Mvar c = sbp.cursor;~N");
-    writef(g, "~Msbp.insert(sbp.cursor, sbp.cursor, ", p);
+    if (keep_c) w(g, "~{~Mint c = cursor;~N");
+    writef(g, "~Minsert(cursor, cursor, ", p);
     generate_address(g, p);
     writef(g, ");~N", p);
-    if (keep_c) w(g, "~Msbp.cursor = c;~N~}");
+    if (keep_c) w(g, "~Mcursor = c;~N~}");
 }
 
 static void generate_assignfrom(struct generator * g, struct node * p) {
@@ -900,22 +899,22 @@ static void generate_assignfrom(struct generator * g, struct node * p) {
     int keep_c = p->mode == m_forward; /* like 'attach' */
 
     write_comment(g, p);
-    if (keep_c) writef(g, "~{~Mvar c = sbp.cursor;~N", p);
+    if (keep_c) writef(g, "~{~Mint c = cursor;~N", p);
     if (p->mode == m_forward) {
-        writef(g, "~Msbp.insert(sbp.cursor, sbp.limit, ", p);
+        writef(g, "~Minsert(cursor, limit, ", p);
     } else {
-        writef(g, "~Msbp.insert(sbp.limit_backward, sbp.cursor, ", p);
+        writef(g, "~Minsert(limit_backward, cursor, ", p);
     }
     generate_address(g, p);
     writef(g, ");~N", p);
-    if (keep_c) w(g, "~Msbp.cursor = c;~N~}");
+    if (keep_c) w(g, "~Mcursor = c;~N~}");
 }
 
 
 static void generate_slicefrom(struct generator * g, struct node * p) {
 
     write_comment(g, p);
-    w(g, "~Msbp.slice_from(");
+    w(g, "~Mslice_from(");
     generate_address(g, p);
     writef(g, ");~N", p);
 }
@@ -930,22 +929,22 @@ static void generate_setlimit(struct generator * g, struct node * p) {
 
     if (!g->unreachable) {
         g->B[0] = str_data(varname);
-        write_declare(g, "var ~B0", p);
+        write_declare(g, "int ~B0", p);
         if (p->mode == m_forward) {
-            w(g, "~M~B0 = sbp.limit - sbp.cursor;~N");
-            w(g, "~Msbp.limit = sbp.cursor;~N");
+            w(g, "~M~B0 = limit - cursor;~N");
+            w(g, "~Mlimit = cursor;~N");
         } else {
-            w(g, "~M~B0 = sbp.limit_backward;~N");
-            w(g, "~Msbp.limit_backward = sbp.cursor;~N");
+            w(g, "~M~B0 = limit_backward;~N");
+            w(g, "~Mlimit_backward = cursor;~N");
         }
         write_restorecursor(g, p, savevar);
 
         if (p->mode == m_forward) {
-            str_assign(g->failure_str, "sbp.limit += ");
+            str_assign(g->failure_str, "limit += ");
             str_append(g->failure_str, varname);
             str_append_ch(g->failure_str, ';');
         } else {
-            str_assign(g->failure_str, "sbp.limit_backward = ");
+            str_assign(g->failure_str, "limit_backward = ");
             str_append(g->failure_str, varname);
             str_append_ch(g->failure_str, ';');
         }
@@ -964,9 +963,7 @@ static void generate_setlimit(struct generator * g, struct node * p) {
 /* dollar sets snowball up to operate on a string variable as if it were the
  * current string */
 static void generate_dollar(struct generator * g, struct node * p) {
-    fprintf(stderr, "Error. generate_dollar NotImplemented.");
-    exit(1);
-/*
+
     struct str * savevar = vars_newname(g);
     write_comment(g, p);
     g->V[0] = p->name;
@@ -987,7 +984,6 @@ static void generate_dollar(struct generator * g, struct node * p) {
     }
     w(g, "~}");
     str_delete(savevar);
-*/
 }
 
 static void generate_integer_assign(struct generator * g, struct node * p, char * s) {
@@ -1024,9 +1020,9 @@ static void generate_grouping(struct generator * g, struct node * p, int complem
     g->I[0] = q->smallest_ch;
     g->I[1] = q->largest_ch;
     if (q->no_gaps)
-        write_failure_if(g, "!(sbp.~S1_range~S0(~I0, ~I1))", p);
+        write_failure_if(g, "!(~S1_range~S0(~I0, ~I1))", p);
     else
-        write_failure_if(g, "!(sbp.~S1_grouping~S0(~V0, ~I0, ~I1))", p);
+        write_failure_if(g, "!(~S1_grouping~S0(~V0, ~I0, ~I1))", p);
 }
 
 static void generate_namedstring(struct generator * g, struct node * p) {
@@ -1034,7 +1030,7 @@ static void generate_namedstring(struct generator * g, struct node * p) {
     write_comment(g, p);
     g->S[0] = p->mode == m_forward ? "" : "_b";
     g->V[0] = p->name;
-    write_failure_if(g, "!(sbp.eq_v~S0(~V0))", p);
+    write_failure_if(g, "!(eq_v~S0(~V0))", p);
 }
 
 static void generate_literalstring(struct generator * g, struct node * p) {
@@ -1044,7 +1040,7 @@ static void generate_literalstring(struct generator * g, struct node * p) {
     g->S[0] = p->mode == m_forward ? "" : "_b";
     g->I[0] = SIZE(b);
     g->L[0] = b;
-    write_failure_if(g, "!(sbp.eq_s~S0(~I0, ~L0))", p);
+    write_failure_if(g, "!(eq_s~S0(~I0, ~L0))", p);
 }
 
 static void generate_define(struct generator * g, struct node * p) {
@@ -1054,9 +1050,9 @@ static void generate_define(struct generator * g, struct node * p) {
     struct str * saved_output = g->outbuf;
     struct str * saved_declarations = g->declarations;
 
-    g->S[0] = q->type == t_routine ? "function " : "this.";
+    g->S[0] = q->type == t_routine ? "private" : "public";
     g->V[0] = q;
-    w(g, q->type == t_routine ? "~+~+~N~M~S0~V0() {~+~N" : "~+~+~N~M~S0~V0 = function() {~+~N");
+    w(g, "~+~+~N~M~S0 boolean ~V0() {~+~N");
 
     g->outbuf = str_new();
     g->declarations = str_new();
@@ -1064,7 +1060,7 @@ static void generate_define(struct generator * g, struct node * p) {
     g->next_label = 0;
     g->var_number = 0;
 
-    if (p->amongvar_needed) write_declare(g, "var among_var", p);
+    if (p->amongvar_needed) write_declare(g, "int among_var", p);
     str_clear(g->failure_str);
     g->failure_label = x_return;
     g->unreachable = false;
@@ -1091,9 +1087,9 @@ static void generate_substring(struct generator * g, struct node * p) {
     g->I[1] = x->literalstring_count;
 
     if (x->command_count == 0 && x->starter == 0) {
-        write_failure_if(g, "sbp.find_among~S0(a_~I0, ~I1) == 0", p);
+        write_failure_if(g, "find_among~S0(a_~I0, ~I1) == 0", p);
     } else {
-        writef(g, "~Mamong_var = sbp.find_among~S0(a_~I0, ~I1);~N", p);
+        writef(g, "~Mamong_var = find_among~S0(a_~I0, ~I1);~N", p);
         write_failure_if(g, "among_var == 0", p);
     }
 }
@@ -1144,14 +1140,11 @@ static void generate_false(struct generator * g, struct node * p) {
 }
 
 static void generate_debug(struct generator * g, struct node * p) {
-    fprintf(stderr, "Error. generate_dollar NotImplemented.");
-    exit(1);
-/*
+
     write_comment(g, p);
     g->I[0] = g->debug_count++;
     g->I[1] = p->line_number;
-    writef(g, "~Mthrow \"Don't know what to do here\" + ~I0 + ~I1;~N", p);
-*/
+    writef(g, "~Mdebug(~I0, ~I1);~N", p);
 }
 
 static void generate(struct generator * g, struct node * p) {
@@ -1235,26 +1228,56 @@ static void generate(struct generator * g, struct node * p) {
 
 static void generate_start_comment(struct generator * g) {
 
-    w(g, "/*!~N"
-	 " * Snowball JavaScript Library v0.4~N"
-	 " * http://snowball.tartarus.org/~N"
-	 " * https://github.com/mazko/jssnowball~N *~N"
-	 " * Copyright ");
-    w(g, __DATE__);
-    w(g, ", Oleg Mazko~N"
-	 " * http://www.opensource.org/licenses/bsd-license.html~N"
-	 " * This file was generated automatically by the Snowball to JavaScript compiler~N"
-	 " */~N~N");
+    w(g, "// This file was generated automatically by the Snowball to Java compiler~N");
+    w(g, "~N");
 }
 
 static void generate_class_begin(struct generator * g) {
 
-    w(g, "function ~n() {~N");
+    w(g, "package " );
+    w(g, g->options->package);
+    w(g, ";~N~N" );
+
+    w(g, "import ");
+    w(g, g->options->among_class );
+    w(g, ";~N"
+         "~N"
+         " /**~N"
+         "  * This class was automatically generated by a Snowball to Java compiler ~N"
+         "  * It implements the stemming algorithm defined by a snowball script.~N"
+         "  */~N"
+         "~N"
+         "public class ~n extends ");
+
+     w(g, g->options->parent_class_name);
+     w(g, " {~N"
+          "~N"
+	  "private static final long serialVersionUID = 1L;~N"
+	  "~N"
+	  "~+~+~Mprivate final static ~n methodObject = new ~n ();~N"
+         "~N");
 }
 
 static void generate_class_end(struct generator * g) {
 
     w(g, "~N}");
+    w(g, "~N~N");
+}
+
+static void generate_equals(struct generator * g) {
+
+    w(g, "~N"
+         "~Mpublic boolean equals( Object o ) {~N"
+         "~+~Mreturn o instanceof ");
+    w(g, g->options->name);
+	 w(g, ";~N~-~M}~N"
+	      "~N"
+	      "~Mpublic int hashCode() {~N"
+	      "~+~Mreturn ");
+    w(g, g->options->name);
+	 w(g, ".class.getName().hashCode();~N"
+	      "~-~M}~N");
+    w(g, "~N~N");
 }
 
 static void generate_among_table(struct generator * g, struct among * x) {
@@ -1264,7 +1287,7 @@ static void generate_among_table(struct generator * g, struct among * x) {
     g->I[0] = x->number;
     g->I[1] = x->literalstring_count;
 
-    w(g, "~+~+~Mvar a_~I0 = [~N~+");
+    w(g, "~+~+~Mprivate final static Among a_~I0[] = {~N~+");
     {
         int i;
         for (i = 0; i < x->literalstring_count; i++) {
@@ -1274,16 +1297,15 @@ static void generate_among_table(struct generator * g, struct among * x) {
             g->L[0] = v->b;
             g->S[0] = i < x->literalstring_count - 1 ? "," : "";
 
-            w(g, "~Mnew Among ( ~L0, ~I1, ~I2");
+            w(g, "~Mnew Among ( ~L0, ~I1, ~I2, \"");
             if (v->function != 0) {
-		w(g, ", ");
                 write_varname(g, v->function);
             }
-            w(g, " )~S0~N");
+            w(g, "\", methodObject )~S0~N");
             v++;
         }
     }
-    w(g, "~-~M];~-~-~N~N");
+    w(g, "~-~M};~-~-~N~N");
 }
 
 static void generate_amongs(struct generator * g) {
@@ -1318,12 +1340,12 @@ static void generate_grouping_table(struct generator * g, struct grouping * q) {
     unless (q->no_gaps) {
         g->V[0] = q->name;
 
-        w(g, "~+~+~Mvar ~V0 = [");
+        w(g, "~+~+~Mprivate static final char ~V0[] = {");
         for (i = 0; i < size; i++) {
              write_int(g, map[i]);
              if (i < size - 1) w(g, ", ");
         }
-        w(g, " ];~N~-~-~N");
+        w(g, " };~N~-~-~N");
     }
     lose_b(map);
 }
@@ -1343,18 +1365,40 @@ static void generate_members(struct generator * g) {
         g->V[0] = q;
         switch (q->type) {
             case t_string:
-                w(g, "        var ~W0 = \"\";~N");
+                w(g, "        private ");
+                w(g, g->options->string_class );
+                w(g, " ~W0 = new ");
+                w(g, g->options->string_class);
+                w(g, "();~N");
                 break;
             case t_integer:
-                w(g, "        var ~W0;~N");
+                w(g, "        private int ~W0;~N");
                 break;
             case t_boolean:
-                w(g, "        var ~W0;~N");
+                w(g, "        private boolean ~W0;~N");
                 break;
         }
         q = q->next;
     }
     w(g, "~N");
+}
+
+static void generate_copyfrom(struct generator * g) {
+
+    struct name * q;
+    w(g, "~+~+~Mprivate void copy_from(~n other) {~+~N");
+    for (q = g->analyser->names; q != 0; q = q->next) {
+        g->V[0] = q;
+        switch (q->type) {
+            case t_string:
+            case t_integer:
+            case t_boolean:
+                w(g, "~M~W0 = other.~W0;~N");
+                break;
+        }
+    }
+    w(g, "~Msuper.copy_from(other);~N");
+    w(g, "~-~M}~-~-~N");
 }
 
 static void generate_methods(struct generator * g) {
@@ -1365,25 +1409,6 @@ static void generate_methods(struct generator * g) {
         g->unreachable = false;
         p = p->right;
     }
-}
-
-static void generate_getsetcurrent(struct generator * g) {
-
-    w(g, "~N~+~+~Mthis.setCurrent = function(word) {~N"
-         "~+~+~Msbp.setCurrent(word);~N"
-         "~-~-~M};~N"
-    );
-
-    w(g, "~N~Mthis.getCurrent = function() {~N"
-         "~+~+~Mreturn sbp.getCurrent();~N"
-         "~-~-~M};"
-    );
-}
-
-static void generate_sbp(struct generator * g) {
-
-    w(g, "~+~+~Mvar sbp = new SnowballProgram();~N~-~-"
-    );
 }
 
 extern void generate_program_java(struct generator * g) {
@@ -1398,9 +1423,9 @@ extern void generate_program_java(struct generator * g) {
     generate_groupings(g);
 
     generate_members(g);
-    generate_sbp(g);
+    generate_copyfrom(g);
     generate_methods(g);
-    generate_getsetcurrent(g);
+    generate_equals(g);
 
     generate_class_end(g);
 

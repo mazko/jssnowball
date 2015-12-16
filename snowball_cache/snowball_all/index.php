@@ -10,6 +10,16 @@
 <h2>Major events</h2>
 
 <p>
+<b>September 2014 - Snowball site and software no longer being actively maintained</b>
+<br>
+The code has all been loaded into <a
+href="https://github.com/snowballstem">Github</a>, and we may still make very
+occasional changes.  The mailing list will close at the end of 2014; archives
+are available at <a
+href="http://news.gmane.org/gmane.comp.search.snowball">GMane</a>.
+</p>
+
+<p>
 <b>May 2012 - Contributed stemmers for Irish and Czech</b>
 </p>
 

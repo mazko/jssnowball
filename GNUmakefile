@@ -33,9 +33,11 @@ js_snowball/index.html: $(JAVA_SOURCES)
 	@echo "</head>" >> $@
 	@echo "<body>" >> $@
 	@echo "<p>Type ONE word, select language and press \"<b>Stem!</b>\" button.</p>" | sed 's!^!\t!' >> $@
-	@echo "<input maxlength=\"50\" size=\"50\" id=\"query\" type=\"text\">" | sed 's!^!\t!' >> $@
+	@echo "<input maxlength=\"333\" size=\"50\" id=\"query\" type=\"text\" value=\"чаво\">" | sed 's!^!\t!' >> $@
 	@echo "<select id=\"language\">" | sed 's!^!\t!' >> $@
-	@$(foreach l,$(libstemmer_algorithms), echo "<option value=\"$(l)\">$(l)</option>" | sed 's!^!\t\t!' >> $@;)
+	@$(foreach l,$(libstemmer_algorithms), \
+		sel=`test '$(l)' = 'russian' && echo 'selected'`; \
+		echo "<option value=\"$(l)\" $$sel>$(l)</option>" | sed 's!^!\t\t!' >> $@;)
 	@echo "</select>" | sed 's!^!\t!' >> $@
 	@echo "<button type=\"button\" onclick=\""						\
 	      "printstem(document.getElementById('language').value, "				\
@@ -44,7 +46,9 @@ js_snowball/index.html: $(JAVA_SOURCES)
 	@echo "<p id=\"result\"></p>" | sed 's!^!\t!' >> $@
 	@echo "<fieldset><legend>Unit tests</legend>" | sed 's!^!\t!' >> $@
 	@echo "<a href=\"tests/composite.html\" target=\"_blank\">all</a>" | sed 's!^!\t\t!' >> $@;
-	@$(foreach l,$(libstemmer_algorithms), echo "<a href=\"tests/$(l)Tests.html\" target=\"_blank\">$(l)</a>" | sed 's!^!\t\t!' >> $@;)
+	@$(foreach l,$(libstemmer_algorithms), \
+		echo " | " | sed 's!^!\t\t!' >> $@; \
+		echo "<a href=\"tests/$(l)Tests.html\" target=\"_blank\">$(l)</a>" | sed 's!^!\t\t!' >> $@;)
 	@echo "</fieldset><p></p>" | sed 's!^!\t!' >> $@
 	@echo "<fieldset><legend>Links</legend>" | sed 's!^!\t!' >> $@
 	@echo "<a href=\"https://github.com/mazko/jssnowball\" target=\"_blank\" rel=\"nofollow\">Sources</a> |" | sed 's!^!\t\t!' >> $@;
@@ -64,9 +68,9 @@ js_snowball/tests/composite.html: $(JS_TESTS_SRC) $(JS_TESTS_HTML)
 	@echo "<head>" >> $@
 	@echo "<meta charset=\"utf-8\">" | sed 's!^!\t!' >> $@
 	@echo "<title>QUnit tests for all stemmers</title>" | sed 's!^!\t!' >> $@
-	@echo "<link rel=\"stylesheet\" href=\"qunit/qunit-1.10.0.css\">" | sed 's!^!\t!' >> $@
+	@echo "<link rel=\"stylesheet\" href=\"qunit/qunit.css\">" | sed 's!^!\t!' >> $@
 	@echo "<link rel=\"stylesheet\" href=\"qunit/addons/composite/qunit-composite.css\">" | sed 's!^!\t!' >> $@
-	@echo "<script src=\"qunit/qunit-1.10.0.js\"></script>" | sed 's!^!\t!' >> $@
+	@echo "<script src=\"qunit/qunit.js\"></script>" | sed 's!^!\t!' >> $@
 	@echo "<script src=\"qunit/addons/composite/qunit-composite.js\"></script>" | sed 's!^!\t!' >> $@
 	@echo "<script>" | sed 's!^!\t!' >> $@
 	@echo "QUnit.config.hidepassed = true;" | sed 's!^!\t\t!' >> $@
@@ -89,11 +93,11 @@ js_snowball/tests/%Tests.html:
 	@echo "<head>" >> $@
 	@echo "<meta charset=\"utf-8\">" | sed 's!^!\t!' >> $@
 	@echo "<title>QUnit tests for $* stemmer</title>" | sed 's!^!\t!' >> $@
-	@echo "<link rel=\"stylesheet\" href=\"qunit/qunit-1.10.0.css\">" | sed 's!^!\t!' >> $@
+	@echo "<link rel=\"stylesheet\" href=\"qunit/qunit.css\">" | sed 's!^!\t!' >> $@
 	@echo "</head>" >> $@
 	@echo "<body>" >> $@
 	@echo "<div id=\"qunit\"></div>" | sed 's!^!\t!' >> $@
-	@echo "<script src=\"qunit/qunit-1.10.0.js\"></script>" | sed 's!^!\t!' >> $@
+	@echo "<script src=\"qunit/qunit.js\"></script>" | sed 's!^!\t!' >> $@
 	@echo "<script src=\"../lib/Snowball.js\"></script>" | sed 's!^!\t!' >> $@
 	@echo "<script src=\"js/$*Tests.js\"></script>" | sed 's!^!\t!' >> $@
 	@echo "</body>" >> $@
@@ -128,11 +132,11 @@ $(snowball_code)/stemwords: $(JAVA_SOURCES)
 js_snowball/lib/Snowball.js: $(JAVA_SOURCES) $(wildcard js_snowball/src/*.js)
 	@mkdir -p js_snowball/lib
 	@echo "/*!" > $@
-	@echo " * Snowball JavaScript Library v0.4" >> $@
+	@echo " * Snowball JavaScript Library v0.5" >> $@
 	@echo " * http://snowball.tartarus.org/" >> $@
 	@echo " * https://github.com/mazko/jssnowball" >> $@
 	@echo " *" >> $@
-	@echo " * Copyright `date +'%y.%m.%d %H:%M:%S'`, Oleg Mazko" >> $@
+	@echo " * Copyright `date +'%d.%m.%Y %H:%M:%S'`, Oleg Mazko" >> $@
 	@echo " * http://www.opensource.org/licenses/bsd-license.html" >> $@
 	@echo " */" >> $@
 	@echo "function Snowball(lng) {" >> $@
@@ -147,8 +151,6 @@ js_snowball/lib/Snowball.js: $(JAVA_SOURCES) $(wildcard js_snowball/src/*.js)
 	@echo "var stemName = lng.toLowerCase() + \"Stemmer\";" | sed 's!^!\t!' >> $@
 	@echo "return new stemFactory[stemName]();" | sed 's!^!\t!' >> $@
 	@echo "}" >> $@
-	@grep -q 'copy_from\|in_range\|in_range_b\|out_range\|out_range_b\|assign_to\|eq_v[^_]' $@ && \
-	echo 'Error: possible usage of not implemented method in SnowballProgramm.js' ; [ $$? -ne 0 ]
 
 $(snowball_code)/algorithms/%/stem_Unicode.sbl: $(snowball_code)/algorithms/%/stem_ISO_8859_1.sbl
 	cp $^ $@

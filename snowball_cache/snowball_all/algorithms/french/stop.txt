@@ -161,7 +161,8 @@ eussent
 
                | Later additions (from Jean-Christophe Deschamps)
 ceci           |  this
-celà           |  that
+cela           |  that (added 11 Apr 2012. Omission reported by Adrien Grand)
+celà           |  that (incorrect, though common)
 cet            |  this
 cette          |  this
 ici            |  here

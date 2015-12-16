@@ -60,7 +60,7 @@ us and we will add a link to your work from this site.
 <p>
 We provide and support python wrappers for Snowball.  The latest version can
 be downloaded from <a
-href="http://snowball.tartarus.org/wrappers/PyStemmer-1.1.0.tar.gz">our wrappers page</a>.
+href="http://snowball.tartarus.org/wrappers/guide.html">our wrappers page</a>.
 </p>
 
 <p>

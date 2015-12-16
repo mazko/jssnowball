@@ -10,6 +10,8 @@
 <DL><DD><TABLE CELLPADDING=0>
 <TR><TD><A HREF=".."> Snowball main page</A>
 <TR><TD><A HREF="../compiler/snowman.html">     Snowball manual</A>
+<TR><TD><A HREF="driver.c">     simple driver</A>
+
 </TABLE></DL>
 
 </TR>
@@ -18,16 +20,18 @@
 
 <BR><BR>
 
-
+<TR><TD>
 <BR>&nbsp;<H2>Compiling and running Snowball</H2>
 
-When you download Snowball, it already has in place a make file that you
+When you download Snowball
+(<A HREF="../dist/snowball_code.tgz">from here</A>),
+it already has in place a make file that you
 can call to build it. But in any case, Snowball has a very simple
 structure, comprising the traditional tokeniser, syntax analyser and code
 generator modules, with two extra modules for space management and an
 internal merge sort, and a small driver module, all sharing a common header
-file.  If you put these sources into a directory &nbsp;<TT>compiler/</TT>, you can compile
-Snowball at once (Linux or Unix) with
+file.  You will find them in the directory &nbsp;<TT>compiler/</TT>. Copy it out,
+and you can compile Snowball at once (Linux or Unix) with
 <BR><PRE>
     gcc -O -o Snowball compiler/*.c
 </PRE>
@@ -246,7 +250,185 @@ The stemming scripts on this Web site use Snowball very simply.
 script (usually the language the script is for). All the programs are
 tested through a common <A HREF="driver.c">driver</A> program.
 
-<BR>&nbsp;<H2>Debugging</H2>
+<BR>&nbsp;<H2>Getting started</H2>
+
+The complete apparatus of the libstemmer download plus the make files can
+obscure the essential simplicity of the Snowball system. Just to get a bit of
+confidence in using it, here is something you can try safely at home.
+<BR><BR>
+First, get the compiler out of the snowball code download, and build it.
+We have seen above how you do this:
+<BR><PRE>
+    gcc -O -o Snowball compiler/*.c
+</PRE>
+
+Then copy the files &nbsp;<TT>stem_ISO_8859_1.sbl</TT>, &nbsp;<TT>voc.txt</TT>&nbsp; and &nbsp;<TT>output.txt</TT>&nbsp; from the page for
+the Hungarian stemmer,
+<BR><PRE>
+    http://snowball.tartarus.org/algorithms/hungarian/stemmer.html
+</PRE>
+to the same directory, renaming the snowball script as &nbsp;<TT>hungarian.sbl</TT>.
+Take the &nbsp;<TT>runtime/</TT>&nbsp; directory out of the snowball code download, and put it in
+the current directory, renamed as &nbsp;<TT>q/</TT>, say.
+<BR><BR>
+<TT>q/</TT>&nbsp; contains four files, &nbsp;<TT>api.c</TT>, &nbsp;<TT>api.h</TT>, &nbsp;<TT>header.h</TT>, &nbsp;<TT>utilities.c</TT>. Now compile the
+snowball script,
+<BR><PRE>
+    ./Snowball hungarian.sbl -o q/hungarian -ep H_ -utf8
+</PRE>
+(Note the &nbsp;<TT>-utf8</TT>&nbsp; option.) This put two more files into &nbsp;<TT>q/</TT>, &nbsp;<TT>hungarian.c</TT>&nbsp; and
+<TT>hungarian.h</TT>. Next put into &nbsp;<TT>q/</TT>&nbsp; a driver program. You can download it from the link
+at the top of this page, but here it is,
+<BR>
+</TR>
+<TR><TD BGCOLOR="wheat">
+<BR><PRE>
+    #include &lt;stdio.h>
+    #include &lt;stdlib.h> /* for malloc, free */
+    #include &lt;string.h> /* for memmove */
+
+    #include "api.h"
+    #include "hungarian.h"
+
+
+    /* This derives from the source file driver.template */
+
+    /* A simple driver for a single ANSI C generated Hungarian stemmer.
+
+       Following compilation with
+
+           gcc -o H_prog q/*.c
+
+       The command line syntax is
+
+           ./H_prog file [-o[utput] file] -h[elp]]
+
+       The first argument gives the input file, which consists of a list of words
+       to be stemmed, one per line. (Words must be in lower case.) If omitted, stdin
+       is used.
+
+       The output is sent to stdout by default, otherwise to the -output file.
+
+    */
+
+    static void stem_file(struct SN_env * z, FILE * f_in, FILE * f_out) {
+    #define INC 10
+        int lim = INC;
+        symbol * b = (symbol *) malloc(lim * sizeof(symbol));
+
+        while(1) {
+            int ch = getc(f_in);
+            if (ch == EOF) {
+                free(b); return;
+            }
+            {
+                int i = 0;
+                while(1) {
+                    if (ch == '\n' || ch == EOF) break;
+                    if (i == lim) {  /* make b bigger */
+                        symbol * q = (symbol *) malloc((lim + INC) * sizeof(symbol));
+                        memmove(q, b, lim * sizeof(symbol));
+                        free(b); b = q;
+                        lim = lim + INC;
+                    }
+                    b[i] = ch; i++;
+                    ch = getc(f_in);
+                }
+
+                SN_set_current(z, i, b);
+                H_stem(z);
+                {
+                    int j;
+                    for (j = 0; j &lt; z->l; j++) fprintf(f_out, "%c", z->p[j]);
+                    fprintf(f_out, "\n");
+                }
+            }
+        }
+    }
+
+    static int eq(char * s1, char * s2) {
+        int s1_len = strlen(s1);
+        int s2_len = strlen(s2);
+        return s1_len == s2_len &amp;&amp; memcmp(s1, s2, s1_len) == 0;
+    }
+
+    static void show_options(int n) {
+        printf("options are: file [-o[utput] file] [-h[elp]]\n");
+        exit(n);
+    }
+
+    int main(int argc, char * argv[])
+    {   char * in = 0;
+        char * out = 0;
+        {   char * s;
+            int i = 1;
+            while(1) {
+                if (i >= argc) break;
+                s = argv[i++];
+                if (s[0] == '-') {
+                    if (eq(s, "-output") || eq(s, "-o")) {
+                        if (i >= argc) {
+                            fprintf(stderr, "%s requires an argument\n", s);
+                            exit(1);
+                        }
+                        out = argv[i++];
+                    } else if (eq(s, "-help") || eq(s, "-h")) {
+                        show_options(0);
+                    } else {
+                        fprintf(stderr, "%s unknown\n", s);
+                        show_options(1);
+                    }
+                }
+                else in = s;
+            }
+        }
+
+        /* initialise the stemming process: */
+
+        {
+            struct SN_env * z = H_create_env();
+            FILE * f_in;
+            FILE * f_out;
+            f_in = in == 0 ? stdin : fopen(in, "r");
+            if (f_in == 0) {
+                fprintf(stderr, "file %s not found\n", in); exit(1);
+            }
+            f_out = out == 0 ? stdout : fopen(out, "w");
+            if (f_out == 0) {
+                fprintf(stderr, "file %s cannot be opened\n", out); exit(1);
+            }
+            stem_file(z, f_in, f_out);
+            H_close_env(z);
+        }
+
+        return 0;
+    }
+</PRE>
+</TR>
+<TR><TD>
+<BR><BR>
+Now compile the &nbsp;<TT>q/</TT>&nbsp; sources to the Hungarian stemmer program &nbsp;<TT>H_prog</TT>,
+<BR><PRE>
+    gcc -o H_prog q/*.c
+</PRE>
+And &nbsp;<TT>H_prog</TT>&nbsp; will turn the vocabulary into the stemmed output, as you can check by
+doing,
+
+<BR><PRE>
+    ./H_prog voc.txt -o TEMP.txt
+    diff output.txt TEMP.txt
+</PRE>
+In summary therefore,
+<BR><PRE>
+    gcc -O -o Snowball compiler/*.c
+    ./Snowball hungarian.sbl -o q/hungarian -ep H_ -utf8
+    gcc -o H_prog q/*.c
+    ./H_prog voc.txt -o TEMP.txt
+    diff output.txt TEMP.txt
+</PRE>
+(Not so hard.)
+
+<BR>&nbsp;<H2>Debugging snowball scripts</H2>
 
 In the rare event that your Snowball script does not run perfectly the first time:
 <BR><BR>
@@ -266,7 +448,7 @@ hard, since running comments show the correspondence with the Snowball source.
 <BR><BR>
 <BR>&nbsp;<H2>Compiler bugs</H2>
 
-There must be a few compiler bugs in such a young language. If you hit one, try to
+If you hit a snowball compiler bug, try to
 capture it in a small script before notifying us.
 
 <BR>&nbsp;<H2>Known problems in Snowball</H2>
@@ -281,12 +463,12 @@ constructions like this:
 Suppose &nbsp;<TT>C1</TT>&nbsp; gives <B><I>t</I></B>, the delete removes the slice established on the first
 line, and &nbsp;<TT>C2</TT>&nbsp; gives <B><I>f</I></B>, so C3 is done with <B><I>c</I></B> set back to the value it had
 before &nbsp;<TT>C1</TT>&nbsp; was obeyed &#x2014; but this old value does not take account of the byte shift
-caused by the delete. This problem was foreseen from the beginning when designing
+caused by the delete. This problem was forseen from the beginning when designing
 Snowball, and recognised as a minor issue because it is an unnatural thing to want to
 do. (<TT>C3</TT>&nbsp; should not be an alternative to something which has deletion as an
 occasional side-effect.) It may be addressed in the future.
 <BR><BR>
-
+</TR>
 
 </TR>
 

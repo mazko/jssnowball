@@ -36,6 +36,7 @@ function displayMenu()
 ?>
 <br>
 
+<a href="https://github.com/snowballstem">Source on github</a><br>
 <a href="http://svn.tartarus.org/?root=snowball">Browse SVN</a><br>
 <br>
 
@@ -87,11 +88,22 @@ function displayFooter()
 </table>
 </td></tr></table>
 <address>
+
+<!-- (what was this code for?)
 Last modified on <?php
   global $SCRIPT_FILENAME;
   echo date('r', filemtime($SCRIPT_FILENAME));
-?>.<br>
-<a href="mailto:snowball-discuss@lists.tartarus.org">Write to our mailing list</a> if you have comments or questions about the project.  Note that this mailing list will reject postings from non-subscribers (due to the immense amount of spam received otherwise).  The list is fairly low-traffic, but if you don't wish to receive messages (but wish to be able to post), you can disable sending of messages in the mailing list options after subscribing.
+?>.
+-->
+
+<br>
+The site and project is no longer being actively maintained.  We will keep the
+website up for as long as possible (we expect this to be many years), but do
+not have time or resources to support it further.  The snowball mailing list
+will be closed at the end of 2014, but archives are available on <a
+href="http://news.gmane.org/gmane.comp.search.snowball">GMane</a>.  The code,
+and source code for the website, are also available on <a
+href="https://github.com/snowballstem">Github</a>.
 </address>
 </body>
 </html>

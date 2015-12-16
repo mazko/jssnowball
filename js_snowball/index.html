@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Online Snowball stemmers demo</title>
+	<script src="lib/Snowball.js"></script>
+	<script>
+		var Stem = (function() { var lang, testStemmer; return function(lng, word) { if (lng != lang) {lang = lng; testStemmer = new Snowball(lang);}  testStemmer.setCurrent(word); testStemmer.stem(); return testStemmer.getCurrent();}})();
+		function printstem(lng, word){document.getElementById("result").innerHTML = "<b>" + Stem(lng, word) + "</b>";}
+	</script>
+</head>
+<body>
+	<p>Type ONE word, select language and press "<b>Stem!</b>" button.</p>
+	<input maxlength="333" size="50" id="query" type="text" value="чаво">
+	<select id="language">
+		<option value="armenian" >armenian</option>
+		<option value="basque" >basque</option>
+		<option value="catalan" >catalan</option>
+		<option value="czech" >czech</option>
+		<option value="danish" >danish</option>
+		<option value="dutch" >dutch</option>
+		<option value="english" >english</option>
+		<option value="finnish" >finnish</option>
+		<option value="french" >french</option>
+		<option value="german" >german</option>
+		<option value="hungarian" >hungarian</option>
+		<option value="italian" >italian</option>
+		<option value="irish" >irish</option>
+		<option value="norwegian" >norwegian</option>
+		<option value="porter" >porter</option>
+		<option value="portuguese" >portuguese</option>
+		<option value="romanian" >romanian</option>
+		<option value="russian" selected>russian</option>
+		<option value="spanish" >spanish</option>
+		<option value="slovene" >slovene</option>
+		<option value="swedish" >swedish</option>
+		<option value="turkish" >turkish</option>
+	</select>
+	<button type="button" onclick=" printstem(document.getElementById('language').value,  document.getElementById('query').value);"><noscript> <span style="color:red;">Enable JavaScript ! </span></noscript>Stem!</button>
+	<p id="result"></p>
+	<fieldset><legend>Unit tests</legend>
+		<a href="tests/composite.html" target="_blank">all</a>
+		 | 
+		<a href="tests/armenianTests.html" target="_blank">armenian</a>
+		 | 
+		<a href="tests/basqueTests.html" target="_blank">basque</a>
+		 | 
+		<a href="tests/catalanTests.html" target="_blank">catalan</a>
+		 | 
+		<a href="tests/czechTests.html" target="_blank">czech</a>
+		 | 
+		<a href="tests/danishTests.html" target="_blank">danish</a>
+		 | 
+		<a href="tests/dutchTests.html" target="_blank">dutch</a>
+		 | 
+		<a href="tests/englishTests.html" target="_blank">english</a>
+		 | 
+		<a href="tests/finnishTests.html" target="_blank">finnish</a>
+		 | 
+		<a href="tests/frenchTests.html" target="_blank">french</a>
+		 | 
+		<a href="tests/germanTests.html" target="_blank">german</a>
+		 | 
+		<a href="tests/hungarianTests.html" target="_blank">hungarian</a>
+		 | 
+		<a href="tests/italianTests.html" target="_blank">italian</a>
+		 | 
+		<a href="tests/irishTests.html" target="_blank">irish</a>
+		 | 
+		<a href="tests/norwegianTests.html" target="_blank">norwegian</a>
+		 | 
+		<a href="tests/porterTests.html" target="_blank">porter</a>
+		 | 
+		<a href="tests/portugueseTests.html" target="_blank">portuguese</a>
+		 | 
+		<a href="tests/romanianTests.html" target="_blank">romanian</a>
+		 | 
+		<a href="tests/russianTests.html" target="_blank">russian</a>
+		 | 
+		<a href="tests/spanishTests.html" target="_blank">spanish</a>
+		 | 
+		<a href="tests/sloveneTests.html" target="_blank">slovene</a>
+		 | 
+		<a href="tests/swedishTests.html" target="_blank">swedish</a>
+		 | 
+		<a href="tests/turkishTests.html" target="_blank">turkish</a>
+	</fieldset><p></p>
+	<fieldset><legend>Links</legend>
+		<a href="https://github.com/mazko/jssnowball" target="_blank" rel="nofollow">Sources</a> |
+		<a href="http://snowball.tartarus.org/" target="_blank" rel="nofollow">Snowball</a> |
+		<a href="http://mazko.github.com/jsli/" target="_blank">Language Identifier</a> |
+		<a href="http://mazko.github.io/jstaggregator/" target="_blank">Urim</a> |
+		<a href="mailto:o.mazko%20%5Bat%5D%20mail.ru?subject=Snowball%20to%20JavaScript%20generator"  rel="nofollow" onmouseover="var split = this.href.split('?');  split[0] = split[0].replace('%20%5Bat%5D%20','@'); this.href = split.join('?');">Feedback</a>
+	</fieldset>
+</body>
+</html>
