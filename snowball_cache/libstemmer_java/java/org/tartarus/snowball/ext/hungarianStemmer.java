@@ -78,10 +78,10 @@ private static final long serialVersionUID = 1L;
                     new Among ( "b\u00F3l", -1, -1, "", methodObject ),
                     new Among ( "r\u00F3l", -1, -1, "", methodObject ),
                     new Among ( "t\u00F3l", -1, -1, "", methodObject ),
-                    new Among ( "b\u00F5l", -1, -1, "", methodObject ),
-                    new Among ( "r\u00F5l", -1, -1, "", methodObject ),
-                    new Among ( "t\u00F5l", -1, -1, "", methodObject ),
                     new Among ( "\u00FCl", -1, -1, "", methodObject ),
+                    new Among ( "b\u0151l", -1, -1, "", methodObject ),
+                    new Among ( "r\u0151l", -1, -1, "", methodObject ),
+                    new Among ( "t\u0151l", -1, -1, "", methodObject ),
                     new Among ( "n", -1, -1, "", methodObject ),
                     new Among ( "an", 19, -1, "", methodObject ),
                     new Among ( "ban", 20, -1, "", methodObject ),
@@ -233,7 +233,7 @@ private static final long serialVersionUID = 1L;
                     new Among ( "\u00E9im", 35, 3, "", methodObject )
                 };
 
-                private static final char g_v[] = {17, 65, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 17, 52, 14 };
+                private static final char g_v[] = {17, 65, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 17, 36, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1 };
 
         private int I_p1;
 
@@ -253,7 +253,7 @@ private static final long serialVersionUID = 1L;
                         v_1 = cursor;
                         lab1: do {
                             // (, line 48
-                            if (!(in_grouping(g_v, 97, 252)))
+                            if (!(in_grouping(g_v, 97, 369)))
                             {
                                 break lab1;
                             }
@@ -262,7 +262,7 @@ private static final long serialVersionUID = 1L;
                             {
                                 v_2 = cursor;
                                 lab3: do {
-                                    if (!(out_grouping(g_v, 97, 252)))
+                                    if (!(out_grouping(g_v, 97, 369)))
                                     {
                                         break lab3;
                                     }
@@ -301,7 +301,7 @@ private static final long serialVersionUID = 1L;
                         } while (false);
                         cursor = v_1;
                         // (, line 53
-                        if (!(out_grouping(g_v, 97, 252)))
+                        if (!(out_grouping(g_v, 97, 369)))
                         {
                             return false;
                         }
@@ -309,7 +309,7 @@ private static final long serialVersionUID = 1L;
                         golab6: while(true)
                         {
                             lab7: do {
-                                if (!(in_grouping(g_v, 97, 252)))
+                                if (!(in_grouping(g_v, 97, 369)))
                                 {
                                     break lab7;
                                 }
