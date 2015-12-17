@@ -1,10 +1,8 @@
 *.o
 snowball_code/GNUmakefile_js_copy
-snowball_code/java/
 snowball_code/libstemmer/libstemmer.c
 snowball_code/libstemmer/mkinc.mak
 snowball_code/libstemmer/modules.h
 snowball_code/libstemmer/modules_js_copy.txt
 snowball_code/snowball
-snowball_code/src_c/
 snowball_code/stemwords

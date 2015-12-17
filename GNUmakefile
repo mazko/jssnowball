@@ -125,6 +125,7 @@ $(snowball_code)/stemwords: $(JAVA_SOURCES)
 	@make -C $(snowball_code) libstemmer_algorithms="$(subst $(eval), ,$(libstemmer_algorithms))" -f GNUmakefile_js_copy --no-print-directory stemwords
 
 js_snowball/lib/Snowball.js: $(JAVA_SOURCES) $(wildcard js_snowball/src/*.js)
+	@cp $(dir snowball_cache/libstemmer_java/$(java_src_generated))*.java $(dir snowball_cache/snowball_code/$(java_src_generated))
 	@mkdir -p js_snowball/lib
 	@echo "/*!" > $@
 	@echo " * Snowball JavaScript Library v0.5" >> $@
@@ -166,3 +167,4 @@ clean:
 		js_snowball/tests/composite.html js_snowball/tests/*Tests.html	\
 		js_snowball/index.html $(snowball_code)/GNUmakefile_js_copy		\
 		$(snowball_code)/libstemmer/modules_js_copy.txt
+	-rm -r snowball_cache/snowball_code/java
