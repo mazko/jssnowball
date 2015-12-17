@@ -240,7 +240,10 @@ public class SnowballProgram {
 				cursor = c + w.s_size;
 				if (w.method == null)
 					return w.result;
+
 				boolean res;
+				// :es6:
+				// res = w.method.call(w.methodobject);
 				try {
 					Object resobj = w.method.invoke(w.methodobject, new Object[0]);
 					res = resobj.toString().equals("true");
@@ -251,6 +254,7 @@ public class SnowballProgram {
 					res = false;
 					// FIXME - debug message
 				}
+				// :end:
 				cursor = c + w.s_size;
 				if (res)
 					return w.result;
@@ -315,6 +319,8 @@ public class SnowballProgram {
 					return w.result;
 
 				boolean res;
+				// :es6:
+				// res = w.method.call(w.methodobject);
 				try {
 					Object resobj = w.method.invoke(w.methodobject, new Object[0]);
 					res = resobj.toString().equals("true");
@@ -325,6 +331,7 @@ public class SnowballProgram {
 					res = false;
 					// FIXME - debug message
 				}
+				// :end:
 				cursor = c - w.s_size;
 				if (res)
 					return w.result;
@@ -356,7 +363,10 @@ public class SnowballProgram {
 																				// be
 																				// removed
 		{
+			// :es6:
+			// throw new Error("Snowball: faulty slice operation");
 			System.err.println("faulty slice operation");
+			// :end:
 			// FIXME: report error somehow.
 			/*
 			 * fprintf(stderr, "faulty slice operation:\n"); debug(z, -1, 0);
@@ -368,10 +378,6 @@ public class SnowballProgram {
 	protected void slice_from(String s) {
 		slice_check();
 		replace_s(bra, ket, s);
-	}
-
-	protected void slice_from(CharSequence s) {
-		slice_from(s.toString());
 	}
 
 	protected void slice_del() {
@@ -386,31 +392,10 @@ public class SnowballProgram {
 			ket += adjustment;
 	}
 
-	protected void insert(int c_bra, int c_ket, CharSequence s) {
-		insert(c_bra, c_ket, s.toString());
-	}
-
-	/* Copy the slice into the supplied StringBuffer */
-	protected StringBuffer slice_to(StringBuffer s) {
-		slice_check();
-		s.replace(0, s.length(), current.substring(bra, ket));
-		return s;
-	}
-
 	/* Copy the slice into the supplied StringBuilder */
 	protected StringBuilder slice_to(StringBuilder s) {
 		slice_check();
 		s.replace(0, s.length(), current.substring(bra, ket));
-		return s;
-	}
-
-	protected StringBuffer assign_to(StringBuffer s) {
-		s.replace(0, s.length(), current.substring(0, limit));
-		return s;
-	}
-
-	protected StringBuilder assign_to(StringBuilder s) {
-		s.replace(0, s.length(), current.substring(0, limit));
 		return s;
 	}
 

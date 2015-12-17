@@ -29,7 +29,7 @@ public class TestApp {
 		reader = new InputStreamReader(new FileInputStream(args[1]));
 		reader = new BufferedReader(reader);
 
-		StringBuffer input = new StringBuffer();
+		java.lang.StringBuffer input = new java.lang.StringBuffer();
 
 		OutputStream outstream;
 

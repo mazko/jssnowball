@@ -1,5 +1,5 @@
 QUnit.config.hidepassed = true;
-var Stem = (function() { var testStemmer = new Snowball('hungarian'); return function(word) {  testStemmer.setCurrent(word); testStemmer.stem(); return testStemmer.getCurrent();}})();
+var Stem = snowballFactory.newStemmer('hungarian').stem;
 test("abazinok -> abazin", function() {deepEqual( Stem("abazinok"), "abazin");});
 test("abazin -> abaz", function() {deepEqual( Stem("abazin"), "abaz");});
 test("abba -> ab", function() {deepEqual( Stem("abba"), "ab");});

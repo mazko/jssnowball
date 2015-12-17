@@ -3,21 +3,35 @@ package org.tartarus.snowball;
 import java.lang.reflect.Method;
 
 public class Among {
+
+	static char[] toCharArray(String s) {
+		int sLength = s.length();
+		char[] charArr = new char[sLength];
+		for (int i = 0; i < sLength; i++)
+			charArr[i] = s.charAt(i);
+		return charArr;
+	}
+
 	public Among(String s, int substring_i, int result, String methodname, SnowballProgram methodobject) {
 		this.s_size = s.length();
-		this.s = s.toCharArray();
+		this.s = toCharArray(s);
 		this.substring_i = substring_i;
 		this.result = result;
 		this.methodobject = methodobject;
+		// :es6:
+		// help: grep -r '"[^"]\+", methodObject)'
+		// method = methodname ? methodobject[methodname] : null;
 		if (methodname.length() == 0) {
 			this.method = null;
 		} else {
 			try {
 				this.method = methodobject.getClass().getDeclaredMethod(methodname, new Class[0]);
+				method.setAccessible(true);
 			} catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			}
 		}
+		// :end:
 	}
 
 	public final int s_size; /* search string */

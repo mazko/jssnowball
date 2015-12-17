@@ -2,6 +2,8 @@
 
 Port from [Snowball](http://snowball.tartarus.org/) Stemmers. [Online](http://mazko.github.io/jssnowball/)
 
+[snowball.es6](js_snowball/lib/snowball.es6) | [snowball.babel.js](js_snowball/lib/snowball.babel.js)
+
 ### ESJava (ES6) fun
 
 - Run [bootstrap](snowball_cache/configure) script to download and regenerate last original Java Snowball stemmers
@@ -12,39 +14,10 @@ Port from [Snowball](http://snowball.tartarus.org/) Stemmers. [Online](http://ma
 
 ![cleanup-profile](js_snowball/screenshots/cleanup-profile.png)
 
-- ESJava has some restrictions like reflection e.t.c. You have to refactor manualy such *.java sources too :(
+- ESJava has some restrictions like reflection e.t.c. You have to refactor manually such *.java sources too :(
 
-- Have some fun :)
+- Merge all *java in to one single snowball.bundle.java: ```make bundle```
 
-*esjava.sh*
+- Manually edit js-specific fragments: ```awk /:es6:/,/:end:/ js_snowball/lib/snowball.bundle.java```
 
-    #!/bin/bash
-
-    cat \
-    ./js_snowball/eclipse/src/org/tartarus/snowball/Among.java \
-    ./js_snowball/eclipse/src/org/tartarus/snowball/SnowballProgram.java \
-    ./js_snowball/eclipse/src/org/tartarus/snowball/ext \
-    | sed '/^package\s/d' | sed '/^import\s/d' \
-    > snowball.bundle.java && \
-    node --stack-size=10000 `which esjava` snowball.bundle.java > snowball.es6
-
-
-*babel.sh*
-
-    #!/bin/bash
-
-    ES6FILE='snowball.es6'
-
-    for cls in 'export1' 'export2'; do
-      sed -i "s/^class\s\+${cls}\s\+/export class ${cls} /" ${ES6FILE}
-    done 
-
-    # Why Babel break unicode ? Fails on [\uD800-\uFFFF] chars. Hot fix: 
-
-    sed 's/\\u/\\\\u/g' "$ES6FILE" |                     \
-    node --stack-size=10000  \
-    "`which babel`"                                      \
-    --compact=false                                      \
-    --presets es2015 \
-    --plugins transform-es2015-modules-umd --module-id luceneTokenizers |   \
-    sed 's/\\\\u/\\u/g' > snowball.babel.js
+- Enjoy ```make esjava``` !
