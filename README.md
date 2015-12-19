@@ -8,15 +8,15 @@ Port from [Snowball](http://snowball.tartarus.org/) Stemmers. [Online](http://ma
 
 - Run [bootstrap](snowball_cache/configure) script to download and regenerate last original Java Snowball stemmers
 
-- Use your favorite IDE to remove unused code in *&#42;.java* sources like ```copy_from```, ```hashCode``` e.t.c. Here is Eclipse EE Mars.1 Release (4.5.1) example:
+- Use your favorite IDE to remove unused code in ```*.java``` sources like ```copy_from```, ```hashCode``` e.t.c. Here is Eclipse EE Mars.1 Release (4.5.1) example:
 
 *source -> cleanup*
 
 ![cleanup-profile](js_snowball/screenshots/cleanup-profile.png)
 
-- *ESJava* has some restrictions like reflection e.t.c. You have to refactor manually such *&#42;.java* sources too :(
+- **ESJava** has some restrictions like reflection e.t.c. You have to refactor manually such ```*.java``` sources too :(
 
-- Merge all *&#42;.java* in to one single *snowball.bundle.java*: ```make bundle```
+- Merge all ```*.java``` in to one single *snowball.bundle.java*: ```make bundle```
 
 - Manually edit js-specific fragments: ```awk /:es6:/,/:end:/ js_snowball/lib/snowball.bundle.java```
 

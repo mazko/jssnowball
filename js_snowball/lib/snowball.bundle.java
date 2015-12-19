@@ -43,7 +43,7 @@ public class StringBuilder extends StringBuffer {
 
 public class Among {
 
-	static char[] toCharArray(String s) {
+	private static char[] toCharArray(String s) {
 		int sLength = s.length();
 		char[] charArr = new char[sLength];
 		for (int i = 0; i < sLength; i++)
@@ -14176,7 +14176,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = (current.length());
+				I_p1 = ansi_c_length_shim();
 				// try, line 39
 				v_5 = limit - cursor;
 				lab3: do {
@@ -14206,7 +14206,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = (current.length());
+				I_p1 = ansi_c_length_shim();
 				// try, line 46
 				v_6 = limit - cursor;
 				lab4: do {
@@ -14236,7 +14236,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = (current.length());
+				I_p1 = ansi_c_length_shim();
 				// try, line 53
 				v_7 = limit - cursor;
 				lab5: do {
@@ -14266,7 +14266,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = (current.length());
+				I_p1 = ansi_c_length_shim();
 				// try, line 58
 				v_8 = limit - cursor;
 				lab6: do {
@@ -14295,7 +14295,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// delete, line 59
 					slice_del();
 				} while (false);
-				I_p1 = (current.length());
+				I_p1 = ansi_c_length_shim();
 				// try, line 63
 				v_10 = limit - cursor;
 				lab7: do {
@@ -14332,6 +14332,9 @@ public class sloveneStemmer extends SnowballStemmer {
 		return true;
 	}
 
+	private int ansi_c_length_shim() {
+		return current.length() ? encodeURIComponent(current).match(new RegExp("%..|.", "g")).length + 1 : 1;
+	}
 }
 // This file was generated automatically by the Snowball to Java compiler
 

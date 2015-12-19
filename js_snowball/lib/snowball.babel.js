@@ -3,7 +3,7 @@
  * http://snowball.tartarus.org/
  * https://github.com/mazko/jssnowball
  *
- * Copyright 19.12.2015 14:53:10, Oleg Mazko
+ * Copyright 19.12.2015 18:24:05, Oleg Mazko
  * http://www.opensource.org/licenses/bsd-license.html
  */
 'use strict';
@@ -245,11 +245,6 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
             },
             set: function set(v) {
                 this._$esjava$methodobject = v;
-            }
-        }], [{
-            key: 'toCharArray',
-            value: function toCharArray() {
-                return Among['toCharArray$esjava$' + arguments.length].apply(Among, arguments);
             }
         }]);
 
@@ -14157,7 +14152,7 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
                             }
                         } while (false);
 
-                        this.I_p1 = this.current.length();
+                        this.I_p1 = this.ansi_c_length_shim$esjava$0();
                         v_5 = this.limit - this.cursor;
 
                         lab3: do {
@@ -14187,7 +14182,7 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
                             }
                         } while (false);
 
-                        this.I_p1 = this.current.length();
+                        this.I_p1 = this.ansi_c_length_shim$esjava$0();
                         v_6 = this.limit - this.cursor;
 
                         lab4: do {
@@ -14217,7 +14212,7 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
                             }
                         } while (false);
 
-                        this.I_p1 = this.current.length();
+                        this.I_p1 = this.ansi_c_length_shim$esjava$0();
                         v_7 = this.limit - this.cursor;
 
                         lab5: do {
@@ -14247,7 +14242,7 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
                             }
                         } while (false);
 
-                        this.I_p1 = this.current.length();
+                        this.I_p1 = this.ansi_c_length_shim$esjava$0();
                         v_8 = this.limit - this.cursor;
 
                         lab6: do {
@@ -14275,7 +14270,7 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
                             this.slice_del$esjava$0();
                         } while (false);
 
-                        this.I_p1 = this.current.length();
+                        this.I_p1 = this.ansi_c_length_shim$esjava$0();
                         v_10 = this.limit - this.cursor;
 
                         lab7: do {
@@ -14310,6 +14305,11 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
                 this.cursor = this.limit - v_1;
                 this.cursor = this.limit_backward;
                 return true;
+            }
+        }, {
+            key: 'ansi_c_length_shim$esjava$0',
+            value: function ansi_c_length_shim$esjava$0() {
+                return this.current.length() ? encodeURIComponent(this.current).match(new RegExp("%..|.", "g")).length + 1 : 1;
             }
         }, {
             key: 'stem',

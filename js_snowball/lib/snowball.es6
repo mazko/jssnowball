@@ -3,7 +3,7 @@
  * http://snowball.tartarus.org/
  * https://github.com/mazko/jssnowball
  *
- * Copyright 19.12.2015 14:53:10, Oleg Mazko
+ * Copyright 19.12.2015 18:24:05, Oleg Mazko
  * http://www.opensource.org/licenses/bsd-license.html
  */
 'use strict';
@@ -109,9 +109,6 @@ class Among {
     }
     set methodobject(v) {
         this._$esjava$methodobject = v;
-    }
-    static toCharArray(...args) {
-        return Among['toCharArray$esjava$' + args.length](...args);
     }
 }
 class SnowballProgram {
@@ -14412,7 +14409,7 @@ class sloveneStemmer extends SnowballStemmer {
                                 break;
                             }
                         } while (false);
-                    this.I_p1 = this.current.length();
+                    this.I_p1 = this.ansi_c_length_shim$esjava$0();
                     v_5 = this.limit - this.cursor;
                     lab3:
                         do {
@@ -14436,7 +14433,7 @@ class sloveneStemmer extends SnowballStemmer {
                                 break;
                             }
                         } while (false);
-                    this.I_p1 = this.current.length();
+                    this.I_p1 = this.ansi_c_length_shim$esjava$0();
                     v_6 = this.limit - this.cursor;
                     lab4:
                         do {
@@ -14460,7 +14457,7 @@ class sloveneStemmer extends SnowballStemmer {
                                 break;
                             }
                         } while (false);
-                    this.I_p1 = this.current.length();
+                    this.I_p1 = this.ansi_c_length_shim$esjava$0();
                     v_7 = this.limit - this.cursor;
                     lab5:
                         do {
@@ -14484,7 +14481,7 @@ class sloveneStemmer extends SnowballStemmer {
                                 break;
                             }
                         } while (false);
-                    this.I_p1 = this.current.length();
+                    this.I_p1 = this.ansi_c_length_shim$esjava$0();
                     v_8 = this.limit - this.cursor;
                     lab6:
                         do {
@@ -14506,7 +14503,7 @@ class sloveneStemmer extends SnowballStemmer {
                             this.cursor = this.limit - v_9;
                             this.slice_del$esjava$0();
                         } while (false);
-                    this.I_p1 = this.current.length();
+                    this.I_p1 = this.ansi_c_length_shim$esjava$0();
                     v_10 = this.limit - this.cursor;
                     lab7:
                         do {
@@ -14535,6 +14532,9 @@ class sloveneStemmer extends SnowballStemmer {
         this.cursor = this.limit - v_1;
         this.cursor = this.limit_backward;
         return true;
+    }
+    ansi_c_length_shim$esjava$0() {
+        return this.current.length() ? encodeURIComponent(this.current).match(new RegExp("%..|.", "g")).length + 1 : 1;
     }
     stem(...args) {
         return this['stem$esjava$' + args.length](...args);

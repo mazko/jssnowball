@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 public class Among {
 
-	static char[] toCharArray(String s) {
+	private static char[] toCharArray(String s) {
 		int sLength = s.length();
 		char[] charArr = new char[sLength];
 		for (int i = 0; i < sLength; i++)
