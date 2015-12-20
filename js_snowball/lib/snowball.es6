@@ -3,7 +3,7 @@
  * http://snowball.tartarus.org/
  * https://github.com/mazko/jssnowball
  *
- * Copyright 19.12.2015 18:24:05, Oleg Mazko
+ * Copyright 20.12.2015 15:03:09, Oleg Mazko
  * http://www.opensource.org/licenses/bsd-license.html
  */
 'use strict';
@@ -38,22 +38,46 @@ class StringBuffer {
         return this.b;
     }
     length(...args) {
-        return this['length$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.length$esjava$0(...args);
+        }
+        return super.length(...args);
     }
     replace(...args) {
-        return this['replace$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 3:
+            return this.replace$esjava$3(...args);
+        }
+        return super.replace(...args);
     }
     substring(...args) {
-        return this['substring$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.substring$esjava$2(...args);
+        }
+        return super.substring(...args);
     }
     charAt(...args) {
-        return this['charAt$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 1:
+            return this.charAt$esjava$1(...args);
+        }
+        return super.charAt(...args);
     }
     subSequence(...args) {
-        return this['subSequence$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.subSequence$esjava$2(...args);
+        }
+        return super.subSequence(...args);
     }
     toString(...args) {
-        return this['toString$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.toString$esjava$0(...args);
+        }
+        return super.toString(...args);
     }
 }
 class StringBuilder extends StringBuffer {
@@ -442,73 +466,165 @@ class SnowballProgram {
         return s;
     }
     setCurrent(...args) {
-        return this['setCurrent$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 1:
+            return this.setCurrent$esjava$1(...args);
+        }
+        return super.setCurrent(...args);
     }
     getCurrent(...args) {
-        return this['getCurrent$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.getCurrent$esjava$0(...args);
+        }
+        return super.getCurrent(...args);
     }
     copy_from(...args) {
-        return this['copy_from$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 1:
+            return this.copy_from$esjava$1(...args);
+        }
+        return super.copy_from(...args);
     }
     in_grouping(...args) {
-        return this['in_grouping$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 3:
+            return this.in_grouping$esjava$3(...args);
+        }
+        return super.in_grouping(...args);
     }
     in_grouping_b(...args) {
-        return this['in_grouping_b$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 3:
+            return this.in_grouping_b$esjava$3(...args);
+        }
+        return super.in_grouping_b(...args);
     }
     out_grouping(...args) {
-        return this['out_grouping$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 3:
+            return this.out_grouping$esjava$3(...args);
+        }
+        return super.out_grouping(...args);
     }
     out_grouping_b(...args) {
-        return this['out_grouping_b$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 3:
+            return this.out_grouping_b$esjava$3(...args);
+        }
+        return super.out_grouping_b(...args);
     }
     in_range(...args) {
-        return this['in_range$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.in_range$esjava$2(...args);
+        }
+        return super.in_range(...args);
     }
     in_range_b(...args) {
-        return this['in_range_b$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.in_range_b$esjava$2(...args);
+        }
+        return super.in_range_b(...args);
     }
     out_range(...args) {
-        return this['out_range$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.out_range$esjava$2(...args);
+        }
+        return super.out_range(...args);
     }
     out_range_b(...args) {
-        return this['out_range_b$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.out_range_b$esjava$2(...args);
+        }
+        return super.out_range_b(...args);
     }
     eq_s(...args) {
-        return this['eq_s$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.eq_s$esjava$2(...args);
+        }
+        return super.eq_s(...args);
     }
     eq_s_b(...args) {
-        return this['eq_s_b$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.eq_s_b$esjava$2(...args);
+        }
+        return super.eq_s_b(...args);
     }
     eq_v(...args) {
-        return this['eq_v$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 1:
+            return this.eq_v$esjava$1(...args);
+        }
+        return super.eq_v(...args);
     }
     eq_v_b(...args) {
-        return this['eq_v_b$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 1:
+            return this.eq_v_b$esjava$1(...args);
+        }
+        return super.eq_v_b(...args);
     }
     find_among(...args) {
-        return this['find_among$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.find_among$esjava$2(...args);
+        }
+        return super.find_among(...args);
     }
     find_among_b(...args) {
-        return this['find_among_b$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 2:
+            return this.find_among_b$esjava$2(...args);
+        }
+        return super.find_among_b(...args);
     }
     replace_s(...args) {
-        return this['replace_s$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 3:
+            return this.replace_s$esjava$3(...args);
+        }
+        return super.replace_s(...args);
     }
     slice_check(...args) {
-        return this['slice_check$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.slice_check$esjava$0(...args);
+        }
+        return super.slice_check(...args);
     }
     slice_from(...args) {
-        return this['slice_from$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 1:
+            return this.slice_from$esjava$1(...args);
+        }
+        return super.slice_from(...args);
     }
     slice_del(...args) {
-        return this['slice_del$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.slice_del$esjava$0(...args);
+        }
+        return super.slice_del(...args);
     }
     insert(...args) {
-        return this['insert$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 3:
+            return this.insert$esjava$3(...args);
+        }
+        return super.insert(...args);
     }
     slice_to(...args) {
-        return this['slice_to$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 1:
+            return this.slice_to$esjava$1(...args);
+        }
+        return super.slice_to(...args);
     }
 }
 class SnowballStemmer extends SnowballProgram {
@@ -516,7 +632,11 @@ class SnowballStemmer extends SnowballProgram {
         throw 'NotImpl < stem$esjava$0 >';
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class armenianStemmer extends SnowballStemmer {
@@ -966,7 +1086,11 @@ class armenianStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class basqueStemmer extends SnowballStemmer {
@@ -1791,7 +1915,11 @@ class basqueStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class catalanStemmer extends SnowballStemmer {
@@ -2747,7 +2875,11 @@ class catalanStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class czechStemmer extends SnowballStemmer {
@@ -3442,7 +3574,11 @@ class czechStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class danishStemmer extends SnowballStemmer {
@@ -3822,7 +3958,11 @@ class danishStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class dutchStemmer extends SnowballStemmer {
@@ -4529,7 +4669,11 @@ class dutchStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class englishStemmer extends SnowballStemmer {
@@ -5586,7 +5730,11 @@ class englishStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class finnishStemmer extends SnowballStemmer {
@@ -6514,13 +6662,25 @@ class finnishStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
     r_LONG(...args) {
-        return this['r_LONG$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.r_LONG$esjava$0(...args);
+        }
+        return super.r_LONG(...args);
     }
     r_VI(...args) {
-        return this['r_VI$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.r_VI$esjava$0(...args);
+        }
+        return super.r_VI(...args);
     }
 }
 class frenchStemmer extends SnowballStemmer {
@@ -7730,7 +7890,11 @@ class frenchStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class germanStemmer extends SnowballStemmer {
@@ -8334,7 +8498,11 @@ class germanStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class hungarianStemmer extends SnowballStemmer {
@@ -9248,7 +9416,11 @@ class hungarianStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class irishStemmer extends SnowballStemmer {
@@ -9721,7 +9893,11 @@ class irishStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class italianStemmer extends SnowballStemmer {
@@ -10721,7 +10897,11 @@ class italianStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class norwegianStemmer extends SnowballStemmer {
@@ -11041,7 +11221,11 @@ class norwegianStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class porterStemmer extends SnowballStemmer {
@@ -11765,7 +11949,11 @@ class porterStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class portugueseStemmer extends SnowballStemmer {
@@ -12696,7 +12884,11 @@ class portugueseStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class romanianStemmer extends SnowballStemmer {
@@ -13582,7 +13774,11 @@ class romanianStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class russianStemmer extends SnowballStemmer {
@@ -14193,7 +14389,11 @@ class russianStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class sloveneStemmer extends SnowballStemmer {
@@ -14537,7 +14737,11 @@ class sloveneStemmer extends SnowballStemmer {
         return this.current.length() ? encodeURIComponent(this.current).match(new RegExp("%..|.", "g")).length + 1 : 1;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class spanishStemmer extends SnowballStemmer {
@@ -15510,7 +15714,11 @@ class spanishStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class swedishStemmer extends SnowballStemmer {
@@ -15824,7 +16032,11 @@ class swedishStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 class turkishStemmer extends SnowballStemmer {
@@ -18375,7 +18587,11 @@ class turkishStemmer extends SnowballStemmer {
         return true;
     }
     stem(...args) {
-        return this['stem$esjava$' + args.length](...args);
+        switch (args.length) {
+        case 0:
+            return this.stem$esjava$0(...args);
+        }
+        return super.stem(...args);
     }
 }
 export function newStemmer(lng) {

@@ -3,7 +3,7 @@
  * http://snowball.tartarus.org/
  * https://github.com/mazko/jssnowball
  *
- * Copyright 19.12.2015 18:24:05, Oleg Mazko
+ * Copyright 20.12.2015 15:03:09, Oleg Mazko
  * http://www.opensource.org/licenses/bsd-license.html
  */
 'use strict';
@@ -76,6 +76,31 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         };
     })();
 
+    var _get = function get(object, property, receiver) {
+        if (object === null) object = Function.prototype;
+        var desc = Object.getOwnPropertyDescriptor(object, property);
+
+        if (desc === undefined) {
+            var parent = Object.getPrototypeOf(object);
+
+            if (parent === null) {
+                return undefined;
+            } else {
+                return get(parent, property, receiver);
+            }
+        } else if ("value" in desc) {
+            return desc.value;
+        } else {
+            var getter = desc.get;
+
+            if (getter === undefined) {
+                return undefined;
+            }
+
+            return getter.call(receiver);
+        }
+    };
+
     var StringBuffer = (function () {
         function StringBuffer() {
             _classCallCheck(this, StringBuffer);
@@ -120,32 +145,98 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'length',
             value: function length() {
-                return this['length$esjava$' + arguments.length].apply(this, arguments);
+                var _get2;
+
+                for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = arguments[_key];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.length$esjava$0.apply(this, args);
+                }
+
+                return (_get2 = _get(Object.getPrototypeOf(StringBuffer.prototype), 'length', this)).call.apply(_get2, [this].concat(args));
             }
         }, {
             key: 'replace',
             value: function replace() {
-                return this['replace$esjava$' + arguments.length].apply(this, arguments);
+                var _get3;
+
+                for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+                    args[_key2] = arguments[_key2];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.replace$esjava$3.apply(this, args);
+                }
+
+                return (_get3 = _get(Object.getPrototypeOf(StringBuffer.prototype), 'replace', this)).call.apply(_get3, [this].concat(args));
             }
         }, {
             key: 'substring',
             value: function substring() {
-                return this['substring$esjava$' + arguments.length].apply(this, arguments);
+                var _get4;
+
+                for (var _len3 = arguments.length, args = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
+                    args[_key3] = arguments[_key3];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.substring$esjava$2.apply(this, args);
+                }
+
+                return (_get4 = _get(Object.getPrototypeOf(StringBuffer.prototype), 'substring', this)).call.apply(_get4, [this].concat(args));
             }
         }, {
             key: 'charAt',
             value: function charAt() {
-                return this['charAt$esjava$' + arguments.length].apply(this, arguments);
+                var _get5;
+
+                for (var _len4 = arguments.length, args = Array(_len4), _key4 = 0; _key4 < _len4; _key4++) {
+                    args[_key4] = arguments[_key4];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.charAt$esjava$1.apply(this, args);
+                }
+
+                return (_get5 = _get(Object.getPrototypeOf(StringBuffer.prototype), 'charAt', this)).call.apply(_get5, [this].concat(args));
             }
         }, {
             key: 'subSequence',
             value: function subSequence() {
-                return this['subSequence$esjava$' + arguments.length].apply(this, arguments);
+                var _get6;
+
+                for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+                    args[_key5] = arguments[_key5];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.subSequence$esjava$2.apply(this, args);
+                }
+
+                return (_get6 = _get(Object.getPrototypeOf(StringBuffer.prototype), 'subSequence', this)).call.apply(_get6, [this].concat(args));
             }
         }, {
             key: 'toString',
             value: function toString() {
-                return this['toString$esjava$' + arguments.length].apply(this, arguments);
+                var _get7;
+
+                for (var _len6 = arguments.length, args = Array(_len6), _key6 = 0; _key6 < _len6; _key6++) {
+                    args[_key6] = arguments[_key6];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.toString$esjava$0.apply(this, args);
+                }
+
+                return (_get7 = _get(Object.getPrototypeOf(StringBuffer.prototype), 'toString', this)).call.apply(_get7, [this].concat(args));
             }
         }, {
             key: 'b',
@@ -586,117 +677,370 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'setCurrent',
             value: function setCurrent() {
-                return this['setCurrent$esjava$' + arguments.length].apply(this, arguments);
+                var _get8;
+
+                for (var _len7 = arguments.length, args = Array(_len7), _key7 = 0; _key7 < _len7; _key7++) {
+                    args[_key7] = arguments[_key7];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.setCurrent$esjava$1.apply(this, args);
+                }
+
+                return (_get8 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'setCurrent', this)).call.apply(_get8, [this].concat(args));
             }
         }, {
             key: 'getCurrent',
             value: function getCurrent() {
-                return this['getCurrent$esjava$' + arguments.length].apply(this, arguments);
+                var _get9;
+
+                for (var _len8 = arguments.length, args = Array(_len8), _key8 = 0; _key8 < _len8; _key8++) {
+                    args[_key8] = arguments[_key8];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.getCurrent$esjava$0.apply(this, args);
+                }
+
+                return (_get9 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'getCurrent', this)).call.apply(_get9, [this].concat(args));
             }
         }, {
             key: 'copy_from',
             value: function copy_from() {
-                return this['copy_from$esjava$' + arguments.length].apply(this, arguments);
+                var _get10;
+
+                for (var _len9 = arguments.length, args = Array(_len9), _key9 = 0; _key9 < _len9; _key9++) {
+                    args[_key9] = arguments[_key9];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.copy_from$esjava$1.apply(this, args);
+                }
+
+                return (_get10 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'copy_from', this)).call.apply(_get10, [this].concat(args));
             }
         }, {
             key: 'in_grouping',
             value: function in_grouping() {
-                return this['in_grouping$esjava$' + arguments.length].apply(this, arguments);
+                var _get11;
+
+                for (var _len10 = arguments.length, args = Array(_len10), _key10 = 0; _key10 < _len10; _key10++) {
+                    args[_key10] = arguments[_key10];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.in_grouping$esjava$3.apply(this, args);
+                }
+
+                return (_get11 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'in_grouping', this)).call.apply(_get11, [this].concat(args));
             }
         }, {
             key: 'in_grouping_b',
             value: function in_grouping_b() {
-                return this['in_grouping_b$esjava$' + arguments.length].apply(this, arguments);
+                var _get12;
+
+                for (var _len11 = arguments.length, args = Array(_len11), _key11 = 0; _key11 < _len11; _key11++) {
+                    args[_key11] = arguments[_key11];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.in_grouping_b$esjava$3.apply(this, args);
+                }
+
+                return (_get12 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'in_grouping_b', this)).call.apply(_get12, [this].concat(args));
             }
         }, {
             key: 'out_grouping',
             value: function out_grouping() {
-                return this['out_grouping$esjava$' + arguments.length].apply(this, arguments);
+                var _get13;
+
+                for (var _len12 = arguments.length, args = Array(_len12), _key12 = 0; _key12 < _len12; _key12++) {
+                    args[_key12] = arguments[_key12];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.out_grouping$esjava$3.apply(this, args);
+                }
+
+                return (_get13 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'out_grouping', this)).call.apply(_get13, [this].concat(args));
             }
         }, {
             key: 'out_grouping_b',
             value: function out_grouping_b() {
-                return this['out_grouping_b$esjava$' + arguments.length].apply(this, arguments);
+                var _get14;
+
+                for (var _len13 = arguments.length, args = Array(_len13), _key13 = 0; _key13 < _len13; _key13++) {
+                    args[_key13] = arguments[_key13];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.out_grouping_b$esjava$3.apply(this, args);
+                }
+
+                return (_get14 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'out_grouping_b', this)).call.apply(_get14, [this].concat(args));
             }
         }, {
             key: 'in_range',
             value: function in_range() {
-                return this['in_range$esjava$' + arguments.length].apply(this, arguments);
+                var _get15;
+
+                for (var _len14 = arguments.length, args = Array(_len14), _key14 = 0; _key14 < _len14; _key14++) {
+                    args[_key14] = arguments[_key14];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.in_range$esjava$2.apply(this, args);
+                }
+
+                return (_get15 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'in_range', this)).call.apply(_get15, [this].concat(args));
             }
         }, {
             key: 'in_range_b',
             value: function in_range_b() {
-                return this['in_range_b$esjava$' + arguments.length].apply(this, arguments);
+                var _get16;
+
+                for (var _len15 = arguments.length, args = Array(_len15), _key15 = 0; _key15 < _len15; _key15++) {
+                    args[_key15] = arguments[_key15];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.in_range_b$esjava$2.apply(this, args);
+                }
+
+                return (_get16 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'in_range_b', this)).call.apply(_get16, [this].concat(args));
             }
         }, {
             key: 'out_range',
             value: function out_range() {
-                return this['out_range$esjava$' + arguments.length].apply(this, arguments);
+                var _get17;
+
+                for (var _len16 = arguments.length, args = Array(_len16), _key16 = 0; _key16 < _len16; _key16++) {
+                    args[_key16] = arguments[_key16];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.out_range$esjava$2.apply(this, args);
+                }
+
+                return (_get17 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'out_range', this)).call.apply(_get17, [this].concat(args));
             }
         }, {
             key: 'out_range_b',
             value: function out_range_b() {
-                return this['out_range_b$esjava$' + arguments.length].apply(this, arguments);
+                var _get18;
+
+                for (var _len17 = arguments.length, args = Array(_len17), _key17 = 0; _key17 < _len17; _key17++) {
+                    args[_key17] = arguments[_key17];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.out_range_b$esjava$2.apply(this, args);
+                }
+
+                return (_get18 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'out_range_b', this)).call.apply(_get18, [this].concat(args));
             }
         }, {
             key: 'eq_s',
             value: function eq_s() {
-                return this['eq_s$esjava$' + arguments.length].apply(this, arguments);
+                var _get19;
+
+                for (var _len18 = arguments.length, args = Array(_len18), _key18 = 0; _key18 < _len18; _key18++) {
+                    args[_key18] = arguments[_key18];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.eq_s$esjava$2.apply(this, args);
+                }
+
+                return (_get19 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'eq_s', this)).call.apply(_get19, [this].concat(args));
             }
         }, {
             key: 'eq_s_b',
             value: function eq_s_b() {
-                return this['eq_s_b$esjava$' + arguments.length].apply(this, arguments);
+                var _get20;
+
+                for (var _len19 = arguments.length, args = Array(_len19), _key19 = 0; _key19 < _len19; _key19++) {
+                    args[_key19] = arguments[_key19];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.eq_s_b$esjava$2.apply(this, args);
+                }
+
+                return (_get20 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'eq_s_b', this)).call.apply(_get20, [this].concat(args));
             }
         }, {
             key: 'eq_v',
             value: function eq_v() {
-                return this['eq_v$esjava$' + arguments.length].apply(this, arguments);
+                var _get21;
+
+                for (var _len20 = arguments.length, args = Array(_len20), _key20 = 0; _key20 < _len20; _key20++) {
+                    args[_key20] = arguments[_key20];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.eq_v$esjava$1.apply(this, args);
+                }
+
+                return (_get21 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'eq_v', this)).call.apply(_get21, [this].concat(args));
             }
         }, {
             key: 'eq_v_b',
             value: function eq_v_b() {
-                return this['eq_v_b$esjava$' + arguments.length].apply(this, arguments);
+                var _get22;
+
+                for (var _len21 = arguments.length, args = Array(_len21), _key21 = 0; _key21 < _len21; _key21++) {
+                    args[_key21] = arguments[_key21];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.eq_v_b$esjava$1.apply(this, args);
+                }
+
+                return (_get22 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'eq_v_b', this)).call.apply(_get22, [this].concat(args));
             }
         }, {
             key: 'find_among',
             value: function find_among() {
-                return this['find_among$esjava$' + arguments.length].apply(this, arguments);
+                var _get23;
+
+                for (var _len22 = arguments.length, args = Array(_len22), _key22 = 0; _key22 < _len22; _key22++) {
+                    args[_key22] = arguments[_key22];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.find_among$esjava$2.apply(this, args);
+                }
+
+                return (_get23 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'find_among', this)).call.apply(_get23, [this].concat(args));
             }
         }, {
             key: 'find_among_b',
             value: function find_among_b() {
-                return this['find_among_b$esjava$' + arguments.length].apply(this, arguments);
+                var _get24;
+
+                for (var _len23 = arguments.length, args = Array(_len23), _key23 = 0; _key23 < _len23; _key23++) {
+                    args[_key23] = arguments[_key23];
+                }
+
+                switch (args.length) {
+                    case 2:
+                        return this.find_among_b$esjava$2.apply(this, args);
+                }
+
+                return (_get24 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'find_among_b', this)).call.apply(_get24, [this].concat(args));
             }
         }, {
             key: 'replace_s',
             value: function replace_s() {
-                return this['replace_s$esjava$' + arguments.length].apply(this, arguments);
+                var _get25;
+
+                for (var _len24 = arguments.length, args = Array(_len24), _key24 = 0; _key24 < _len24; _key24++) {
+                    args[_key24] = arguments[_key24];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.replace_s$esjava$3.apply(this, args);
+                }
+
+                return (_get25 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'replace_s', this)).call.apply(_get25, [this].concat(args));
             }
         }, {
             key: 'slice_check',
             value: function slice_check() {
-                return this['slice_check$esjava$' + arguments.length].apply(this, arguments);
+                var _get26;
+
+                for (var _len25 = arguments.length, args = Array(_len25), _key25 = 0; _key25 < _len25; _key25++) {
+                    args[_key25] = arguments[_key25];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.slice_check$esjava$0.apply(this, args);
+                }
+
+                return (_get26 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'slice_check', this)).call.apply(_get26, [this].concat(args));
             }
         }, {
             key: 'slice_from',
             value: function slice_from() {
-                return this['slice_from$esjava$' + arguments.length].apply(this, arguments);
+                var _get27;
+
+                for (var _len26 = arguments.length, args = Array(_len26), _key26 = 0; _key26 < _len26; _key26++) {
+                    args[_key26] = arguments[_key26];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.slice_from$esjava$1.apply(this, args);
+                }
+
+                return (_get27 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'slice_from', this)).call.apply(_get27, [this].concat(args));
             }
         }, {
             key: 'slice_del',
             value: function slice_del() {
-                return this['slice_del$esjava$' + arguments.length].apply(this, arguments);
+                var _get28;
+
+                for (var _len27 = arguments.length, args = Array(_len27), _key27 = 0; _key27 < _len27; _key27++) {
+                    args[_key27] = arguments[_key27];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.slice_del$esjava$0.apply(this, args);
+                }
+
+                return (_get28 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'slice_del', this)).call.apply(_get28, [this].concat(args));
             }
         }, {
             key: 'insert',
             value: function insert() {
-                return this['insert$esjava$' + arguments.length].apply(this, arguments);
+                var _get29;
+
+                for (var _len28 = arguments.length, args = Array(_len28), _key28 = 0; _key28 < _len28; _key28++) {
+                    args[_key28] = arguments[_key28];
+                }
+
+                switch (args.length) {
+                    case 3:
+                        return this.insert$esjava$3.apply(this, args);
+                }
+
+                return (_get29 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'insert', this)).call.apply(_get29, [this].concat(args));
             }
         }, {
             key: 'slice_to',
             value: function slice_to() {
-                return this['slice_to$esjava$' + arguments.length].apply(this, arguments);
+                var _get30;
+
+                for (var _len29 = arguments.length, args = Array(_len29), _key29 = 0; _key29 < _len29; _key29++) {
+                    args[_key29] = arguments[_key29];
+                }
+
+                switch (args.length) {
+                    case 1:
+                        return this.slice_to$esjava$1.apply(this, args);
+                }
+
+                return (_get30 = _get(Object.getPrototypeOf(SnowballProgram.prototype), 'slice_to', this)).call.apply(_get30, [this].concat(args));
             }
         }, {
             key: 'current',
@@ -768,7 +1112,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get31;
+
+                for (var _len30 = arguments.length, args = Array(_len30), _key30 = 0; _key30 < _len30; _key30++) {
+                    args[_key30] = arguments[_key30];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get31 = _get(Object.getPrototypeOf(SnowballStemmer.prototype), 'stem', this)).call.apply(_get31, [this].concat(args));
             }
         }]);
 
@@ -1048,7 +1403,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get32;
+
+                for (var _len31 = arguments.length, args = Array(_len31), _key31 = 0; _key31 < _len31; _key31++) {
+                    args[_key31] = arguments[_key31];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get32 = _get(Object.getPrototypeOf(armenianStemmer.prototype), 'stem', this)).call.apply(_get32, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -1560,7 +1926,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get33;
+
+                for (var _len32 = arguments.length, args = Array(_len32), _key32 = 0; _key32 < _len32; _key32++) {
+                    args[_key32] = arguments[_key32];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get33 = _get(Object.getPrototypeOf(basqueStemmer.prototype), 'stem', this)).call.apply(_get33, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -2054,7 +2431,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get34;
+
+                for (var _len33 = arguments.length, args = Array(_len33), _key33 = 0; _key33 < _len33; _key33++) {
+                    args[_key33] = arguments[_key33];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get34 = _get(Object.getPrototypeOf(catalanStemmer.prototype), 'stem', this)).call.apply(_get34, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -2678,7 +3066,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get35;
+
+                for (var _len34 = arguments.length, args = Array(_len34), _key34 = 0; _key34 < _len34; _key34++) {
+                    args[_key34] = arguments[_key34];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get35 = _get(Object.getPrototypeOf(czechStemmer.prototype), 'stem', this)).call.apply(_get35, [this].concat(args));
             }
         }, {
             key: 'I_p1',
@@ -3087,7 +3486,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get36;
+
+                for (var _len35 = arguments.length, args = Array(_len35), _key35 = 0; _key35 < _len35; _key35++) {
+                    args[_key35] = arguments[_key35];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get36 = _get(Object.getPrototypeOf(danishStemmer.prototype), 'stem', this)).call.apply(_get36, [this].concat(args));
             }
         }, {
             key: 'I_x',
@@ -3867,7 +4277,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get37;
+
+                for (var _len36 = arguments.length, args = Array(_len36), _key36 = 0; _key36 < _len36; _key36++) {
+                    args[_key36] = arguments[_key36];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get37 = _get(Object.getPrototypeOf(dutchStemmer.prototype), 'stem', this)).call.apply(_get37, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -5032,7 +5453,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get38;
+
+                for (var _len37 = arguments.length, args = Array(_len37), _key37 = 0; _key37 < _len37; _key37++) {
+                    args[_key37] = arguments[_key37];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get38 = _get(Object.getPrototypeOf(englishStemmer.prototype), 'stem', this)).call.apply(_get38, [this].concat(args));
             }
         }, {
             key: 'B_Y_found',
@@ -5983,17 +6415,50 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get39;
+
+                for (var _len38 = arguments.length, args = Array(_len38), _key38 = 0; _key38 < _len38; _key38++) {
+                    args[_key38] = arguments[_key38];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get39 = _get(Object.getPrototypeOf(finnishStemmer.prototype), 'stem', this)).call.apply(_get39, [this].concat(args));
             }
         }, {
             key: 'r_LONG',
             value: function r_LONG() {
-                return this['r_LONG$esjava$' + arguments.length].apply(this, arguments);
+                var _get40;
+
+                for (var _len39 = arguments.length, args = Array(_len39), _key39 = 0; _key39 < _len39; _key39++) {
+                    args[_key39] = arguments[_key39];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.r_LONG$esjava$0.apply(this, args);
+                }
+
+                return (_get40 = _get(Object.getPrototypeOf(finnishStemmer.prototype), 'r_LONG', this)).call.apply(_get40, [this].concat(args));
             }
         }, {
             key: 'r_VI',
             value: function r_VI() {
-                return this['r_VI$esjava$' + arguments.length].apply(this, arguments);
+                var _get41;
+
+                for (var _len40 = arguments.length, args = Array(_len40), _key40 = 0; _key40 < _len40; _key40++) {
+                    args[_key40] = arguments[_key40];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.r_VI$esjava$0.apply(this, args);
+                }
+
+                return (_get41 = _get(Object.getPrototypeOf(finnishStemmer.prototype), 'r_VI', this)).call.apply(_get41, [this].concat(args));
             }
         }, {
             key: 'methodObject',
@@ -7344,7 +7809,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get42;
+
+                for (var _len41 = arguments.length, args = Array(_len41), _key41 = 0; _key41 < _len41; _key41++) {
+                    args[_key41] = arguments[_key41];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get42 = _get(Object.getPrototypeOf(frenchStemmer.prototype), 'stem', this)).call.apply(_get42, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -8067,7 +8543,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get43;
+
+                for (var _len42 = arguments.length, args = Array(_len42), _key42 = 0; _key42 < _len42; _key42++) {
+                    args[_key42] = arguments[_key42];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get43 = _get(Object.getPrototypeOf(germanStemmer.prototype), 'stem', this)).call.apply(_get43, [this].concat(args));
             }
         }, {
             key: 'I_x',
@@ -8979,7 +9466,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get44;
+
+                for (var _len43 = arguments.length, args = Array(_len43), _key43 = 0; _key43 < _len43; _key43++) {
+                    args[_key43] = arguments[_key43];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get44 = _get(Object.getPrototypeOf(hungarianStemmer.prototype), 'stem', this)).call.apply(_get44, [this].concat(args));
             }
         }, {
             key: 'I_p1',
@@ -9505,7 +10003,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get45;
+
+                for (var _len44 = arguments.length, args = Array(_len44), _key44 = 0; _key44 < _len44; _key44++) {
+                    args[_key44] = arguments[_key44];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get45 = _get(Object.getPrototypeOf(irishStemmer.prototype), 'stem', this)).call.apply(_get45, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -10450,7 +10959,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get46;
+
+                for (var _len45 = arguments.length, args = Array(_len45), _key45 = 0; _key45 < _len45; _key45++) {
+                    args[_key45] = arguments[_key45];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get46 = _get(Object.getPrototypeOf(italianStemmer.prototype), 'stem', this)).call.apply(_get46, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -10825,7 +11345,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get47;
+
+                for (var _len46 = arguments.length, args = Array(_len46), _key46 = 0; _key46 < _len46; _key46++) {
+                    args[_key46] = arguments[_key46];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get47 = _get(Object.getPrototypeOf(norwegianStemmer.prototype), 'stem', this)).call.apply(_get47, [this].concat(args));
             }
         }, {
             key: 'I_x',
@@ -11630,7 +12161,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get48;
+
+                for (var _len47 = arguments.length, args = Array(_len47), _key47 = 0; _key47 < _len47; _key47++) {
+                    args[_key47] = arguments[_key47];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get48 = _get(Object.getPrototypeOf(porterStemmer.prototype), 'stem', this)).call.apply(_get48, [this].concat(args));
             }
         }, {
             key: 'B_Y_found',
@@ -12540,7 +13082,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get49;
+
+                for (var _len48 = arguments.length, args = Array(_len48), _key48 = 0; _key48 < _len48; _key48++) {
+                    args[_key48] = arguments[_key48];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get49 = _get(Object.getPrototypeOf(portugueseStemmer.prototype), 'stem', this)).call.apply(_get49, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -13364,7 +13917,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get50;
+
+                for (var _len49 = arguments.length, args = Array(_len49), _key49 = 0; _key49 < _len49; _key49++) {
+                    args[_key49] = arguments[_key49];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get50 = _get(Object.getPrototypeOf(romanianStemmer.prototype), 'stem', this)).call.apply(_get50, [this].concat(args));
             }
         }, {
             key: 'B_standard_suffix_removed',
@@ -13981,7 +14545,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get51;
+
+                for (var _len50 = arguments.length, args = Array(_len50), _key50 = 0; _key50 < _len50; _key50++) {
+                    args[_key50] = arguments[_key50];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get51 = _get(Object.getPrototypeOf(russianStemmer.prototype), 'stem', this)).call.apply(_get51, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -14314,7 +14889,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get52;
+
+                for (var _len51 = arguments.length, args = Array(_len51), _key51 = 0; _key51 < _len51; _key51++) {
+                    args[_key51] = arguments[_key51];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get52 = _get(Object.getPrototypeOf(sloveneStemmer.prototype), 'stem', this)).call.apply(_get52, [this].concat(args));
             }
         }, {
             key: 'I_p1',
@@ -15237,7 +15823,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get53;
+
+                for (var _len52 = arguments.length, args = Array(_len52), _key52 = 0; _key52 < _len52; _key52++) {
+                    args[_key52] = arguments[_key52];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get53 = _get(Object.getPrototypeOf(spanishStemmer.prototype), 'stem', this)).call.apply(_get53, [this].concat(args));
             }
         }, {
             key: 'I_p2',
@@ -15598,7 +16195,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get54;
+
+                for (var _len53 = arguments.length, args = Array(_len53), _key53 = 0; _key53 < _len53; _key53++) {
+                    args[_key53] = arguments[_key53];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get54 = _get(Object.getPrototypeOf(swedishStemmer.prototype), 'stem', this)).call.apply(_get54, [this].concat(args));
             }
         }, {
             key: 'I_x',
@@ -18334,7 +18942,18 @@ function _typeof(obj) { return obj && typeof Symbol !== "undefined" && obj.const
         }, {
             key: 'stem',
             value: function stem() {
-                return this['stem$esjava$' + arguments.length].apply(this, arguments);
+                var _get55;
+
+                for (var _len54 = arguments.length, args = Array(_len54), _key54 = 0; _key54 < _len54; _key54++) {
+                    args[_key54] = arguments[_key54];
+                }
+
+                switch (args.length) {
+                    case 0:
+                        return this.stem$esjava$0.apply(this, args);
+                }
+
+                return (_get55 = _get(Object.getPrototypeOf(turkishStemmer.prototype), 'stem', this)).call.apply(_get55, [this].concat(args));
             }
         }, {
             key: 'B_continue_stemming_noun_suffixes',
