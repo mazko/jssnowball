@@ -1,0 +1,27 @@
+{
+  "name": "snowball-stemmers",
+  "version": "0.5.0",
+  "description": "JS Port from Snowball Stemmers http://snowball.tartarus.org/",
+  "main": "snowball-stemmers.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "prepublish": "cp -f ../lib/snowball.babel.js snowball-stemmers.js",
+    "postpublish": "rm snowball-stemmers.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mazko/jssnowball.git"
+  },
+  "keywords": [
+    "Snowball",
+    "Stemmer"
+  ],
+  "author": "Oleg Mazko <o.mazko@mail.ru> (http://mazko.github.io/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mazko/jssnowball/issues"
+  },
+  "homepage": "https://github.com/mazko/jssnowball#readme"
+}
