@@ -3,10 +3,12 @@
 <head>
 	<meta charset="utf-8">
 	<title>Online Snowball stemmers demo</title>
-	<script src="lib/Snowball.js"></script>
+	<script src="lib/snowball.babel.js"></script>
 	<script>
-		var Stem = (function() { var lang, testStemmer; return function(lng, word) { if (lng != lang) {lang = lng; testStemmer = new Snowball(lang);}  testStemmer.setCurrent(word); testStemmer.stem(); return testStemmer.getCurrent();}})();
-		function printstem(lng, word){document.getElementById("result").innerHTML = "<b>" + Stem(lng, word) + "</b>";}
+		var printstem = (function() {
+			var Stem = (function() { var lang, testStemmer; return function(lng, word) { if (lng !== lang) {lang = lng; testStemmer = snowballFactory.newStemmer(lang);}  return testStemmer.stem(word);}})();
+			return function(lng, word){ document.getElementById("result").innerHTML = "<b>" + Stem(lng, word) + "</b>"; };
+		})();
 	</script>
 </head>
 <body>
