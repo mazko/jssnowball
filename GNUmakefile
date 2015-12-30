@@ -86,6 +86,32 @@ js_snowball/tests/composite.html: $(JS_TESTS_SRC) $(JS_TESTS_HTML)
 	@echo "</body>" >> $@
 	@echo "</html>" >> $@
 
+js_snowball/tests/coverage.html: $(JS_TESTS_SRC)
+	@echo "<!DOCTYPE html>" > $@
+	@echo "<html>" >> $@
+	@echo "<head>" >> $@
+	@echo "<meta charset=\"utf-8\">" | sed 's!^!\t!' >> $@
+	@echo "<title>QUnit tests for all stemmers</title>" | sed 's!^!\t!' >> $@
+	@echo "<link rel=\"stylesheet\" href=\"qunit/qunit.css\">" | sed 's!^!\t!' >> $@
+	@echo "<script src=\"qunit/qunit.js\"></script>" | sed 's!^!\t!' >> $@
+	@echo "<script src=\"blanket/blanket.js\"></script>" | sed 's!^!\t!' >> $@
+	@echo "<script>" | sed 's!^!\t!' >> $@
+	@echo "blanket.options('reporter', 'blanket/lcov_reporter.js');" | sed 's!^!\t\t!' >> $@
+	@echo "blanket.options('reporter_options', { toHTML:false, strip_file_name:true });" | sed 's!^!\t\t!' >> $@
+	@echo "QUnit.done(function() {" | sed 's!^!\t\t!' >> $@
+	@echo 'alert(JSON.stringify(["qunit.report", window._$$blanket_LCOV]));' | sed 's!^!\t\t\t!' >> $@	
+	@echo "});" | sed 's!^!\t\t!' >> $@
+	@echo "</script>" | sed 's!^!\t!' >> $@
+	@echo "<script src=\"../lib/snowball.babel.js\" data-cover></script>" | sed 's!^!\t!' >> $@
+	@$(foreach lang,$(libstemmer_algorithms), 						\
+	echo "<script src=\"js/$(lang)Tests.js\"></script>" | sed 's!^!\t!' >> $@;)
+	@echo "</head>" >> $@
+	@echo "<body>" >> $@
+	@echo "<div id=\"qunit\"></div>" | sed 's!^!\t!' >> $@
+	@echo "<div id=\"qunit-fixture\"></div>" | sed 's!^!\t!' >> $@
+	@echo "</body>" >> $@
+	@echo "</html>" >> $@
+
 js_snowball/tests/%Tests.html:
 	@echo "<!DOCTYPE html>" > $@
 	@echo "<html>" >> $@
@@ -103,16 +129,15 @@ js_snowball/tests/%Tests.html:
 	@echo "</html>" >> $@
 
 js_snowball/tests/js/%Tests.js: $(snowball_all)/algorithms/%/voc.txt $(snowball_code)/stemwords
-	@mkdir -p js_snowball/tests/js
-	@echo "QUnit.config.hidepassed = true;" > $@
-	@echo "var Stem = snowballFactory.newStemmer('$*').stem;" >> $@
 	@echo "Generating tests for $*"
+	@mkdir -p js_snowball/tests/js
+	@echo "QUnit.test('$*', function(){" > $@
+	@echo "var Stem = snowballFactory.newStemmer('$*').stem;" | sed 's!^!\t!' >> $@
 	@./$(snowball_code)/stemwords -i $(snowball_all)/algorithms/$*/voc.txt -l $* -p |	\
 	       sed '/^\s\+\S*\s\+$$/d' | sed 's!\"!\\\"!g' |								\
 	       sed 's!\s\+[->]\+\s\+!\"\), \"!' |											\
-	       sed 'h;G;s/\n/\", function\(\) {deepEqual\( Stem(\"/' |						\
-	       sed 's!\"), \"! -> !' |														\
-	       sed 's!^!test\(\"!' | sed 's!$$!\"\);}\);!' >> $@
+	       sed 's!^!deepEqual\( Stem(\"!' | sed 's!$$!\"\ );!' | sed 's!^!\t!' >> $@
+	@echo "});" >> $@
 
 $(snowball_code)/stemwords: $(JAVA_SOURCES)
 	@cp $(snowball_code)/GNUmakefile $(snowball_code)/GNUmakefile_js_copy
@@ -175,7 +200,7 @@ js_snowball/lib/snowball.babel.js: js_snowball/lib/snowball.es6
 	--plugins transform-es2015-modules-umd --module-id snowballFactory |   \
 	sed 's/\\\\u/\\u/g' > $@
 
-esjava: js_snowball/lib/snowball.babel.js js_snowball/index.html js_snowball/tests/composite.html
+esjava: js_snowball/lib/snowball.babel.js js_snowball/index.html js_snowball/tests/composite.html js_snowball/tests/coverage.html
 
 $(snowball_code)/algorithms/%/stem_Unicode.sbl: $(snowball_code)/algorithms/%/stem_ISO_8859_1.sbl
 	cp $^ $@
