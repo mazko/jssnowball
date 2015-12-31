@@ -9,8 +9,7 @@ module.exports = function(grunt) {
                 options: { 
                     timeout: 500000,
                     urls: [
-                        "./js_snowball/tests/composite.html",
-                        "./js_snowball/tests/coverage.html?coverage=true&noglobals=true"
+                        "./js_snowball/tests/coverage.html?coverage=true"
                     ]
                 }
             }

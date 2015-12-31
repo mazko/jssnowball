@@ -13,7 +13,7 @@ JAVA_SOURCES = $(libstemmer_algorithms:%=$(snowball_code)/$(java_src_generated)/
 JS_TESTS_SRC = $(libstemmer_algorithms:%=js_snowball/tests/js/%Tests.js)
 JS_TESTS_HTML = $(libstemmer_algorithms:%=js_snowball/tests/%Tests.html)
 
-js_snowball/index.html: $(JAVA_SOURCES)
+js_snowball/index.html: $(JAVA_SOURCES) $(JS_TESTS_SRC) $(JS_TESTS_HTML)
 	@echo "<!DOCTYPE html>" > $@
 	@echo "<html>" >> $@
 	@echo "<head>" >> $@
@@ -44,7 +44,7 @@ js_snowball/index.html: $(JAVA_SOURCES)
 	      "<span style=\"color:red;\">Enable JavaScript ! </span></noscript>Stem!</button>" | sed 's!^!\t!' >> $@
 	@echo "<p id=\"result\"></p>" | sed 's!^!\t!' >> $@
 	@echo "<fieldset><legend>Unit tests</legend>" | sed 's!^!\t!' >> $@
-	@echo "<a href=\"tests/composite.html\" target=\"_blank\">all</a>" | sed 's!^!\t\t!' >> $@;
+	@echo "<a href=\"tests/coverage.html\" target=\"_blank\">all</a>" | sed 's!^!\t\t!' >> $@;
 	@$(foreach l,$(libstemmer_algorithms), \
 		echo " | " | sed 's!^!\t\t!' >> $@; \
 		echo "<a href=\"tests/$(l)Tests.html\" target=\"_blank\">$(l)</a>" | sed 's!^!\t\t!' >> $@;)
@@ -61,31 +61,6 @@ js_snowball/index.html: $(JAVA_SOURCES)
 	@echo "</body>" >> $@
 	@echo "</html>" >> $@
 
-js_snowball/tests/composite.html: $(JS_TESTS_SRC) $(JS_TESTS_HTML)
-	@echo "<!DOCTYPE html>" > $@
-	@echo "<html>" >> $@
-	@echo "<head>" >> $@
-	@echo "<meta charset=\"utf-8\">" | sed 's!^!\t!' >> $@
-	@echo "<title>QUnit tests for all stemmers</title>" | sed 's!^!\t!' >> $@
-	@echo "<link rel=\"stylesheet\" href=\"qunit/qunit.css\">" | sed 's!^!\t!' >> $@
-	@echo "<link rel=\"stylesheet\" href=\"qunit/addons/composite/qunit-composite.css\">" | sed 's!^!\t!' >> $@
-	@echo "<script src=\"qunit/qunit.js\"></script>" | sed 's!^!\t!' >> $@
-	@echo "<script src=\"qunit/addons/composite/qunit-composite.js\"></script>" | sed 's!^!\t!' >> $@
-	@echo "<script>" | sed 's!^!\t!' >> $@
-	@echo "QUnit.config.hidepassed = true;" | sed 's!^!\t\t!' >> $@
-	@echo "QUnit.testSuites([" | sed 's!^!\t\t!' >> $@
-	@$(foreach lang,$(libstemmer_algorithms), 						\
-	echo $${separator_between_tests} >> $@; separator_between_tests=","; 			\
-	echo "\"$(lang)Tests.html\"" | sed 's!^!\t\t\t!' >> $@;)
-	@echo "]);" | sed 's!^!\t\t!' >> $@
-	@echo "</script>" | sed 's!^!\t!' >> $@
-	@echo "</head>" >> $@
-	@echo "<body>" >> $@
-	@echo "<div id=\"qunit\"></div>" | sed 's!^!\t!' >> $@
-	@echo "<div id=\"qunit-fixture\"></div>" | sed 's!^!\t!' >> $@
-	@echo "</body>" >> $@
-	@echo "</html>" >> $@
-
 js_snowball/tests/coverage.html: $(JS_TESTS_SRC)
 	@echo "<!DOCTYPE html>" > $@
 	@echo "<html>" >> $@
@@ -96,11 +71,14 @@ js_snowball/tests/coverage.html: $(JS_TESTS_SRC)
 	@echo "<script src=\"qunit/qunit.js\"></script>" | sed 's!^!\t!' >> $@
 	@echo "<script src=\"blanket/blanket.js\"></script>" | sed 's!^!\t!' >> $@
 	@echo "<script>" | sed 's!^!\t!' >> $@
-	@echo "blanket.options('reporter', 'blanket/lcov_reporter.js');" | sed 's!^!\t\t!' >> $@
-	@echo "blanket.options('reporter_options', { toHTML:false, strip_file_name:true });" | sed 's!^!\t\t!' >> $@
-	@echo "QUnit.done(function() {" | sed 's!^!\t\t!' >> $@
-	@echo 'alert(JSON.stringify(["qunit.report", window._$$blanket_LCOV]));' | sed 's!^!\t\t\t!' >> $@	
-	@echo "});" | sed 's!^!\t\t!' >> $@
+	@echo "QUnit.config.hidepassed = true;" | sed 's!^!\t\t!' >> $@
+	@echo "if (window.callPhantom || window._phantom) {" | sed 's!^!\t\t!' >> $@
+	@echo "blanket.options('reporter', 'blanket/lcov_reporter.js');" | sed 's!^!\t\t\t!' >> $@
+	@echo "blanket.options('reporter_options', { toHTML:false, strip_file_name:true });" | sed 's!^!\t\t\t!' >> $@
+	@echo "QUnit.done(function() {" | sed 's!^!\t\t\t!' >> $@
+	@echo 'alert(JSON.stringify(["qunit.report", window._$$blanket_LCOV]));' | sed 's!^!\t\t\t\t!' >> $@	
+	@echo "});" | sed 's!^!\t\t\t!' >> $@
+	@echo "}" | sed 's!^!\t\t!' >> $@
 	@echo "</script>" | sed 's!^!\t!' >> $@
 	@echo "<script src=\"../lib/snowball.babel.js\" data-cover></script>" | sed 's!^!\t!' >> $@
 	@$(foreach lang,$(libstemmer_algorithms), 						\
@@ -131,12 +109,13 @@ js_snowball/tests/%Tests.html:
 js_snowball/tests/js/%Tests.js: $(snowball_all)/algorithms/%/voc.txt $(snowball_code)/stemwords
 	@echo "Generating tests for $*"
 	@mkdir -p js_snowball/tests/js
-	@echo "QUnit.test('$*', function(){" > $@
-	@echo "var Stem = snowballFactory.newStemmer('$*').stem;" | sed 's!^!\t!' >> $@
+	@echo "QUnit.test('$*', function(assert){" > $@
+	@echo "var stem = snowballFactory.newStemmer('$*').stem;" | sed 's!^!\t!' >> $@
+	@echo "function e(i, o) { assert.strictEqual( stem(i), o ); }" | sed 's!^!\t!' >> $@
 	@./$(snowball_code)/stemwords -i $(snowball_all)/algorithms/$*/voc.txt -l $* -p |	\
 	       sed '/^\s\+\S*\s\+$$/d' | sed 's!\"!\\\"!g' |								\
-	       sed 's!\s\+[->]\+\s\+!\"\), \"!' |											\
-	       sed 's!^!deepEqual\( Stem(\"!' | sed 's!$$!\"\ );!' | sed 's!^!\t!' >> $@
+	       sed 's!\s\+[->]\+\s\+!\", \"!' |												\
+	       sed 's!^!e\("!' | sed 's!$$!\"\);!' | sed 's!^!\t!' >> $@
 	@echo "});" >> $@
 
 $(snowball_code)/stemwords: $(JAVA_SOURCES)
@@ -200,7 +179,7 @@ js_snowball/lib/snowball.babel.js: js_snowball/lib/snowball.es6
 	--plugins transform-es2015-modules-umd --module-id snowballFactory |   \
 	sed 's/\\\\u/\\u/g' > $@
 
-esjava: js_snowball/lib/snowball.babel.js js_snowball/index.html js_snowball/tests/composite.html js_snowball/tests/coverage.html
+esjava: js_snowball/lib/snowball.babel.js js_snowball/index.html js_snowball/tests/coverage.html
 
 $(snowball_code)/algorithms/%/stem_Unicode.sbl: $(snowball_code)/algorithms/%/stem_ISO_8859_1.sbl
 	cp $^ $@
@@ -218,7 +197,7 @@ java_src_check: $(JAVA_SOURCES)
 clean:
 	-make -C $(snowball_code) -f GNUmakefile_js_copy libstemmer_algorithms="$(subst $(eval), ,$(libstemmer_algorithms))" --no-print-directory clean
 	-rm js_snowball/lib/snowball.bundle.java js_snowball/tests/js/*Tests.js		\
-		js_snowball/tests/composite.html js_snowball/tests/*Tests.html			\
+		js_snowball/tests/*Tests.html											\
 		js_snowball/index.html $(snowball_code)/GNUmakefile_js_copy				\
 		$(snowball_code)/libstemmer/modules_js_copy.txt
 	-rm -r snowball_cache/snowball_code/java
