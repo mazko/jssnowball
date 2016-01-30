@@ -29,7 +29,7 @@ case "$1" in
     rm -fr snowball_code 
     find snowball_all -not -name 'voc.txt' -not -type d -delete
     find snowball_all -type d -empty -delete
-    ls -1d snowball_all/algorithms/* | grep -v 'armenian\|catalan\|czech\|irish\|slovene' | xargs rm -r
+    ls -1d snowball_all/algorithms/* | grep -v 'armenian\|catalan\|czech\|irish\|slovene' | xargs --no-run-if-empty rm -r
     make -C ../ clean > /dev/null 2>&1
 
     echo snowball_code.tgz ...
@@ -78,6 +78,8 @@ case "$1" in
     for v in $VARS_8859_2; do                                           \
     vc=`printf "\x$v" | iconv -f ISO-8859-2 -t UNICODELITTLE | hexdump | sed -n 's/^.*\s\+0*\(\w\+\).*/\U\1/p'`;    \
     echo "'$v' => '$vc'"; sed -i "s/\s\+hex\s\+'$v'/ hex '$vc'/" snowball_code/algorithms/slovene/stem_Unicode.sbl; done;
+
+    make -C ../ java_eclipse_cache
 
     ;;
 esac

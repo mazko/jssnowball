@@ -7,9 +7,10 @@ libstemmer_algorithms = armenian basque catalan czech danish dutch english \
 
 snowball_code = snowball_cache/snowball_code
 snowball_all = snowball_cache/snowball_all
-java_src_generated = java/org/tartarus/snowball/ext
+java_src_scheme = java/org/tartarus/snowball/ext
+java_src_out = snowball_cache/out
 
-JAVA_SOURCES = $(libstemmer_algorithms:%=$(snowball_code)/$(java_src_generated)/%Stemmer.java)
+JAVA_SOURCES = $(libstemmer_algorithms:%=$(java_src_out)/$(java_src_scheme)/%Stemmer.java)
 JS_TESTS_SRC = $(libstemmer_algorithms:%=js_snowball/tests/js/%Tests.js)
 JS_TESTS_HTML = $(libstemmer_algorithms:%=js_snowball/tests/%Tests.html)
 
@@ -126,11 +127,11 @@ $(snowball_code)/stemwords: $(JAVA_SOURCES)
 	echo '$(a) UTF_8 $(a)' >> $(snowball_code)/libstemmer/modules_js_copy.txt;)
 	@make -C $(snowball_code) libstemmer_algorithms="$(subst $(eval), ,$(libstemmer_algorithms))" -f GNUmakefile_js_copy --no-print-directory stemwords
 
-java_eclipse_cache: $(shell find js_snowball/eclipse/src -type f -name '*.java') $(JAVA_SOURCES)
-	@rsync -rupE $(dir snowball_cache/libstemmer_java/$(java_src_generated))*.java $(dir snowball_cache/snowball_code/$(java_src_generated))
-	@rsync -rupE $(snowball_code)/java/* js_snowball/eclipse/src/
+java_eclipse_cache: $(JAVA_SOURCES) $(shell find $(java_src_out) -type f -name '*.java' 2>/dev/null)
+	@rsync -rupE $(dir snowball_cache/libstemmer_java/$(java_src_scheme))*.java $(dir $(java_src_out)/$(java_src_scheme))
+	@rsync -rupE $(java_src_out)/java/* js_snowball/eclipse/src/
 
-bundle: java_eclipse_cache 
+bundle: java_eclipse_cache $(shell find js_snowball/eclipse/src/ -type f -name '*.java')
 	@mkdir -p js_snowball/lib
 	@cat \
 	js_snowball/eclipse/src/org/tartarus/snowball/StringBuffer.java 	\
@@ -140,7 +141,7 @@ bundle: java_eclipse_cache
 	js_snowball/eclipse/src/org/tartarus/snowball/SnowballStemmer.java 	\
 	js_snowball/eclipse/src/org/tartarus/snowball/ext/* 				\
 	| sed '/^package\s/d' | sed '/^import\s/d' > js_snowball/lib/snowball.bundle.java
-	@echo ':es6:edit manually:end: ; make esjava'
+	@echo 'OK! NOW DO :es6:edit manually:end: THEN < make esjava >'
 
 js_snowball/lib/snowball.es6: js_snowball/lib/snowball.bundle.java
 	@awk '/\:es6\:/,/\:end\:/' js_snowball/lib/snowball.bundle.java | grep -q . && { echo 'Forgot :es6:edit manually:end: < snowball.bundle.java > ?'; exit 42; } || true
@@ -184,15 +185,17 @@ esjava: js_snowball/lib/snowball.babel.js js_snowball/index.html js_snowball/tes
 $(snowball_code)/algorithms/%/stem_Unicode.sbl: $(snowball_code)/algorithms/%/stem_ISO_8859_1.sbl
 	cp $^ $@
 
-$(snowball_code)/$(java_src_generated)/%Stemmer.java: $(snowball_code)/algorithms/%/stem_Unicode.sbl \
+$(java_src_out)/$(java_src_scheme)/%Stemmer.java: $(snowball_code)/algorithms/%/stem_Unicode.sbl \
 	    $(wildcard $(snowball_code)/compiler/*.c) $(wildcard $(snowball_code)/compiler/*.h)
 	@target=`echo "$@" | sed 's![^/]*/!!' | sed 's![^/]*/!!'`; \
-	make -C $(snowball_code) --no-print-directory $${target} || { echo "!< $${target} >!"; exit 42; }
+	rm -f $(snowball_code)/$${target}; \
+	make -C $(snowball_code) --no-print-directory $${target} || { echo "!< $${target} >!"; exit 42; } && \
+	mkdir -p `dirname $@` && mv $(snowball_code)/$${target} $@
 
 # Environment test - generate java sources and compare with downloaded. Used in ./configure
 
 java_src_check: $(JAVA_SOURCES)
-	diff -r $(JAVA_SRC_DWNLD)/libstemmer_java/$(java_src_generated) $(snowball_code)/$(java_src_generated)
+	diff -r $(JAVA_SRC_DWNLD)/libstemmer_java/$(java_src_scheme) $(java_src_out)/$(java_src_scheme)
 
 clean:
 	-make -C $(snowball_code) -f GNUmakefile_js_copy libstemmer_algorithms="$(subst $(eval), ,$(libstemmer_algorithms))" --no-print-directory clean
@@ -200,4 +203,4 @@ clean:
 		js_snowball/tests/*Tests.html											\
 		js_snowball/index.html $(snowball_code)/GNUmakefile_js_copy				\
 		$(snowball_code)/libstemmer/modules_js_copy.txt
-	-rm -r snowball_cache/snowball_code/java
+	-rm -r "$(java_src_out)"

@@ -15,15 +15,17 @@ public class finnishStemmer extends SnowballStemmer {
 
 	private final finnishStemmer methodObject = this;
 
-	private final Among a_0[] = { new Among("pa", -1, 1, "", methodObject), new Among("sti", -1, 2, "", methodObject),
-			new Among("kaan", -1, 1, "", methodObject), new Among("han", -1, 1, "", methodObject),
-			new Among("kin", -1, 1, "", methodObject), new Among("h\u00E4n", -1, 1, "", methodObject),
-			new Among("k\u00E4\u00E4n", -1, 1, "", methodObject), new Among("ko", -1, 1, "", methodObject),
-			new Among("p\u00E4", -1, 1, "", methodObject), new Among("k\u00F6", -1, 1, "", methodObject) };
+	private final Among a_0[] = { new Among("pa", -1, 1, "", methodObject),
+			new Among("sti", -1, 2, "", methodObject), new Among("kaan", -1, 1, "", methodObject),
+			new Among("han", -1, 1, "", methodObject), new Among("kin", -1, 1, "", methodObject),
+			new Among("h\u00E4n", -1, 1, "", methodObject), new Among("k\u00E4\u00E4n", -1, 1, "", methodObject),
+			new Among("ko", -1, 1, "", methodObject), new Among("p\u00E4", -1, 1, "", methodObject),
+			new Among("k\u00F6", -1, 1, "", methodObject) };
 
-	private final Among a_1[] = { new Among("lla", -1, -1, "", methodObject), new Among("na", -1, -1, "", methodObject),
-			new Among("ssa", -1, -1, "", methodObject), new Among("ta", -1, -1, "", methodObject),
-			new Among("lta", 3, -1, "", methodObject), new Among("sta", 3, -1, "", methodObject) };
+	private final Among a_1[] = { new Among("lla", -1, -1, "", methodObject),
+			new Among("na", -1, -1, "", methodObject), new Among("ssa", -1, -1, "", methodObject),
+			new Among("ta", -1, -1, "", methodObject), new Among("lta", 3, -1, "", methodObject),
+			new Among("sta", 3, -1, "", methodObject) };
 
 	private final Among a_2[] = { new Among("ll\u00E4", -1, -1, "", methodObject),
 			new Among("n\u00E4", -1, -1, "", methodObject), new Among("ss\u00E4", -1, -1, "", methodObject),
@@ -33,42 +35,45 @@ public class finnishStemmer extends SnowballStemmer {
 	private final Among a_3[] = { new Among("lle", -1, -1, "", methodObject),
 			new Among("ine", -1, -1, "", methodObject) };
 
-	private final Among a_4[] = { new Among("nsa", -1, 3, "", methodObject), new Among("mme", -1, 3, "", methodObject),
-			new Among("nne", -1, 3, "", methodObject), new Among("ni", -1, 2, "", methodObject),
-			new Among("si", -1, 1, "", methodObject), new Among("an", -1, 4, "", methodObject),
-			new Among("en", -1, 6, "", methodObject), new Among("\u00E4n", -1, 5, "", methodObject),
-			new Among("ns\u00E4", -1, 3, "", methodObject) };
+	private final Among a_4[] = { new Among("nsa", -1, 3, "", methodObject),
+			new Among("mme", -1, 3, "", methodObject), new Among("nne", -1, 3, "", methodObject),
+			new Among("ni", -1, 2, "", methodObject), new Among("si", -1, 1, "", methodObject),
+			new Among("an", -1, 4, "", methodObject), new Among("en", -1, 6, "", methodObject),
+			new Among("\u00E4n", -1, 5, "", methodObject), new Among("ns\u00E4", -1, 3, "", methodObject) };
 
-	private final Among a_5[] = { new Among("aa", -1, -1, "", methodObject), new Among("ee", -1, -1, "", methodObject),
-			new Among("ii", -1, -1, "", methodObject), new Among("oo", -1, -1, "", methodObject),
-			new Among("uu", -1, -1, "", methodObject), new Among("\u00E4\u00E4", -1, -1, "", methodObject),
-			new Among("\u00F6\u00F6", -1, -1, "", methodObject) };
+	private final Among a_5[] = { new Among("aa", -1, -1, "", methodObject),
+			new Among("ee", -1, -1, "", methodObject), new Among("ii", -1, -1, "", methodObject),
+			new Among("oo", -1, -1, "", methodObject), new Among("uu", -1, -1, "", methodObject),
+			new Among("\u00E4\u00E4", -1, -1, "", methodObject), new Among("\u00F6\u00F6", -1, -1, "", methodObject) };
 
-	private final Among a_6[] = { new Among("a", -1, 8, "", methodObject), new Among("lla", 0, -1, "", methodObject),
-			new Among("na", 0, -1, "", methodObject), new Among("ssa", 0, -1, "", methodObject),
-			new Among("ta", 0, -1, "", methodObject), new Among("lta", 4, -1, "", methodObject),
-			new Among("sta", 4, -1, "", methodObject), new Among("tta", 4, 9, "", methodObject),
-			new Among("lle", -1, -1, "", methodObject), new Among("ine", -1, -1, "", methodObject),
-			new Among("ksi", -1, -1, "", methodObject), new Among("n", -1, 7, "", methodObject),
-			new Among("han", 11, 1, "", methodObject), new Among("den", 11, -1, "r_VI", methodObject),
-			new Among("seen", 11, -1, "r_LONG", methodObject), new Among("hen", 11, 2, "", methodObject),
-			new Among("tten", 11, -1, "r_VI", methodObject), new Among("hin", 11, 3, "", methodObject),
-			new Among("siin", 11, -1, "r_VI", methodObject), new Among("hon", 11, 4, "", methodObject),
-			new Among("h\u00E4n", 11, 5, "", methodObject), new Among("h\u00F6n", 11, 6, "", methodObject),
-			new Among("\u00E4", -1, 8, "", methodObject), new Among("ll\u00E4", 22, -1, "", methodObject),
-			new Among("n\u00E4", 22, -1, "", methodObject), new Among("ss\u00E4", 22, -1, "", methodObject),
-			new Among("t\u00E4", 22, -1, "", methodObject), new Among("lt\u00E4", 26, -1, "", methodObject),
-			new Among("st\u00E4", 26, -1, "", methodObject), new Among("tt\u00E4", 26, 9, "", methodObject) };
+	private final Among a_6[] = { new Among("a", -1, 8, "", methodObject),
+			new Among("lla", 0, -1, "", methodObject), new Among("na", 0, -1, "", methodObject),
+			new Among("ssa", 0, -1, "", methodObject), new Among("ta", 0, -1, "", methodObject),
+			new Among("lta", 4, -1, "", methodObject), new Among("sta", 4, -1, "", methodObject),
+			new Among("tta", 4, 9, "", methodObject), new Among("lle", -1, -1, "", methodObject),
+			new Among("ine", -1, -1, "", methodObject), new Among("ksi", -1, -1, "", methodObject),
+			new Among("n", -1, 7, "", methodObject), new Among("han", 11, 1, "", methodObject),
+			new Among("den", 11, -1, "r_VI", methodObject), new Among("seen", 11, -1, "r_LONG", methodObject),
+			new Among("hen", 11, 2, "", methodObject), new Among("tten", 11, -1, "r_VI", methodObject),
+			new Among("hin", 11, 3, "", methodObject), new Among("siin", 11, -1, "r_VI", methodObject),
+			new Among("hon", 11, 4, "", methodObject), new Among("h\u00E4n", 11, 5, "", methodObject),
+			new Among("h\u00F6n", 11, 6, "", methodObject), new Among("\u00E4", -1, 8, "", methodObject),
+			new Among("ll\u00E4", 22, -1, "", methodObject), new Among("n\u00E4", 22, -1, "", methodObject),
+			new Among("ss\u00E4", 22, -1, "", methodObject), new Among("t\u00E4", 22, -1, "", methodObject),
+			new Among("lt\u00E4", 26, -1, "", methodObject), new Among("st\u00E4", 26, -1, "", methodObject),
+			new Among("tt\u00E4", 26, 9, "", methodObject) };
 
-	private final Among a_7[] = { new Among("eja", -1, -1, "", methodObject), new Among("mma", -1, 1, "", methodObject),
-			new Among("imma", 1, -1, "", methodObject), new Among("mpa", -1, 1, "", methodObject),
-			new Among("impa", 3, -1, "", methodObject), new Among("mmi", -1, 1, "", methodObject),
-			new Among("immi", 5, -1, "", methodObject), new Among("mpi", -1, 1, "", methodObject),
-			new Among("impi", 7, -1, "", methodObject), new Among("ej\u00E4", -1, -1, "", methodObject),
-			new Among("mm\u00E4", -1, 1, "", methodObject), new Among("imm\u00E4", 10, -1, "", methodObject),
-			new Among("mp\u00E4", -1, 1, "", methodObject), new Among("imp\u00E4", 12, -1, "", methodObject) };
+	private final Among a_7[] = { new Among("eja", -1, -1, "", methodObject),
+			new Among("mma", -1, 1, "", methodObject), new Among("imma", 1, -1, "", methodObject),
+			new Among("mpa", -1, 1, "", methodObject), new Among("impa", 3, -1, "", methodObject),
+			new Among("mmi", -1, 1, "", methodObject), new Among("immi", 5, -1, "", methodObject),
+			new Among("mpi", -1, 1, "", methodObject), new Among("impi", 7, -1, "", methodObject),
+			new Among("ej\u00E4", -1, -1, "", methodObject), new Among("mm\u00E4", -1, 1, "", methodObject),
+			new Among("imm\u00E4", 10, -1, "", methodObject), new Among("mp\u00E4", -1, 1, "", methodObject),
+			new Among("imp\u00E4", 12, -1, "", methodObject) };
 
-	private final Among a_8[] = { new Among("i", -1, -1, "", methodObject), new Among("j", -1, -1, "", methodObject) };
+	private final Among a_8[] = { new Among("i", -1, -1, "", methodObject),
+			new Among("j", -1, -1, "", methodObject) };
 
 	private final Among a_9[] = { new Among("mma", -1, 1, "", methodObject),
 			new Among("imma", 0, -1, "", methodObject) };
