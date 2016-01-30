@@ -2,7 +2,7 @@
 
 Port from [Snowball](http://snowball.tartarus.org/) Stemmers. [Online](http://mazko.github.io/jssnowball/)
 
-[snowball.es6](./raw/master/js_snowball/lib/snowball.es6) | [snowball.babel.js](./raw/master/js_snowball/lib/snowball.babel.js)
+[snowball.es6](//github.com/mazko/jssnowball/raw/master/js_snowball/lib/snowball.es6) | [snowball.babel.js](//github.com/mazko/jssnowball/raw/master/js_snowball/lib/snowball.babel.js)
 
 ### [ESJava](https://github.com/mazko/esjava) (ES6) fun
 
