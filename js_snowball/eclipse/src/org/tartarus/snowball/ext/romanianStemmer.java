@@ -1,4 +1,5 @@
 // This file was generated automatically by the Snowball to Java compiler
+// http://snowballstem.org/
 
 package org.tartarus.snowball.ext;
 
@@ -12,136 +13,83 @@ import org.tartarus.snowball.SnowballStemmer;
 
 public class romanianStemmer extends SnowballStemmer {
 
-	private final static romanianStemmer methodObject = null;
+	private final static Among a_0[] = { new Among("", -1, 3), new Among("I", 0, 1), new Among("U", 0, 2) };
 
-	private final static Among a_0[] = { new Among("", -1, 3, "", methodObject), new Among("I", 0, 1, "", methodObject),
-			new Among("U", 0, 2, "", methodObject) };
+	private final static Among a_1[] = { new Among("ea", -1, 3), new Among("a\u0163ia", -1, 7), new Among("aua", -1, 2),
+			new Among("iua", -1, 4), new Among("a\u0163ie", -1, 7), new Among("ele", -1, 3), new Among("ile", -1, 5),
+			new Among("iile", 6, 4), new Among("iei", -1, 4), new Among("atei", -1, 6), new Among("ii", -1, 4),
+			new Among("ului", -1, 1), new Among("ul", -1, 1), new Among("elor", -1, 3), new Among("ilor", -1, 4),
+			new Among("iilor", 14, 4) };
 
-	private final static Among a_1[] = { new Among("ea", -1, 3, "", methodObject),
-			new Among("a\u0163ia", -1, 7, "", methodObject), new Among("aua", -1, 2, "", methodObject),
-			new Among("iua", -1, 4, "", methodObject), new Among("a\u0163ie", -1, 7, "", methodObject),
-			new Among("ele", -1, 3, "", methodObject), new Among("ile", -1, 5, "", methodObject),
-			new Among("iile", 6, 4, "", methodObject), new Among("iei", -1, 4, "", methodObject),
-			new Among("atei", -1, 6, "", methodObject), new Among("ii", -1, 4, "", methodObject),
-			new Among("ului", -1, 1, "", methodObject), new Among("ul", -1, 1, "", methodObject),
-			new Among("elor", -1, 3, "", methodObject), new Among("ilor", -1, 4, "", methodObject),
-			new Among("iilor", 14, 4, "", methodObject) };
+	private final static Among a_2[] = { new Among("icala", -1, 4), new Among("iciva", -1, 4),
+			new Among("ativa", -1, 5), new Among("itiva", -1, 6), new Among("icale", -1, 4),
+			new Among("a\u0163iune", -1, 5), new Among("i\u0163iune", -1, 6), new Among("atoare", -1, 5),
+			new Among("itoare", -1, 6), new Among("\u0103toare", -1, 5), new Among("icitate", -1, 4),
+			new Among("abilitate", -1, 1), new Among("ibilitate", -1, 2), new Among("ivitate", -1, 3),
+			new Among("icive", -1, 4), new Among("ative", -1, 5), new Among("itive", -1, 6), new Among("icali", -1, 4),
+			new Among("atori", -1, 5), new Among("icatori", 18, 4), new Among("itori", -1, 6),
+			new Among("\u0103tori", -1, 5), new Among("icitati", -1, 4), new Among("abilitati", -1, 1),
+			new Among("ivitati", -1, 3), new Among("icivi", -1, 4), new Among("ativi", -1, 5),
+			new Among("itivi", -1, 6), new Among("icit\u0103i", -1, 4), new Among("abilit\u0103i", -1, 1),
+			new Among("ivit\u0103i", -1, 3), new Among("icit\u0103\u0163i", -1, 4),
+			new Among("abilit\u0103\u0163i", -1, 1), new Among("ivit\u0103\u0163i", -1, 3), new Among("ical", -1, 4),
+			new Among("ator", -1, 5), new Among("icator", 35, 4), new Among("itor", -1, 6),
+			new Among("\u0103tor", -1, 5), new Among("iciv", -1, 4), new Among("ativ", -1, 5), new Among("itiv", -1, 6),
+			new Among("ical\u0103", -1, 4), new Among("iciv\u0103", -1, 4), new Among("ativ\u0103", -1, 5),
+			new Among("itiv\u0103", -1, 6) };
 
-	private final static Among a_2[] = { new Among("icala", -1, 4, "", methodObject),
-			new Among("iciva", -1, 4, "", methodObject), new Among("ativa", -1, 5, "", methodObject),
-			new Among("itiva", -1, 6, "", methodObject), new Among("icale", -1, 4, "", methodObject),
-			new Among("a\u0163iune", -1, 5, "", methodObject), new Among("i\u0163iune", -1, 6, "", methodObject),
-			new Among("atoare", -1, 5, "", methodObject), new Among("itoare", -1, 6, "", methodObject),
-			new Among("\u0103toare", -1, 5, "", methodObject), new Among("icitate", -1, 4, "", methodObject),
-			new Among("abilitate", -1, 1, "", methodObject), new Among("ibilitate", -1, 2, "", methodObject),
-			new Among("ivitate", -1, 3, "", methodObject), new Among("icive", -1, 4, "", methodObject),
-			new Among("ative", -1, 5, "", methodObject), new Among("itive", -1, 6, "", methodObject),
-			new Among("icali", -1, 4, "", methodObject), new Among("atori", -1, 5, "", methodObject),
-			new Among("icatori", 18, 4, "", methodObject), new Among("itori", -1, 6, "", methodObject),
-			new Among("\u0103tori", -1, 5, "", methodObject), new Among("icitati", -1, 4, "", methodObject),
-			new Among("abilitati", -1, 1, "", methodObject), new Among("ivitati", -1, 3, "", methodObject),
-			new Among("icivi", -1, 4, "", methodObject), new Among("ativi", -1, 5, "", methodObject),
-			new Among("itivi", -1, 6, "", methodObject), new Among("icit\u0103i", -1, 4, "", methodObject),
-			new Among("abilit\u0103i", -1, 1, "", methodObject), new Among("ivit\u0103i", -1, 3, "", methodObject),
-			new Among("icit\u0103\u0163i", -1, 4, "", methodObject),
-			new Among("abilit\u0103\u0163i", -1, 1, "", methodObject),
-			new Among("ivit\u0103\u0163i", -1, 3, "", methodObject), new Among("ical", -1, 4, "", methodObject),
-			new Among("ator", -1, 5, "", methodObject), new Among("icator", 35, 4, "", methodObject),
-			new Among("itor", -1, 6, "", methodObject), new Among("\u0103tor", -1, 5, "", methodObject),
-			new Among("iciv", -1, 4, "", methodObject), new Among("ativ", -1, 5, "", methodObject),
-			new Among("itiv", -1, 6, "", methodObject), new Among("ical\u0103", -1, 4, "", methodObject),
-			new Among("iciv\u0103", -1, 4, "", methodObject), new Among("ativ\u0103", -1, 5, "", methodObject),
-			new Among("itiv\u0103", -1, 6, "", methodObject) };
+	private final static Among a_3[] = { new Among("ica", -1, 1), new Among("abila", -1, 1), new Among("ibila", -1, 1),
+			new Among("oasa", -1, 1), new Among("ata", -1, 1), new Among("ita", -1, 1), new Among("anta", -1, 1),
+			new Among("ista", -1, 3), new Among("uta", -1, 1), new Among("iva", -1, 1), new Among("ic", -1, 1),
+			new Among("ice", -1, 1), new Among("abile", -1, 1), new Among("ibile", -1, 1), new Among("isme", -1, 3),
+			new Among("iune", -1, 2), new Among("oase", -1, 1), new Among("ate", -1, 1), new Among("itate", 17, 1),
+			new Among("ite", -1, 1), new Among("ante", -1, 1), new Among("iste", -1, 3), new Among("ute", -1, 1),
+			new Among("ive", -1, 1), new Among("ici", -1, 1), new Among("abili", -1, 1), new Among("ibili", -1, 1),
+			new Among("iuni", -1, 2), new Among("atori", -1, 1), new Among("osi", -1, 1), new Among("ati", -1, 1),
+			new Among("itati", 30, 1), new Among("iti", -1, 1), new Among("anti", -1, 1), new Among("isti", -1, 3),
+			new Among("uti", -1, 1), new Among("i\u015Fti", -1, 3), new Among("ivi", -1, 1),
+			new Among("it\u0103i", -1, 1), new Among("o\u015Fi", -1, 1), new Among("it\u0103\u0163i", -1, 1),
+			new Among("abil", -1, 1), new Among("ibil", -1, 1), new Among("ism", -1, 3), new Among("ator", -1, 1),
+			new Among("os", -1, 1), new Among("at", -1, 1), new Among("it", -1, 1), new Among("ant", -1, 1),
+			new Among("ist", -1, 3), new Among("ut", -1, 1), new Among("iv", -1, 1), new Among("ic\u0103", -1, 1),
+			new Among("abil\u0103", -1, 1), new Among("ibil\u0103", -1, 1), new Among("oas\u0103", -1, 1),
+			new Among("at\u0103", -1, 1), new Among("it\u0103", -1, 1), new Among("ant\u0103", -1, 1),
+			new Among("ist\u0103", -1, 3), new Among("ut\u0103", -1, 1), new Among("iv\u0103", -1, 1) };
 
-	private final static Among a_3[] = { new Among("ica", -1, 1, "", methodObject),
-			new Among("abila", -1, 1, "", methodObject), new Among("ibila", -1, 1, "", methodObject),
-			new Among("oasa", -1, 1, "", methodObject), new Among("ata", -1, 1, "", methodObject),
-			new Among("ita", -1, 1, "", methodObject), new Among("anta", -1, 1, "", methodObject),
-			new Among("ista", -1, 3, "", methodObject), new Among("uta", -1, 1, "", methodObject),
-			new Among("iva", -1, 1, "", methodObject), new Among("ic", -1, 1, "", methodObject),
-			new Among("ice", -1, 1, "", methodObject), new Among("abile", -1, 1, "", methodObject),
-			new Among("ibile", -1, 1, "", methodObject), new Among("isme", -1, 3, "", methodObject),
-			new Among("iune", -1, 2, "", methodObject), new Among("oase", -1, 1, "", methodObject),
-			new Among("ate", -1, 1, "", methodObject), new Among("itate", 17, 1, "", methodObject),
-			new Among("ite", -1, 1, "", methodObject), new Among("ante", -1, 1, "", methodObject),
-			new Among("iste", -1, 3, "", methodObject), new Among("ute", -1, 1, "", methodObject),
-			new Among("ive", -1, 1, "", methodObject), new Among("ici", -1, 1, "", methodObject),
-			new Among("abili", -1, 1, "", methodObject), new Among("ibili", -1, 1, "", methodObject),
-			new Among("iuni", -1, 2, "", methodObject), new Among("atori", -1, 1, "", methodObject),
-			new Among("osi", -1, 1, "", methodObject), new Among("ati", -1, 1, "", methodObject),
-			new Among("itati", 30, 1, "", methodObject), new Among("iti", -1, 1, "", methodObject),
-			new Among("anti", -1, 1, "", methodObject), new Among("isti", -1, 3, "", methodObject),
-			new Among("uti", -1, 1, "", methodObject), new Among("i\u015Fti", -1, 3, "", methodObject),
-			new Among("ivi", -1, 1, "", methodObject), new Among("it\u0103i", -1, 1, "", methodObject),
-			new Among("o\u015Fi", -1, 1, "", methodObject), new Among("it\u0103\u0163i", -1, 1, "", methodObject),
-			new Among("abil", -1, 1, "", methodObject), new Among("ibil", -1, 1, "", methodObject),
-			new Among("ism", -1, 3, "", methodObject), new Among("ator", -1, 1, "", methodObject),
-			new Among("os", -1, 1, "", methodObject), new Among("at", -1, 1, "", methodObject),
-			new Among("it", -1, 1, "", methodObject), new Among("ant", -1, 1, "", methodObject),
-			new Among("ist", -1, 3, "", methodObject), new Among("ut", -1, 1, "", methodObject),
-			new Among("iv", -1, 1, "", methodObject), new Among("ic\u0103", -1, 1, "", methodObject),
-			new Among("abil\u0103", -1, 1, "", methodObject), new Among("ibil\u0103", -1, 1, "", methodObject),
-			new Among("oas\u0103", -1, 1, "", methodObject), new Among("at\u0103", -1, 1, "", methodObject),
-			new Among("it\u0103", -1, 1, "", methodObject), new Among("ant\u0103", -1, 1, "", methodObject),
-			new Among("ist\u0103", -1, 3, "", methodObject), new Among("ut\u0103", -1, 1, "", methodObject),
-			new Among("iv\u0103", -1, 1, "", methodObject) };
+	private final static Among a_4[] = { new Among("ea", -1, 1), new Among("ia", -1, 1), new Among("esc", -1, 1),
+			new Among("\u0103sc", -1, 1), new Among("ind", -1, 1), new Among("\u00E2nd", -1, 1),
+			new Among("are", -1, 1), new Among("ere", -1, 1), new Among("ire", -1, 1), new Among("\u00E2re", -1, 1),
+			new Among("se", -1, 2), new Among("ase", 10, 1), new Among("sese", 10, 2), new Among("ise", 10, 1),
+			new Among("use", 10, 1), new Among("\u00E2se", 10, 1), new Among("e\u015Fte", -1, 1),
+			new Among("\u0103\u015Fte", -1, 1), new Among("eze", -1, 1), new Among("ai", -1, 1),
+			new Among("eai", 19, 1), new Among("iai", 19, 1), new Among("sei", -1, 2), new Among("e\u015Fti", -1, 1),
+			new Among("\u0103\u015Fti", -1, 1), new Among("ui", -1, 1), new Among("ezi", -1, 1),
+			new Among("\u00E2i", -1, 1), new Among("a\u015Fi", -1, 1), new Among("se\u015Fi", -1, 2),
+			new Among("ase\u015Fi", 29, 1), new Among("sese\u015Fi", 29, 2), new Among("ise\u015Fi", 29, 1),
+			new Among("use\u015Fi", 29, 1), new Among("\u00E2se\u015Fi", 29, 1), new Among("i\u015Fi", -1, 1),
+			new Among("u\u015Fi", -1, 1), new Among("\u00E2\u015Fi", -1, 1), new Among("a\u0163i", -1, 2),
+			new Among("ea\u0163i", 38, 1), new Among("ia\u0163i", 38, 1), new Among("e\u0163i", -1, 2),
+			new Among("i\u0163i", -1, 2), new Among("\u00E2\u0163i", -1, 2), new Among("ar\u0103\u0163i", -1, 1),
+			new Among("ser\u0103\u0163i", -1, 2), new Among("aser\u0103\u0163i", 45, 1),
+			new Among("seser\u0103\u0163i", 45, 2), new Among("iser\u0103\u0163i", 45, 1),
+			new Among("user\u0103\u0163i", 45, 1), new Among("\u00E2ser\u0103\u0163i", 45, 1),
+			new Among("ir\u0103\u0163i", -1, 1), new Among("ur\u0103\u0163i", -1, 1),
+			new Among("\u00E2r\u0103\u0163i", -1, 1), new Among("am", -1, 1), new Among("eam", 54, 1),
+			new Among("iam", 54, 1), new Among("em", -1, 2), new Among("asem", 57, 1), new Among("sesem", 57, 2),
+			new Among("isem", 57, 1), new Among("usem", 57, 1), new Among("\u00E2sem", 57, 1), new Among("im", -1, 2),
+			new Among("\u00E2m", -1, 2), new Among("\u0103m", -1, 2), new Among("ar\u0103m", 65, 1),
+			new Among("ser\u0103m", 65, 2), new Among("aser\u0103m", 67, 1), new Among("seser\u0103m", 67, 2),
+			new Among("iser\u0103m", 67, 1), new Among("user\u0103m", 67, 1), new Among("\u00E2ser\u0103m", 67, 1),
+			new Among("ir\u0103m", 65, 1), new Among("ur\u0103m", 65, 1), new Among("\u00E2r\u0103m", 65, 1),
+			new Among("au", -1, 1), new Among("eau", 76, 1), new Among("iau", 76, 1), new Among("indu", -1, 1),
+			new Among("\u00E2ndu", -1, 1), new Among("ez", -1, 1), new Among("easc\u0103", -1, 1),
+			new Among("ar\u0103", -1, 1), new Among("ser\u0103", -1, 2), new Among("aser\u0103", 84, 1),
+			new Among("seser\u0103", 84, 2), new Among("iser\u0103", 84, 1), new Among("user\u0103", 84, 1),
+			new Among("\u00E2ser\u0103", 84, 1), new Among("ir\u0103", -1, 1), new Among("ur\u0103", -1, 1),
+			new Among("\u00E2r\u0103", -1, 1), new Among("eaz\u0103", -1, 1) };
 
-	private final static Among a_4[] = { new Among("ea", -1, 1, "", methodObject),
-			new Among("ia", -1, 1, "", methodObject), new Among("esc", -1, 1, "", methodObject),
-			new Among("\u0103sc", -1, 1, "", methodObject), new Among("ind", -1, 1, "", methodObject),
-			new Among("\u00E2nd", -1, 1, "", methodObject), new Among("are", -1, 1, "", methodObject),
-			new Among("ere", -1, 1, "", methodObject), new Among("ire", -1, 1, "", methodObject),
-			new Among("\u00E2re", -1, 1, "", methodObject), new Among("se", -1, 2, "", methodObject),
-			new Among("ase", 10, 1, "", methodObject), new Among("sese", 10, 2, "", methodObject),
-			new Among("ise", 10, 1, "", methodObject), new Among("use", 10, 1, "", methodObject),
-			new Among("\u00E2se", 10, 1, "", methodObject), new Among("e\u015Fte", -1, 1, "", methodObject),
-			new Among("\u0103\u015Fte", -1, 1, "", methodObject), new Among("eze", -1, 1, "", methodObject),
-			new Among("ai", -1, 1, "", methodObject), new Among("eai", 19, 1, "", methodObject),
-			new Among("iai", 19, 1, "", methodObject), new Among("sei", -1, 2, "", methodObject),
-			new Among("e\u015Fti", -1, 1, "", methodObject), new Among("\u0103\u015Fti", -1, 1, "", methodObject),
-			new Among("ui", -1, 1, "", methodObject), new Among("ezi", -1, 1, "", methodObject),
-			new Among("\u00E2i", -1, 1, "", methodObject), new Among("a\u015Fi", -1, 1, "", methodObject),
-			new Among("se\u015Fi", -1, 2, "", methodObject), new Among("ase\u015Fi", 29, 1, "", methodObject),
-			new Among("sese\u015Fi", 29, 2, "", methodObject), new Among("ise\u015Fi", 29, 1, "", methodObject),
-			new Among("use\u015Fi", 29, 1, "", methodObject), new Among("\u00E2se\u015Fi", 29, 1, "", methodObject),
-			new Among("i\u015Fi", -1, 1, "", methodObject), new Among("u\u015Fi", -1, 1, "", methodObject),
-			new Among("\u00E2\u015Fi", -1, 1, "", methodObject), new Among("a\u0163i", -1, 2, "", methodObject),
-			new Among("ea\u0163i", 38, 1, "", methodObject), new Among("ia\u0163i", 38, 1, "", methodObject),
-			new Among("e\u0163i", -1, 2, "", methodObject), new Among("i\u0163i", -1, 2, "", methodObject),
-			new Among("\u00E2\u0163i", -1, 2, "", methodObject), new Among("ar\u0103\u0163i", -1, 1, "", methodObject),
-			new Among("ser\u0103\u0163i", -1, 2, "", methodObject),
-			new Among("aser\u0103\u0163i", 45, 1, "", methodObject),
-			new Among("seser\u0103\u0163i", 45, 2, "", methodObject),
-			new Among("iser\u0103\u0163i", 45, 1, "", methodObject),
-			new Among("user\u0103\u0163i", 45, 1, "", methodObject),
-			new Among("\u00E2ser\u0103\u0163i", 45, 1, "", methodObject),
-			new Among("ir\u0103\u0163i", -1, 1, "", methodObject),
-			new Among("ur\u0103\u0163i", -1, 1, "", methodObject),
-			new Among("\u00E2r\u0103\u0163i", -1, 1, "", methodObject), new Among("am", -1, 1, "", methodObject),
-			new Among("eam", 54, 1, "", methodObject), new Among("iam", 54, 1, "", methodObject),
-			new Among("em", -1, 2, "", methodObject), new Among("asem", 57, 1, "", methodObject),
-			new Among("sesem", 57, 2, "", methodObject), new Among("isem", 57, 1, "", methodObject),
-			new Among("usem", 57, 1, "", methodObject), new Among("\u00E2sem", 57, 1, "", methodObject),
-			new Among("im", -1, 2, "", methodObject), new Among("\u00E2m", -1, 2, "", methodObject),
-			new Among("\u0103m", -1, 2, "", methodObject), new Among("ar\u0103m", 65, 1, "", methodObject),
-			new Among("ser\u0103m", 65, 2, "", methodObject), new Among("aser\u0103m", 67, 1, "", methodObject),
-			new Among("seser\u0103m", 67, 2, "", methodObject), new Among("iser\u0103m", 67, 1, "", methodObject),
-			new Among("user\u0103m", 67, 1, "", methodObject), new Among("\u00E2ser\u0103m", 67, 1, "", methodObject),
-			new Among("ir\u0103m", 65, 1, "", methodObject), new Among("ur\u0103m", 65, 1, "", methodObject),
-			new Among("\u00E2r\u0103m", 65, 1, "", methodObject), new Among("au", -1, 1, "", methodObject),
-			new Among("eau", 76, 1, "", methodObject), new Among("iau", 76, 1, "", methodObject),
-			new Among("indu", -1, 1, "", methodObject), new Among("\u00E2ndu", -1, 1, "", methodObject),
-			new Among("ez", -1, 1, "", methodObject), new Among("easc\u0103", -1, 1, "", methodObject),
-			new Among("ar\u0103", -1, 1, "", methodObject), new Among("ser\u0103", -1, 2, "", methodObject),
-			new Among("aser\u0103", 84, 1, "", methodObject), new Among("seser\u0103", 84, 2, "", methodObject),
-			new Among("iser\u0103", 84, 1, "", methodObject), new Among("user\u0103", 84, 1, "", methodObject),
-			new Among("\u00E2ser\u0103", 84, 1, "", methodObject), new Among("ir\u0103", -1, 1, "", methodObject),
-			new Among("ur\u0103", -1, 1, "", methodObject), new Among("\u00E2r\u0103", -1, 1, "", methodObject),
-			new Among("eaz\u0103", -1, 1, "", methodObject) };
-
-	private final static Among a_5[] = { new Among("a", -1, 1, "", methodObject),
-			new Among("e", -1, 1, "", methodObject), new Among("ie", 1, 1, "", methodObject),
-			new Among("i", -1, 1, "", methodObject), new Among("\u0103", -1, 1, "", methodObject) };
+	private final static Among a_5[] = { new Among("a", -1, 1), new Among("e", -1, 1), new Among("ie", 1, 1),
+			new Among("i", -1, 1), new Among("\u0103", -1, 1) };
 
 	private static final char g_v[] = { 17, 65, 16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 32, 0, 0, 4 };
 
@@ -175,7 +123,7 @@ public class romanianStemmer extends SnowballStemmer {
 							lab5: do {
 								// (, line 33
 								// literal, line 33
-								if (!(eq_s(1, "u"))) {
+								if (!(eq_s("u"))) {
 									break lab5;
 								}
 								// ], line 33
@@ -190,7 +138,7 @@ public class romanianStemmer extends SnowballStemmer {
 							cursor = v_3;
 							// (, line 34
 							// literal, line 34
-							if (!(eq_s(1, "i"))) {
+							if (!(eq_s("i"))) {
 								break lab3;
 							}
 							// ], line 34
@@ -404,7 +352,7 @@ public class romanianStemmer extends SnowballStemmer {
 				// [, line 58
 				bra = cursor;
 				// substring, line 58
-				among_var = find_among(a_0, 3);
+				among_var = find_among(a_0);
 				if (among_var == 0) {
 					break lab1;
 				}
@@ -468,7 +416,7 @@ public class romanianStemmer extends SnowballStemmer {
 		// [, line 73
 		ket = cursor;
 		// substring, line 73
-		among_var = find_among_b(a_1, 16);
+		among_var = find_among_b(a_1);
 		if (among_var == 0) {
 			return false;
 		}
@@ -508,7 +456,7 @@ public class romanianStemmer extends SnowballStemmer {
 			v_1 = limit - cursor;
 			lab0: do {
 				// literal, line 83
-				if (!(eq_s_b(2, "ab"))) {
+				if (!(eq_s_b("ab"))) {
 					break lab0;
 				}
 				return false;
@@ -541,7 +489,7 @@ public class romanianStemmer extends SnowballStemmer {
 		// [, line 92
 		ket = cursor;
 		// substring, line 92
-		among_var = find_among_b(a_2, 46);
+		among_var = find_among_b(a_2);
 		if (among_var == 0) {
 			return false;
 		}
@@ -614,7 +562,7 @@ public class romanianStemmer extends SnowballStemmer {
 		// [, line 132
 		ket = cursor;
 		// substring, line 132
-		among_var = find_among_b(a_3, 62);
+		among_var = find_among_b(a_3);
 		if (among_var == 0) {
 			return false;
 		}
@@ -636,7 +584,7 @@ public class romanianStemmer extends SnowballStemmer {
 		case 2:
 			// (, line 151
 			// literal, line 152
-			if (!(eq_s_b(1, "\u0163"))) {
+			if (!(eq_s_b("\u0163"))) {
 				return false;
 			}
 			// ], line 152
@@ -674,7 +622,7 @@ public class romanianStemmer extends SnowballStemmer {
 		// [, line 165
 		ket = cursor;
 		// substring, line 165
-		among_var = find_among_b(a_4, 94);
+		among_var = find_among_b(a_4);
 		if (among_var == 0) {
 			limit_backward = v_2;
 			return false;
@@ -698,7 +646,7 @@ public class romanianStemmer extends SnowballStemmer {
 				} while (false);
 				cursor = limit - v_3;
 				// literal, line 200
-				if (!(eq_s_b(1, "u"))) {
+				if (!(eq_s_b("u"))) {
 					limit_backward = v_2;
 					return false;
 				}
@@ -722,7 +670,7 @@ public class romanianStemmer extends SnowballStemmer {
 		// [, line 219
 		ket = cursor;
 		// substring, line 219
-		among_var = find_among_b(a_5, 5);
+		among_var = find_among_b(a_5);
 		if (among_var == 0) {
 			return false;
 		}

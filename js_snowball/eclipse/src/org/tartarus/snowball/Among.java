@@ -12,32 +12,36 @@ public class Among {
 		return charArr;
 	}
 
-	public Among(String s, int substring_i, int result, String methodname, SnowballProgram methodobject) {
-		this.s_size = s.length();
+	// :es6:
+	// remove this ctor
+	public Among(String s, int substring_i, int result) {
 		this.s = toCharArray(s);
 		this.substring_i = substring_i;
 		this.result = result;
-		this.methodobject = methodobject;
+		this.method = null;
+	}
+	// :end:
+
+	public Among(String s, int substring_i, int result, String methodname, Class obj) {
+		this.s = toCharArray(s);
+		this.substring_i = substring_i;
+		this.result = result;
 		// :es6:
-		// help: grep -r '"[^"]\+", methodObject)'
-		// method = methodname ? methodobject[methodname] : null;
-		if (methodname.length() == 0) {
-			this.method = null;
-		} else {
-			try {
-				this.method = methodobject.getClass().getDeclaredMethod(methodname, new Class[0]);
-				method.setAccessible(true);
-			} catch (NoSuchMethodException e) {
-				throw new RuntimeException(e);
-			}
+		// method = methodname ? obj[methodname] : null;
+		// methodobject = obj;
+		try {
+			this.method = obj.getDeclaredMethod(methodname);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
 		}
 		// :end:
 	}
 
-	public final int s_size; /* search string */
 	public final char[] s; /* search string */
 	public final int substring_i; /* index to longest matching substring */
 	public final int result; /* result of the lookup */
 	public final Method method; /* method to use if substring matches */
-	public final SnowballProgram methodobject; /* object to invoke method on */
+	// :es6:
+	public Object methodobject; /* object to invoke method on */
+	// :end:
 };

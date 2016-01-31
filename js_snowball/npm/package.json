@@ -1,6 +1,6 @@
 {
   "name": "snowball-stemmers",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "JS Port from Snowball Stemmers http://snowball.tartarus.org/",
   "main": "snowball-stemmers.js",
   "directories": {

@@ -15,6 +15,7 @@
 	<p>Type ONE word, select language and press "<b>Stem!</b>" button.</p>
 	<input maxlength="333" size="50" id="query" type="text" value="чаво">
 	<select id="language">
+		<option value="arabic" >arabic</option>
 		<option value="armenian" >armenian</option>
 		<option value="basque" >basque</option>
 		<option value="catalan" >catalan</option>
@@ -36,12 +37,15 @@
 		<option value="spanish" >spanish</option>
 		<option value="slovene" >slovene</option>
 		<option value="swedish" >swedish</option>
+		<option value="tamil" >tamil</option>
 		<option value="turkish" >turkish</option>
 	</select>
 	<button type="button" onclick=" printstem(document.getElementById('language').value,  document.getElementById('query').value);"><noscript> <span style="color:red;">Enable JavaScript ! </span></noscript>Stem!</button>
 	<p id="result"></p>
 	<fieldset><legend>Unit tests</legend>
 		<a href="tests/coverage.html" target="_blank">all</a>
+		 | 
+		<a href="tests/arabicTests.html" target="_blank">arabic</a>
 		 | 
 		<a href="tests/armenianTests.html" target="_blank">armenian</a>
 		 | 
@@ -85,10 +89,12 @@
 		 | 
 		<a href="tests/swedishTests.html" target="_blank">swedish</a>
 		 | 
+		<a href="tests/tamilTests.html" target="_blank">tamil</a>
+		 | 
 		<a href="tests/turkishTests.html" target="_blank">turkish</a>
 	</fieldset><p></p>
 	<fieldset><legend>Links</legend>
-		<a href="https://github.com/mazko/jssnowball" target="_blank" rel="nofollow">Sources</a> |
+		<a href="https://github.com/mazko/jssnowball" target="_blank" rel="nofollow">GitHub</a> |
 		<a href="http://snowball.tartarus.org/" target="_blank" rel="nofollow">Snowball</a> |
 		<a href="http://mazko.github.com/jsli/" target="_blank">Language Identifier</a> |
 		<a href="http://mazko.github.io/jstaggregator/" target="_blank">Urim</a> |

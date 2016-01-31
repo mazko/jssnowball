@@ -9934,7 +9934,7 @@ QUnit.test('portuguese', function(assert){
 	e("devidos", "dev");
 	e("devo", "dev");
 	e("devoção", "devoçã");
-	e("devolução", "devoluçã");
+	e("devolução", "devolu");
 	e("devoluta", "devolut");
 	e("devolve", "devolv");
 	e("devolvem", "devolv");
@@ -12971,7 +12971,7 @@ QUnit.test('portuguese', function(assert){
 	e("evocando", "evoc");
 	e("evocar", "evoc");
 	e("evocativa", "evoc");
-	e("evolução", "evoluçã");
+	e("evolução", "evolu");
 	e("evoluem", "evolu");
 	e("evolui", "evolu");
 	e("evoluir", "evolu");
@@ -13074,8 +13074,8 @@ QUnit.test('portuguese', function(assert){
 	e("excrescência", "excrescent");
 	e("excursão", "excursã");
 	e("excursões", "excursõ");
-	e("execução", "execuçã");
-	e("execuções", "execuçõ");
+	e("execução", "execu");
+	e("execuções", "execu");
 	e("executa", "execut");
 	e("executada", "execut");
 	e("executado", "execut");
@@ -17471,7 +17471,7 @@ QUnit.test('portuguese', function(assert){
 	e("intriga", "intrig");
 	e("intrigante", "intrig");
 	e("intrigas", "intrig");
-	e("introdução", "introduçã");
+	e("introdução", "introdu");
 	e("introduz", "introduz");
 	e("introduzida", "introduz");
 	e("introduzido", "introduz");
@@ -25836,7 +25836,7 @@ QUnit.test('portuguese', function(assert){
 	e("reconquista", "reconqu");
 	e("reconstituição", "reconstituiçã");
 	e("reconstroem", "reconstro");
-	e("reconstrução", "reconstruçã");
+	e("reconstrução", "reconstru");
 	e("reconstruir", "reconstru");
 	e("recontratar", "recontrat");
 	e("reconversão", "reconversã");
@@ -26421,7 +26421,7 @@ QUnit.test('portuguese', function(assert){
 	e("reprimem", "reprim");
 	e("reprimir", "reprim");
 	e("reprisados", "repris");
-	e("reprodução", "reproduçã");
+	e("reprodução", "reprodu");
 	e("reprodutor", "reprodutor");
 	e("reprodutora", "reprodutor");
 	e("reproduz", "reproduz");
@@ -26518,7 +26518,7 @@ QUnit.test('portuguese', function(assert){
 	e("resmaterizadas", "resmateriz");
 	e("resmungava", "resmung");
 	e("resmungou", "resmung");
-	e("resolução", "resoluçã");
+	e("resolução", "resolu");
 	e("resolve", "resolv");
 	e("resolvem", "resolv");
 	e("resolvemos", "resolv");
@@ -26839,14 +26839,14 @@ QUnit.test('portuguese', function(assert){
 	e("revoltados", "revolt");
 	e("revoltaram", "revolt");
 	e("revoltas", "revolt");
-	e("revolução", "revoluçã");
+	e("revolução", "revolu");
 	e("revolucionado", "revolucion");
 	e("revolucionar", "revolucion");
 	e("revolucionária", "revolucionár");
 	e("revolucionárias", "revolucionár");
 	e("revolucionário", "revolucionári");
 	e("revolucionou", "revolucion");
-	e("revoluções", "revoluçõ");
+	e("revoluções", "revolu");
 	e("revólver", "revólv");
 	e("revot", "revot");
 	e("revson", "revson");

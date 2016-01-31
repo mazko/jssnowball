@@ -1,4 +1,5 @@
 // This file was generated automatically by the Snowball to Java compiler
+// http://snowballstem.org/
 
 package org.tartarus.snowball.ext;
 
@@ -12,29 +13,20 @@ import org.tartarus.snowball.SnowballStemmer;
 
 public class germanStemmer extends SnowballStemmer {
 
-	private final static germanStemmer methodObject = null;
+	private final static Among a_0[] = { new Among("", -1, 6), new Among("U", 0, 2), new Among("Y", 0, 1),
+			new Among("\u00E4", 0, 3), new Among("\u00F6", 0, 4), new Among("\u00FC", 0, 5) };
 
-	private final static Among a_0[] = { new Among("", -1, 6, "", methodObject), new Among("U", 0, 2, "", methodObject),
-			new Among("Y", 0, 1, "", methodObject), new Among("\u00E4", 0, 3, "", methodObject),
-			new Among("\u00F6", 0, 4, "", methodObject), new Among("\u00FC", 0, 5, "", methodObject) };
+	private final static Among a_1[] = { new Among("e", -1, 2), new Among("em", -1, 1), new Among("en", -1, 2),
+			new Among("ern", -1, 1), new Among("er", -1, 1), new Among("s", -1, 3), new Among("es", 5, 2) };
 
-	private final static Among a_1[] = { new Among("e", -1, 2, "", methodObject),
-			new Among("em", -1, 1, "", methodObject), new Among("en", -1, 2, "", methodObject),
-			new Among("ern", -1, 1, "", methodObject), new Among("er", -1, 1, "", methodObject),
-			new Among("s", -1, 3, "", methodObject), new Among("es", 5, 2, "", methodObject) };
+	private final static Among a_2[] = { new Among("en", -1, 1), new Among("er", -1, 1), new Among("st", -1, 2),
+			new Among("est", 2, 1) };
 
-	private final static Among a_2[] = { new Among("en", -1, 1, "", methodObject),
-			new Among("er", -1, 1, "", methodObject), new Among("st", -1, 2, "", methodObject),
-			new Among("est", 2, 1, "", methodObject) };
+	private final static Among a_3[] = { new Among("ig", -1, 1), new Among("lich", -1, 1) };
 
-	private final static Among a_3[] = { new Among("ig", -1, 1, "", methodObject),
-			new Among("lich", -1, 1, "", methodObject) };
-
-	private final static Among a_4[] = { new Among("end", -1, 1, "", methodObject),
-			new Among("ig", -1, 2, "", methodObject), new Among("ung", -1, 1, "", methodObject),
-			new Among("lich", -1, 3, "", methodObject), new Among("isch", -1, 2, "", methodObject),
-			new Among("ik", -1, 2, "", methodObject), new Among("heit", -1, 3, "", methodObject),
-			new Among("keit", -1, 4, "", methodObject) };
+	private final static Among a_4[] = { new Among("end", -1, 1), new Among("ig", -1, 2), new Among("ung", -1, 1),
+			new Among("lich", -1, 3), new Among("isch", -1, 2), new Among("ik", -1, 2), new Among("heit", -1, 3),
+			new Among("keit", -1, 4) };
 
 	private static final char g_v[] = { 17, 65, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 32, 8 };
 
@@ -69,7 +61,7 @@ public class germanStemmer extends SnowballStemmer {
 						// [, line 37
 						bra = cursor;
 						// literal, line 37
-						if (!(eq_s(1, "\u00DF"))) {
+						if (!(eq_s("\u00DF"))) {
 							break lab3;
 						}
 						// ], line 37
@@ -111,7 +103,7 @@ public class germanStemmer extends SnowballStemmer {
 							lab9: do {
 								// (, line 42
 								// literal, line 42
-								if (!(eq_s(1, "u"))) {
+								if (!(eq_s("u"))) {
 									break lab9;
 								}
 								// ], line 42
@@ -126,7 +118,7 @@ public class germanStemmer extends SnowballStemmer {
 							cursor = v_6;
 							// (, line 43
 							// literal, line 43
-							if (!(eq_s(1, "y"))) {
+							if (!(eq_s("y"))) {
 								break lab7;
 							}
 							// ], line 43
@@ -251,7 +243,7 @@ public class germanStemmer extends SnowballStemmer {
 				// [, line 62
 				bra = cursor;
 				// substring, line 62
-				among_var = find_among(a_0, 6);
+				among_var = find_among(a_0);
 				if (among_var == 0) {
 					break lab1;
 				}
@@ -336,7 +328,7 @@ public class germanStemmer extends SnowballStemmer {
 			// [, line 80
 			ket = cursor;
 			// substring, line 80
-			among_var = find_among_b(a_1, 7);
+			among_var = find_among_b(a_1);
 			if (among_var == 0) {
 				break lab0;
 			}
@@ -365,14 +357,14 @@ public class germanStemmer extends SnowballStemmer {
 					// [, line 86
 					ket = cursor;
 					// literal, line 86
-					if (!(eq_s_b(1, "s"))) {
+					if (!(eq_s_b("s"))) {
 						cursor = limit - v_2;
 						break lab1;
 					}
 					// ], line 86
 					bra = cursor;
 					// literal, line 86
-					if (!(eq_s_b(3, "nis"))) {
+					if (!(eq_s_b("nis"))) {
 						cursor = limit - v_2;
 						break lab1;
 					}
@@ -398,7 +390,7 @@ public class germanStemmer extends SnowballStemmer {
 			// [, line 94
 			ket = cursor;
 			// substring, line 94
-			among_var = find_among_b(a_2, 4);
+			among_var = find_among_b(a_2);
 			if (among_var == 0) {
 				break lab2;
 			}
@@ -442,7 +434,7 @@ public class germanStemmer extends SnowballStemmer {
 			// [, line 104
 			ket = cursor;
 			// substring, line 104
-			among_var = find_among_b(a_4, 8);
+			among_var = find_among_b(a_4);
 			if (among_var == 0) {
 				break lab3;
 			}
@@ -466,7 +458,7 @@ public class germanStemmer extends SnowballStemmer {
 					// [, line 107
 					ket = cursor;
 					// literal, line 107
-					if (!(eq_s_b(2, "ig"))) {
+					if (!(eq_s_b("ig"))) {
 						cursor = limit - v_5;
 						break lab4;
 					}
@@ -477,7 +469,7 @@ public class germanStemmer extends SnowballStemmer {
 						v_6 = limit - cursor;
 						lab5: do {
 							// literal, line 107
-							if (!(eq_s_b(1, "e"))) {
+							if (!(eq_s_b("e"))) {
 								break lab5;
 							}
 							cursor = limit - v_5;
@@ -501,7 +493,7 @@ public class germanStemmer extends SnowballStemmer {
 				v_7 = limit - cursor;
 				lab6: do {
 					// literal, line 110
-					if (!(eq_s_b(1, "e"))) {
+					if (!(eq_s_b("e"))) {
 						break lab6;
 					}
 					break lab3;
@@ -526,14 +518,14 @@ public class germanStemmer extends SnowballStemmer {
 						v_9 = limit - cursor;
 						lab9: do {
 							// literal, line 115
-							if (!(eq_s_b(2, "er"))) {
+							if (!(eq_s_b("er"))) {
 								break lab9;
 							}
 							break lab8;
 						} while (false);
 						cursor = limit - v_9;
 						// literal, line 115
-						if (!(eq_s_b(2, "en"))) {
+						if (!(eq_s_b("en"))) {
 							cursor = limit - v_8;
 							break lab7;
 						}
@@ -560,7 +552,7 @@ public class germanStemmer extends SnowballStemmer {
 					// [, line 121
 					ket = cursor;
 					// substring, line 121
-					among_var = find_among_b(a_3, 2);
+					among_var = find_among_b(a_3);
 					if (among_var == 0) {
 						cursor = limit - v_10;
 						break lab10;

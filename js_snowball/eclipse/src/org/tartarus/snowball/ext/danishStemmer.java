@@ -1,4 +1,5 @@
 // This file was generated automatically by the Snowball to Java compiler
+// http://snowballstem.org/
 
 package org.tartarus.snowball.ext;
 
@@ -13,33 +14,21 @@ import org.tartarus.snowball.StringBuilder;
 
 public class danishStemmer extends SnowballStemmer {
 
-	private final static danishStemmer methodObject = null;
+	private final static Among a_0[] = { new Among("hed", -1, 1), new Among("ethed", 0, 1), new Among("ered", -1, 1),
+			new Among("e", -1, 1), new Among("erede", 3, 1), new Among("ende", 3, 1), new Among("erende", 5, 1),
+			new Among("ene", 3, 1), new Among("erne", 3, 1), new Among("ere", 3, 1), new Among("en", -1, 1),
+			new Among("heden", 10, 1), new Among("eren", 10, 1), new Among("er", -1, 1), new Among("heder", 13, 1),
+			new Among("erer", 13, 1), new Among("s", -1, 2), new Among("heds", 16, 1), new Among("es", 16, 1),
+			new Among("endes", 18, 1), new Among("erendes", 19, 1), new Among("enes", 18, 1), new Among("ernes", 18, 1),
+			new Among("eres", 18, 1), new Among("ens", 16, 1), new Among("hedens", 24, 1), new Among("erens", 24, 1),
+			new Among("ers", 16, 1), new Among("ets", 16, 1), new Among("erets", 28, 1), new Among("et", -1, 1),
+			new Among("eret", 30, 1) };
 
-	private final static Among a_0[] = { new Among("hed", -1, 1, "", methodObject),
-			new Among("ethed", 0, 1, "", methodObject), new Among("ered", -1, 1, "", methodObject),
-			new Among("e", -1, 1, "", methodObject), new Among("erede", 3, 1, "", methodObject),
-			new Among("ende", 3, 1, "", methodObject), new Among("erende", 5, 1, "", methodObject),
-			new Among("ene", 3, 1, "", methodObject), new Among("erne", 3, 1, "", methodObject),
-			new Among("ere", 3, 1, "", methodObject), new Among("en", -1, 1, "", methodObject),
-			new Among("heden", 10, 1, "", methodObject), new Among("eren", 10, 1, "", methodObject),
-			new Among("er", -1, 1, "", methodObject), new Among("heder", 13, 1, "", methodObject),
-			new Among("erer", 13, 1, "", methodObject), new Among("s", -1, 2, "", methodObject),
-			new Among("heds", 16, 1, "", methodObject), new Among("es", 16, 1, "", methodObject),
-			new Among("endes", 18, 1, "", methodObject), new Among("erendes", 19, 1, "", methodObject),
-			new Among("enes", 18, 1, "", methodObject), new Among("ernes", 18, 1, "", methodObject),
-			new Among("eres", 18, 1, "", methodObject), new Among("ens", 16, 1, "", methodObject),
-			new Among("hedens", 24, 1, "", methodObject), new Among("erens", 24, 1, "", methodObject),
-			new Among("ers", 16, 1, "", methodObject), new Among("ets", 16, 1, "", methodObject),
-			new Among("erets", 28, 1, "", methodObject), new Among("et", -1, 1, "", methodObject),
-			new Among("eret", 30, 1, "", methodObject) };
+	private final static Among a_1[] = { new Among("gd", -1, -1), new Among("dt", -1, -1), new Among("gt", -1, -1),
+			new Among("kt", -1, -1) };
 
-	private final static Among a_1[] = { new Among("gd", -1, -1, "", methodObject),
-			new Among("dt", -1, -1, "", methodObject), new Among("gt", -1, -1, "", methodObject),
-			new Among("kt", -1, -1, "", methodObject) };
-
-	private final static Among a_2[] = { new Among("ig", -1, 1, "", methodObject),
-			new Among("lig", 0, 1, "", methodObject), new Among("elig", 1, 1, "", methodObject),
-			new Among("els", -1, 1, "", methodObject), new Among("l\u00F8st", -1, 2, "", methodObject) };
+	private final static Among a_2[] = { new Among("ig", -1, 1), new Among("lig", 0, 1), new Among("elig", 1, 1),
+			new Among("els", -1, 1), new Among("l\u00F8st", -1, 2) };
 
 	private static final char g_v[] = { 17, 65, 16, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 48, 0, 128 };
 
@@ -129,7 +118,7 @@ public class danishStemmer extends SnowballStemmer {
 		// [, line 41
 		ket = cursor;
 		// substring, line 41
-		among_var = find_among_b(a_0, 32);
+		among_var = find_among_b(a_0);
 		if (among_var == 0) {
 			limit_backward = v_2;
 			return false;
@@ -179,7 +168,7 @@ public class danishStemmer extends SnowballStemmer {
 		// [, line 56
 		ket = cursor;
 		// substring, line 56
-		if (find_among_b(a_1, 4) == 0) {
+		if (find_among_b(a_1) == 0) {
 			limit_backward = v_3;
 			return false;
 		}
@@ -213,13 +202,13 @@ public class danishStemmer extends SnowballStemmer {
 			// [, line 66
 			ket = cursor;
 			// literal, line 66
-			if (!(eq_s_b(2, "st"))) {
+			if (!(eq_s_b("st"))) {
 				break lab0;
 			}
 			// ], line 66
 			bra = cursor;
 			// literal, line 66
-			if (!(eq_s_b(2, "ig"))) {
+			if (!(eq_s_b("ig"))) {
 				break lab0;
 			}
 			// delete, line 66
@@ -240,7 +229,7 @@ public class danishStemmer extends SnowballStemmer {
 		// [, line 67
 		ket = cursor;
 		// substring, line 67
-		among_var = find_among_b(a_2, 5);
+		among_var = find_among_b(a_2);
 		if (among_var == 0) {
 			limit_backward = v_3;
 			return false;
@@ -301,7 +290,7 @@ public class danishStemmer extends SnowballStemmer {
 		S_ch = slice_to(S_ch);
 		limit_backward = v_2;
 		// name ch, line 77
-		if (!(eq_v_b(S_ch))) {
+		if (!(eq_s_b(S_ch.toString()))) {
 			return false;
 		}
 		// delete, line 78

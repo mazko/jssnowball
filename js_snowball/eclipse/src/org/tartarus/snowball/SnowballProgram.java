@@ -45,15 +45,6 @@ public class SnowballProgram {
 	protected int bra;
 	protected int ket;
 
-	protected void copy_from(SnowballProgram other) {
-		current = other.current;
-		cursor = other.cursor;
-		limit = other.limit;
-		limit_backward = other.limit_backward;
-		bra = other.bra;
-		ket = other.ket;
-	}
-
 	protected boolean in_grouping(char[] s, int min, int max) {
 		if (cursor >= limit)
 			return false;
@@ -112,81 +103,33 @@ public class SnowballProgram {
 		return false;
 	}
 
-	protected boolean in_range(int min, int max) {
-		if (cursor >= limit)
-			return false;
-		char ch = current.charAt(cursor);
-		if (ch > max || ch < min)
-			return false;
-		cursor++;
-		return true;
-	}
-
-	protected boolean in_range_b(int min, int max) {
-		if (cursor <= limit_backward)
-			return false;
-		char ch = current.charAt(cursor - 1);
-		if (ch > max || ch < min)
-			return false;
-		cursor--;
-		return true;
-	}
-
-	protected boolean out_range(int min, int max) {
-		if (cursor >= limit)
-			return false;
-		char ch = current.charAt(cursor);
-		if (!(ch > max || ch < min))
-			return false;
-		cursor++;
-		return true;
-	}
-
-	protected boolean out_range_b(int min, int max) {
-		if (cursor <= limit_backward)
-			return false;
-		char ch = current.charAt(cursor - 1);
-		if (!(ch > max || ch < min))
-			return false;
-		cursor--;
-		return true;
-	}
-
-	protected boolean eq_s(int s_size, String s) {
-		if (limit - cursor < s_size)
+	protected boolean eq_s(String s) {
+		if (limit - cursor < s.length())
 			return false;
 		int i;
-		for (i = 0; i != s_size; i++) {
+		for (i = 0; i != s.length(); i++) {
 			if (current.charAt(cursor + i) != s.charAt(i))
 				return false;
 		}
-		cursor += s_size;
+		cursor += s.length();
 		return true;
 	}
 
-	protected boolean eq_s_b(int s_size, String s) {
-		if (cursor - limit_backward < s_size)
+	protected boolean eq_s_b(String s) {
+		if (cursor - limit_backward < s.length())
 			return false;
 		int i;
-		for (i = 0; i != s_size; i++) {
-			if (current.charAt(cursor - s_size + i) != s.charAt(i))
+		for (i = 0; i != s.length(); i++) {
+			if (current.charAt(cursor - s.length() + i) != s.charAt(i))
 				return false;
 		}
-		cursor -= s_size;
+		cursor -= s.length();
 		return true;
 	}
 
-	protected boolean eq_v(CharSequence s) {
-		return eq_s(s.length(), s.toString());
-	}
-
-	protected boolean eq_v_b(CharSequence s) {
-		return eq_s_b(s.length(), s.toString());
-	}
-
-	protected int find_among(Among v[], int v_size) {
+	protected int find_among(Among v[]) {
 		int i = 0;
-		int j = v_size;
+		int j = v.length;
 
 		int c = cursor;
 		int l = limit;
@@ -202,7 +145,7 @@ public class SnowballProgram {
 			int common = common_i < common_j ? common_i : common_j; // smaller
 			Among w = v[k];
 			int i2;
-			for (i2 = common; i2 < w.s_size; i2++) {
+			for (i2 = common; i2 < w.s.length; i2++) {
 				if (c + common == l) {
 					diff = -1;
 					break;
@@ -236,8 +179,8 @@ public class SnowballProgram {
 		}
 		while (true) {
 			Among w = v[i];
-			if (common_i >= w.s_size) {
-				cursor = c + w.s_size;
+			if (common_i >= w.s.length) {
+				cursor = c + w.s.length;
 				if (w.method == null)
 					return w.result;
 
@@ -245,7 +188,7 @@ public class SnowballProgram {
 				// :es6:
 				// res = w.method.call(w.methodobject);
 				try {
-					Object resobj = w.method.invoke(w.methodobject, new Object[0]);
+					Object resobj = w.method.invoke(this);
 					res = resobj.toString().equals("true");
 				} catch (InvocationTargetException e) {
 					res = false;
@@ -255,7 +198,7 @@ public class SnowballProgram {
 					// FIXME - debug message
 				}
 				// :end:
-				cursor = c + w.s_size;
+				cursor = c + w.s.length;
 				if (res)
 					return w.result;
 			}
@@ -266,9 +209,9 @@ public class SnowballProgram {
 	}
 
 	// find_among_b is for backwards processing. Same comments apply
-	protected int find_among_b(Among v[], int v_size) {
+	protected int find_among_b(Among v[]) {
 		int i = 0;
-		int j = v_size;
+		int j = v.length;
 
 		int c = cursor;
 		int lb = limit_backward;
@@ -284,7 +227,7 @@ public class SnowballProgram {
 			int common = common_i < common_j ? common_i : common_j;
 			Among w = v[k];
 			int i2;
-			for (i2 = w.s_size - 1 - common; i2 >= 0; i2--) {
+			for (i2 = w.s.length - 1 - common; i2 >= 0; i2--) {
 				if (c - common == lb) {
 					diff = -1;
 					break;
@@ -313,8 +256,8 @@ public class SnowballProgram {
 		}
 		while (true) {
 			Among w = v[i];
-			if (common_i >= w.s_size) {
-				cursor = c - w.s_size;
+			if (common_i >= w.s.length) {
+				cursor = c - w.s.length;
 				if (w.method == null)
 					return w.result;
 
@@ -322,7 +265,7 @@ public class SnowballProgram {
 				// :es6:
 				// res = w.method.call(w.methodobject);
 				try {
-					Object resobj = w.method.invoke(w.methodobject, new Object[0]);
+					Object resobj = w.method.invoke(this);
 					res = resobj.toString().equals("true");
 				} catch (InvocationTargetException e) {
 					res = false;
@@ -332,7 +275,7 @@ public class SnowballProgram {
 					// FIXME - debug message
 				}
 				// :end:
-				cursor = c - w.s_size;
+				cursor = c - w.s.length;
 				if (res)
 					return w.result;
 			}
@@ -398,16 +341,4 @@ public class SnowballProgram {
 		s.replace(0, s.length(), current.substring(bra, ket));
 		return s;
 	}
-
-	/*
-	 * extern void debug(struct SN_env * z, int number, int line_count) { int i;
-	 * int limit = SIZE(z->p); //if (number >= 0) printf("%3d (line %4d): '",
-	 * number, line_count); if (number >= 0) printf("%3d (line %4d): [%d]'",
-	 * number, line_count,limit); for (i = 0; i <= limit; i++) { if (z->lb == i)
-	 * printf("{"); if (z->bra == i) printf("["); if (z->c == i) printf("|"); if
-	 * (z->ket == i) printf("]"); if (z->l == i) printf("}"); if (i < limit) {
-	 * int ch = z->p[i]; if (ch == 0) ch = '#'; printf("%c", ch); } }
-	 * printf("'\n"); }
-	 */
-
 };

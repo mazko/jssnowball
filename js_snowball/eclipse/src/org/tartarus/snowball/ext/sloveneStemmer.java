@@ -1,4 +1,5 @@
 // This file was generated automatically by the Snowball to Java compiler
+// http://snowballstem.org/
 
 package org.tartarus.snowball.ext;
 
@@ -12,51 +13,33 @@ import org.tartarus.snowball.SnowballStemmer;
 
 public class sloveneStemmer extends SnowballStemmer {
 
-	private final static sloveneStemmer methodObject = null;
+	private final static Among a_0[] = { new Among("anski", -1, 1), new Among("evski", -1, 1),
+			new Among("ovski", -1, 1) };
 
-	private final static Among a_0[] = { new Among("anski", -1, 1, "", methodObject),
-			new Among("evski", -1, 1, "", methodObject), new Among("ovski", -1, 1, "", methodObject) };
+	private final static Among a_1[] = { new Among("stvo", -1, 1), new Among("\u0161tvo", -1, 1) };
 
-	private final static Among a_1[] = { new Among("stvo", -1, 1, "", methodObject),
-			new Among("\u0161tvo", -1, 1, "", methodObject) };
+	private final static Among a_2[] = { new Among("ega", -1, 1), new Among("ija", -1, 1), new Among("ila", -1, 1),
+			new Among("ema", -1, 1), new Among("vna", -1, 1), new Among("ite", -1, 1), new Among("ste", -1, 1),
+			new Among("\u0161\u010De", -1, 1), new Among("ski", -1, 1), new Among("\u0161ki", -1, 1),
+			new Among("iti", -1, 1), new Among("ovi", -1, 1), new Among("\u010Dek", -1, 1), new Among("ovm", -1, 1),
+			new Among("\u010Dan", -1, 1), new Among("len", -1, 1), new Among("ven", -1, 1),
+			new Among("\u0161en", -1, 1), new Among("ejo", -1, 1), new Among("ijo", -1, 1), new Among("ast", -1, 1),
+			new Among("ost", -1, 1) };
 
-	private final static Among a_2[] = { new Among("ega", -1, 1, "", methodObject),
-			new Among("ija", -1, 1, "", methodObject), new Among("ila", -1, 1, "", methodObject),
-			new Among("ema", -1, 1, "", methodObject), new Among("vna", -1, 1, "", methodObject),
-			new Among("ite", -1, 1, "", methodObject), new Among("ste", -1, 1, "", methodObject),
-			new Among("\u0161\u010De", -1, 1, "", methodObject), new Among("ski", -1, 1, "", methodObject),
-			new Among("\u0161ki", -1, 1, "", methodObject), new Among("iti", -1, 1, "", methodObject),
-			new Among("ovi", -1, 1, "", methodObject), new Among("\u010Dek", -1, 1, "", methodObject),
-			new Among("ovm", -1, 1, "", methodObject), new Among("\u010Dan", -1, 1, "", methodObject),
-			new Among("len", -1, 1, "", methodObject), new Among("ven", -1, 1, "", methodObject),
-			new Among("\u0161en", -1, 1, "", methodObject), new Among("ejo", -1, 1, "", methodObject),
-			new Among("ijo", -1, 1, "", methodObject), new Among("ast", -1, 1, "", methodObject),
-			new Among("ost", -1, 1, "", methodObject) };
+	private final static Among a_3[] = { new Among("ja", -1, 1), new Among("ka", -1, 1), new Among("ma", -1, 1),
+			new Among("ec", -1, 1), new Among("je", -1, 1), new Among("eg", -1, 1), new Among("eh", -1, 1),
+			new Among("ih", -1, 1), new Among("mi", -1, 1), new Among("ti", -1, 1), new Among("ij", -1, 1),
+			new Among("al", -1, 1), new Among("il", -1, 1), new Among("em", -1, 1), new Among("om", -1, 1),
+			new Among("an", -1, 1), new Among("en", -1, 1), new Among("in", -1, 1), new Among("do", -1, 1),
+			new Among("jo", -1, 1), new Among("ir", -1, 1), new Among("at", -1, 1), new Among("ev", -1, 1),
+			new Among("iv", -1, 1), new Among("ov", -1, 1), new Among("o\u010D", -1, 1) };
 
-	private final static Among a_3[] = { new Among("ja", -1, 1, "", methodObject),
-			new Among("ka", -1, 1, "", methodObject), new Among("ma", -1, 1, "", methodObject),
-			new Among("ec", -1, 1, "", methodObject), new Among("je", -1, 1, "", methodObject),
-			new Among("eg", -1, 1, "", methodObject), new Among("eh", -1, 1, "", methodObject),
-			new Among("ih", -1, 1, "", methodObject), new Among("mi", -1, 1, "", methodObject),
-			new Among("ti", -1, 1, "", methodObject), new Among("ij", -1, 1, "", methodObject),
-			new Among("al", -1, 1, "", methodObject), new Among("il", -1, 1, "", methodObject),
-			new Among("em", -1, 1, "", methodObject), new Among("om", -1, 1, "", methodObject),
-			new Among("an", -1, 1, "", methodObject), new Among("en", -1, 1, "", methodObject),
-			new Among("in", -1, 1, "", methodObject), new Among("do", -1, 1, "", methodObject),
-			new Among("jo", -1, 1, "", methodObject), new Among("ir", -1, 1, "", methodObject),
-			new Among("at", -1, 1, "", methodObject), new Among("ev", -1, 1, "", methodObject),
-			new Among("iv", -1, 1, "", methodObject), new Among("ov", -1, 1, "", methodObject),
-			new Among("o\u010D", -1, 1, "", methodObject) };
+	private final static Among a_4[] = { new Among("a", -1, 1), new Among("c", -1, 1), new Among("e", -1, 1),
+			new Among("i", -1, 1), new Among("m", -1, 1), new Among("o", -1, 1), new Among("u", -1, 1),
+			new Among("\u0161", -1, 1) };
 
-	private final static Among a_4[] = { new Among("a", -1, 1, "", methodObject),
-			new Among("c", -1, 1, "", methodObject), new Among("e", -1, 1, "", methodObject),
-			new Among("i", -1, 1, "", methodObject), new Among("m", -1, 1, "", methodObject),
-			new Among("o", -1, 1, "", methodObject), new Among("u", -1, 1, "", methodObject),
-			new Among("\u0161", -1, 1, "", methodObject) };
-
-	private final static Among a_5[] = { new Among("a", -1, 1, "", methodObject),
-			new Among("e", -1, 1, "", methodObject), new Among("i", -1, 1, "", methodObject),
-			new Among("o", -1, 1, "", methodObject), new Among("u", -1, 1, "", methodObject) };
+	private final static Among a_5[] = { new Among("a", -1, 1), new Among("e", -1, 1), new Among("i", -1, 1),
+			new Among("o", -1, 1), new Among("u", -1, 1) };
 
 	private static final char g_soglasniki[] = { 119, 95, 23, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8,
 			0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 0, 0, 16 };
@@ -77,7 +60,7 @@ public class sloveneStemmer extends SnowballStemmer {
 		int v_9;
 		int v_10;
 		// (, line 27
-		I_p1 = limit;
+		I_p1 = (current.length());
 		// backwards, line 30
 		limit_backward = cursor;
 		cursor = limit;
@@ -99,7 +82,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// [, line 33
 					ket = cursor;
 					// substring, line 33
-					among_var = find_among_b(a_0, 3);
+					among_var = find_among_b(a_0);
 					if (among_var == 0) {
 						cursor = limit - v_3;
 						break lab1;
@@ -128,7 +111,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// [, line 36
 					ket = cursor;
 					// substring, line 36
-					among_var = find_among_b(a_1, 2);
+					among_var = find_among_b(a_1);
 					if (among_var == 0) {
 						cursor = limit - v_4;
 						break lab2;
@@ -146,7 +129,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = ansi_c_length_shim();
+				I_p1 = (current.length());
 				// try, line 39
 				v_5 = limit - cursor;
 				lab3: do {
@@ -158,7 +141,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// [, line 40
 					ket = cursor;
 					// substring, line 40
-					among_var = find_among_b(a_2, 22);
+					among_var = find_among_b(a_2);
 					if (among_var == 0) {
 						cursor = limit - v_5;
 						break lab3;
@@ -176,7 +159,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = ansi_c_length_shim();
+				I_p1 = (current.length());
 				// try, line 46
 				v_6 = limit - cursor;
 				lab4: do {
@@ -188,7 +171,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// [, line 47
 					ket = cursor;
 					// substring, line 47
-					among_var = find_among_b(a_3, 26);
+					among_var = find_among_b(a_3);
 					if (among_var == 0) {
 						cursor = limit - v_6;
 						break lab4;
@@ -206,7 +189,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = ansi_c_length_shim();
+				I_p1 = (current.length());
 				// try, line 53
 				v_7 = limit - cursor;
 				lab5: do {
@@ -218,7 +201,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// [, line 54
 					ket = cursor;
 					// substring, line 54
-					among_var = find_among_b(a_4, 8);
+					among_var = find_among_b(a_4);
 					if (among_var == 0) {
 						cursor = limit - v_7;
 						break lab5;
@@ -236,7 +219,7 @@ public class sloveneStemmer extends SnowballStemmer {
 						break;
 					}
 				} while (false);
-				I_p1 = ansi_c_length_shim();
+				I_p1 = (current.length());
 				// try, line 58
 				v_8 = limit - cursor;
 				lab6: do {
@@ -265,7 +248,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// delete, line 59
 					slice_del();
 				} while (false);
-				I_p1 = ansi_c_length_shim();
+				I_p1 = (current.length());
 				// try, line 63
 				v_10 = limit - cursor;
 				lab7: do {
@@ -277,7 +260,7 @@ public class sloveneStemmer extends SnowballStemmer {
 					// [, line 64
 					ket = cursor;
 					// substring, line 64
-					among_var = find_among_b(a_5, 5);
+					among_var = find_among_b(a_5);
 					if (among_var == 0) {
 						cursor = limit - v_10;
 						break lab7;
@@ -300,13 +283,5 @@ public class sloveneStemmer extends SnowballStemmer {
 		cursor = limit - v_1;
 		cursor = limit_backward;
 		return true;
-	}
-
-	private int ansi_c_length_shim() {
-		// :es6:
-		/* Potentially bug of ANSI C stemmers, presents here for porting compliance */
-		// return current.length() ? encodeURIComponent(current).match(new RegExp("%..|.", "g")).length + 1 : 1;
-		return current.length();
-		// :end:
 	}
 }
