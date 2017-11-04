@@ -1,45 +1,86 @@
 # JavaScript Snowball Stemmers [![Build Status](https://travis-ci.org/mazko/jssnowball.svg?branch=master)](https://travis-ci.org/mazko/jssnowball) [![npm version](https://badge.fury.io/js/snowball-stemmers.svg)](http://badge.fury.io/js/snowball-stemmers) [![Coverage Status](https://coveralls.io/repos/mazko/jssnowball/badge.svg?branch=master&service=github)](https://coveralls.io/github/mazko/jssnowball?branch=master)
+ 
+All JavaScript stemmers have been transpiled from Java implementation of [Snowball](http://snowballstem.org/) stemming algorithms using [ESJava](https://github.com/mazko/esjava) transpiler.
 
-Port from [Snowball](http://snowball.tartarus.org/) Stemmers. [Online](http://mazko.github.io/jssnowball/)
+This project provides not only pre-built JavaScript stemmers, but allows to create new ones.
 
-[snowball.es6](//github.com/mazko/jssnowball/raw/master/js_snowball/lib/snowball.es6) | [snowball.babel.js](//github.com/mazko/jssnowball/raw/master/js_snowball/lib/snowball.babel.js)
+## Pre-built stemmers
 
-### [ESJava](https://github.com/mazko/esjava) (ES6) fun
+Stemmers for 20+ languages are packed in one file in two ECMAScript standards:
+ * [ES6](//github.com/mazko/jssnowball/raw/master/js_snowball/lib/snowball.es6)
+ * [ES5](//github.com/mazko/jssnowball/raw/master/js_snowball/lib/snowball.babel.js)
 
-#### Easy
+You can test stemmers directly in [online demo](http://mazko.github.io/jssnowball/).
 
-    nodeenv ~/virtualenvs/snowball --prebuilt
-    . ~/virtualenvs/snowball/bin/activate
+## How to build
 
-    npm i -g babel-cli esjava
+As there are several limitations of ESJava transpiler, the build process has to be complemented by pre- and post-transpiling tweaks.
+
+### Prerequisities
+
+ * Unix-like OS (or Cygwin on Windows)
+ * Node.js + npm
+ * rsync (for syncing Snowball repository, required only in specific scenarios)
+ * perl (for generating Java code from Snowball algorithms (SBL files), required only in specific scenarios)
+
+### Adding a new stemmer
+
+  1. [Creating a Java bundle](#1-creating-a-java-bundle)
+     1. [Creating a bundle from most recent Snowball stemmers](#creating-a-bundle-from-most-recent-snowball-stemmers)
+     2. [Building a new Java stemmer from SBL algorithm](#building-a-new-java-stemmer-from-sbl-algorithm)
+     3. [Adding the Java stemmer into the bundle](#adding-the-java-stemmer-into-the-bundle)
+  2. [Tweaking the Java bundle](#2-tweaking-the-java-bundle)
+  3. [Transpiling the Java bundle to JavaScript](#3-transpiling-the-java-bundle-to-javascript)
+  4. [Modifying the transpiled JavaScript](#4-modifying-the-transpiled-javascript)
+
+### Steps in a detail
+
+#### 1. Creating a Java bundle
+
+As ESJava can convert a single file only, all Java source files have to be bundled first.
+
+##### Creating a bundle from most recent Snowball stemmers
+
     git clone https://github.com/mazko/jssnowball.git
     cd jssnowball/
     make bundle
 
-There are some Java constructions that can't be translated to JavaScipt directly. For example reflection e.t.c. You have to convert such fragments Java => JavaScipt manually. I have already done that and you can just skip this step unless Snowball core (Java) has not changed. To do so:
+##### Building a new Java stemmer from SBL algorithm
 
-    git checkout -- js_snowball/eclipse/
-    make bundle
+ 1. Change directory to `jssnoball/snowball-master/`
+ 2. Create new subfolder in the `algorithms` folder and copy there the given SBL file renamed to `stem_Unicode.sbl`
+ 3. Add stemmer configuration into `libstemmer/modules.txt` and `libstemmer/modules_utf8.txt`
+ 4. Add stemmer to the GNUmakefile's `libstemmer_algorithms` variable
+ 5. Compile the Snowball using `make dist`
 
-Now open file js_snowball/lib/snowball.bundle.java in your favorite editor. You'll see some code parts are wrapped inside `:es6:` code `:end:` - edit them following suggestions. Now you can convert snowball.bundle.java to es6:
+##### Adding the Java stemmer into the bundle
 
-    npm i babel-preset-es2015 babel-plugin-transform-es2015-modules-umd
-    make esjava
+Copy the Java stemmer code from `jssnoball/snowball-master/java/org/tartarus/snowball/ext/` into `jssnowball/js_snowball/lib/snowball.bundle.java`.
 
-#### Advanced
-
-- Run [bootstrap](snowball_cache/configure) script to download and regenerate last original Java Snowball stemmers
-
-- Use your favorite IDE to remove unused code in ```*.java``` sources like ```copy_from```, ```hashCode``` e.t.c. Here is Eclipse EE Mars.1 Release (4.5.1) example:
+It also recommended to remove unused code like `copy_from`, `hashCode` etc. Here is Eclipse EE Mars.1 Release (4.5.1) example:
 
 *source -> cleanup*
 
 ![cleanup-profile](js_snowball/screenshots/cleanup-profile.png)
 
-- **ESJava** has some restrictions like reflection e.t.c. You have to refactor manually such ```*.java``` sources too :(
+#### 2. Tweaking the Java bundle
 
-- Merge all ```*.java``` in to one single *snowball.bundle.java*: ```make bundle```
+There are some Java constructions that can't be translated to JavaScipt directly, e.g. reflection etc. Such fragments has to be tweaked a bit.
 
-- Manually edit js-specific fragments: ```awk /:es6:/,/:end:/ js_snowball/lib/snowball.bundle.java```
+Fortunately, most of them are in the common code, not in stemmers themselves (except for finnishStemmer). They are wrapped inside `:es6:` code `:end:` and should be edited as suggested in comments. 
 
-- Enjoy ```make esjava``` !
+On top of that, these further tweaks are required:
+ * removing package names in method references (`org.tartarus.snowball`, `java.lang`)
+ * removing some overloaded methods
+
+The result should match the original [snowball.bundle.java](https://github.com/mazko/jssnowball/blob/master/js_snowball/lib/snowball.bundle.java) file. 
+
+#### 3. Transpiling the Java bundle to JavaScript
+
+    npm i -g esjava babel-cli
+    npm i babel-preset-es2015 babel-plugin-transform-es2015-modules-umd
+    make esjava
+
+#### 4. Modifying the transpiled JavaScript
+
+In the final JavaScript files (stored in `jssnowball/js_snowball/lib/` directory) it is necessary to replace `s.length()` with `s.length` in `eq_s` and `eq_s_b` methods. Otherwise the code returns a TypeError: `s.length is not a function`.
