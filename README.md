@@ -23,29 +23,33 @@ As there are several limitations of ESJava transpiler, the build process has to 
  * rsync (for syncing Snowball repository, required only in specific scenarios)
  * perl (for generating Java code from Snowball algorithms (SBL files), required only in specific scenarios)
 
-### Adding a new stemmer
+### Rebuilding stemmers
 
-  1. [Creating a Java bundle](#1-creating-a-java-bundle)
-     1. [Creating a bundle from most recent Snowball stemmers](#creating-a-bundle-from-most-recent-snowball-stemmers)
-     2. [Building a new Java stemmer from SBL algorithm](#building-a-new-java-stemmer-from-sbl-algorithm)
-     3. [Adding the Java stemmer into the bundle](#adding-the-java-stemmer-into-the-bundle)
-  2. [Tweaking the Java bundle](#2-tweaking-the-java-bundle)
-  3. [Transpiling the Java bundle to JavaScript](#3-transpiling-the-java-bundle-to-javascript)
-  4. [Modifying the transpiled JavaScript](#4-modifying-the-transpiled-javascript)
+  1. [Building Java stemmers from most recent Snowball stemmers](#building-java-stemmers-from-most-recent-snowball-stemmers)
+  2. [Creating a Java bundle](#creating-a-java-bundle)
+  3. [Tweaking the Java bundle](#tweaking-the-java-bundle)
+  4. [Transpiling the Java bundle to JavaScript](#transpiling-the-java-bundle-to-javascript)
+  5. [Modifying the transpiled JavaScript](#modifying-the-transpiled-javascript)
+
+### Adding custom stemmers
+
+  1. [Building Java stemmers from most recent Snowball stemmers](#building-java-stemmers-from-most-recent-snowball-stemmers)
+  2. [Building Java stemmers from custom Snowball stemmers](#building-java-stemmers-from-custom-snowball-stemmers)
+  3. [Creating a Java bundle](#creating-a-java-bundle)
+  4. [Adding custom Java stemmers into the bundle](#adding-custom-java-stemmers-into-the-bundle)
+  5. [Tweaking the Java bundle](#tweaking-the-java-bundle)
+  6. [Transpiling the Java bundle to JavaScript](#transpiling-the-java-bundle-to-javascript)
+  7. [Modifying the transpiled JavaScript](#modifying-the-transpiled-javascript)
 
 ### Steps in a detail
 
-#### 1. Creating a Java bundle
-
-As ESJava can convert a single file only, all Java source files have to be bundled first.
-
-##### Creating a bundle from most recent Snowball stemmers
+#### Building Java stemmers from most recent Snowball stemmers
 
     git clone https://github.com/mazko/jssnowball.git
     cd jssnowball/
     make bundle
 
-##### Building a new Java stemmer from SBL algorithm
+#### Building Java stemmers from custom Snowball stemmers
 
  1. Change directory to `jssnoball/snowball-master/`
  2. Create new subfolder in the `algorithms` folder and copy there the given SBL file renamed to `stem_Unicode.sbl`
@@ -53,7 +57,14 @@ As ESJava can convert a single file only, all Java source files have to be bundl
  4. Add stemmer to the GNUmakefile's `libstemmer_algorithms` variable
  5. Compile the Snowball using `make dist`
 
-##### Adding the Java stemmer into the bundle
+#### Creating a Java bundle
+
+As ESJava can convert a single file only, all Java source files have to be bundled first.
+
+    git checkout -- js_snowball/eclipse/
+    make bundle
+
+#### Adding the Java stemmer into the bundle
 
 Copy the Java stemmer code from `jssnoball/snowball-master/java/org/tartarus/snowball/ext/` into `jssnowball/js_snowball/lib/snowball.bundle.java`.
 
@@ -63,7 +74,7 @@ It also recommended to remove unused code like `copy_from`, `hashCode` etc. Here
 
 ![cleanup-profile](js_snowball/screenshots/cleanup-profile.png)
 
-#### 2. Tweaking the Java bundle
+#### Tweaking the Java bundle
 
 There are some Java constructions that can't be translated to JavaScipt directly, e.g. reflection etc. Such fragments has to be tweaked a bit.
 
@@ -75,12 +86,12 @@ On top of that, these further tweaks are required:
 
 The result should match the original [snowball.bundle.java](https://github.com/mazko/jssnowball/blob/master/js_snowball/lib/snowball.bundle.java) file. 
 
-#### 3. Transpiling the Java bundle to JavaScript
+#### Transpiling the Java bundle to JavaScript
 
     npm i -g esjava babel-cli
     npm i babel-preset-es2015 babel-plugin-transform-es2015-modules-umd
     make esjava
 
-#### 4. Modifying the transpiled JavaScript
+#### Modifying the transpiled JavaScript
 
 In the final JavaScript files (stored in `jssnowball/js_snowball/lib/` directory) it is necessary to replace `s.length()` with `s.length` in `eq_s` and `eq_s_b` methods. Otherwise the code returns a TypeError: `s.length is not a function`.
